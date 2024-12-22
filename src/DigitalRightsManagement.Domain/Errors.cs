@@ -33,7 +33,14 @@ internal static class Errors
             public static Result InvalidCurrency(Currency currency)
             {
                 const string code = "product.price.unknown-currency";
-                string message = $"Unknown currency: {currency}.";
+                var message = $"Unknown currency: {currency}.";
+                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+            }
+
+            public static Result EmptyId()
+            {
+                const string code = "product.created-by.empty";
+                const string message = "The creator ID can not be empty.";
                 return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
             }
         }

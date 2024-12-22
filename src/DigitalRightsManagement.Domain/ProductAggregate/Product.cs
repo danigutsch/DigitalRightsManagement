@@ -8,17 +8,20 @@ public sealed class Product : AggregateRoot
     public string Name { get; private set; }
     public string Description { get; private set; }
     public Price Price { get; private set; }
+    public Guid CreatedBy { get; private init; }
+    public ProductStatus Status { get; private set; } = ProductStatus.Active;
 
-    private Product(string name, string description, Price price) : base(Guid.CreateVersion7())
+    private Product(string name, string description, Price price, Guid createdBy) : base(Guid.CreateVersion7())
     {
         Name = name;
         Description = description;
         Price = price;
+        CreatedBy = createdBy;
 
         QueueDomainEvent(new ProductCreated(name, description, price));
     }
 
-    public static Result<Product> Create(string name, string description, Price price)
+    public static Result<Product> Create(string name, string description, Price price, Guid createdBy)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -30,7 +33,12 @@ public sealed class Product : AggregateRoot
             return Errors.Product.Create.InvalidDescription();
         }
 
-        var product = new Product(name, description, price);
+        if (createdBy == Guid.Empty)
+        {
+            return Errors.Product.Create.EmptyId();
+        }
+
+        var product = new Product(name, description, price, createdBy);
 
         return product;
     }

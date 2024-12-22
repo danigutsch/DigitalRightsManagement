@@ -6,7 +6,11 @@ namespace DigitalRightsManagement.UnitTests;
 
 public class ProductTests
 {
-    private static readonly Product ValidProduct = Product.Create("name", "description", Price.Create(1m, Currency.Euro));
+    private static readonly Product ValidProduct = Product.Create(
+        "name",
+        "description",
+        Price.Create(1m, Currency.Euro),
+        Guid.NewGuid());
 
     [Theory]
     [InlineData("")]
@@ -18,7 +22,7 @@ public class ProductTests
     {
         // Arrange
         // Act
-        var result = Product.Create(name, ValidProduct.Description, ValidProduct.Price);
+        var result = Product.Create(name, ValidProduct.Description, ValidProduct.Price, Guid.NewGuid());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -35,7 +39,7 @@ public class ProductTests
     {
         // Arrange
         // Act
-        var result = Product.Create(ValidProduct.Name, description, ValidProduct.Price);
+        var result = Product.Create(ValidProduct.Name, description, ValidProduct.Price, Guid.NewGuid());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -69,6 +73,18 @@ public class ProductTests
     }
 
     [Fact]
+    public void Can_Not_Create_With_Empty_Creator_Id()
+    {
+        // Arrange
+        // Act
+        var result = Product.Create(ValidProduct.Name, ValidProduct.Description, ValidProduct.Price, Guid.Empty);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("created-by");
+    }
+
+    [Fact]
     public void Can_Create_Product_With_Zero_Price()
     {
         // Arrange
@@ -81,7 +97,7 @@ public class ProductTests
         priceResult.Value.Currency.Should().Be(ValidProduct.Price.Currency);
 
         // Act
-        var productResult = Product.Create(ValidProduct.Name, ValidProduct.Description, priceResult.Value);
+        var productResult = Product.Create(ValidProduct.Name, ValidProduct.Description, priceResult.Value, ValidProduct.CreatedBy);
 
         // Assert
         productResult.IsSuccess.Should().BeTrue();
@@ -96,7 +112,7 @@ public class ProductTests
     {
         // Arrange
         // Act
-        var result = Product.Create(ValidProduct.Name, ValidProduct.Description, ValidProduct.Price);
+        var result = Product.Create(ValidProduct.Name, ValidProduct.Description, ValidProduct.Price, ValidProduct.CreatedBy);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -110,7 +126,7 @@ public class ProductTests
     {
         // Arrange
         // Act
-        var result = Product.Create(ValidProduct.Name, ValidProduct.Description, ValidProduct.Price);
+        var result = Product.Create(ValidProduct.Name, ValidProduct.Description, ValidProduct.Price, ValidProduct.CreatedBy);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
