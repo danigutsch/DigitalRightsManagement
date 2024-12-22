@@ -41,6 +41,6 @@ public sealed class Product : AggregateRoot
 
         Price = newPrice;
 
-        QueueDomainEvent(new PriceUpdated(Id, oldPrice, oldPrice, reason));
+        QueueDomainEvent(new PriceUpdated(Id, newPrice, oldPrice, reason));
     }
 }
