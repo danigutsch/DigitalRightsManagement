@@ -1,6 +1,3 @@
 ﻿namespace DigitalRightsManagement.Common;
 
-public class Class1
-{
-
-}
+internal class AggregateRoot : Entity;
