@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using CommunityToolkit.Diagnostics;
 using DigitalRightsManagement.Common;
 
 namespace DigitalRightsManagement.Domain.ProductAggregate;
@@ -16,6 +17,8 @@ public sealed class Price : ValueObject
 
     public static Result<Price> Create(decimal value, Currency currency)
     {
+        Guard.IsNotNull(value);
+
         if (value < 0)
         {
             return Errors.Product.Create.InvalidPrice(value);
