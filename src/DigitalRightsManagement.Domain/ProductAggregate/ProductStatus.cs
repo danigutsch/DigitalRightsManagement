@@ -2,7 +2,9 @@
 
 public enum ProductStatus
 {
-    Active,
-    Inactive,
-    Discontinued
+    Draft,
+    Published,
+    Deprecated,
+    OutOfSupport,
+    Archived
 }

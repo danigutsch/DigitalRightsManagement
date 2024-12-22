@@ -9,7 +9,7 @@ public sealed class Product : AggregateRoot
     public string Description { get; private set; }
     public Price Price { get; private set; }
     public Guid CreatedBy { get; private init; }
-    public ProductStatus Status { get; private set; } = ProductStatus.Active;
+    public ProductStatus Status { get; private set; } = ProductStatus.Draft;
 
     private Product(string name, string description, Price price, Guid createdBy) : base(Guid.CreateVersion7())
     {
