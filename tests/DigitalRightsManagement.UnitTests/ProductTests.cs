@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result;
-using DigitalRightsManagement.Domain;
+using DigitalRightsManagement.Domain.ProductAggregate;
 using FluentAssertions;
 
 namespace DigitalRightsManagement.UnitTests;

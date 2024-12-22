@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Common;
 
-namespace DigitalRightsManagement.Domain
+namespace DigitalRightsManagement.Domain.ProductAggregate
 {
     public class Product : AggregateRoot
     {
