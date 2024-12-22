@@ -1,6 +1,8 @@
 ﻿using Ardalis.Result;
+using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Domain;
+
 internal static class Errors
 {
     internal static class Product
@@ -21,10 +23,17 @@ internal static class Errors
                 return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
             }
 
-            public static Result InvalidPrice()
+            public static Result InvalidPrice(decimal price)
             {
-                const string code = "product.price.invalid";
-                const string message = "Price must be zero or larger.";
+                const string code = "product.price.negative-value";
+                var message = $"The price can not be negative. Was: {price:C}.";
+                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+            }
+
+            public static Result InvalidCurrency(Currency currency)
+            {
+                const string code = "product.price.unknown-currency";
+                string message = $"Unknown currency: {currency}.";
                 return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
             }
         }
