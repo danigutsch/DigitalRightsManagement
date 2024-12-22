@@ -104,4 +104,16 @@ public class ProductTests
         result.Value.Description.Should().Be(ValidProduct.Description);
         result.Value.Price.Should().Be(ValidProduct.Price);
     }
+
+    [Fact]
+    public void Successful_Creation_Queues_Event()
+    {
+        // Arrange
+        // Act
+        var result = Product.Create(ValidProduct.Name, ValidProduct.Description, ValidProduct.Price);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.DomainEvents.Should().ContainSingle().Which.Should().BeOfType<ProductCreated>();
+    }
 }

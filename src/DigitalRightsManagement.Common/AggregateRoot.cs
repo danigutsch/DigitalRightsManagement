@@ -6,5 +6,7 @@ public class AggregateRoot : Entity
 
     private readonly List<DomainEvent> _domainEvents = [];
 
-    public void AddDomainEvent(DomainEvent domainEvent) => _domainEvents.Add(domainEvent);
+    public IReadOnlyList<DomainEvent> DomainEvents => _domainEvents;
+
+    public void QueueDomainEvent(DomainEvent domainEvent) => _domainEvents.Add(domainEvent);
 }

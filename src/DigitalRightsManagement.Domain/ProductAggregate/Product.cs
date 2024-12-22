@@ -28,6 +28,10 @@ public sealed class Product : AggregateRoot
             return Errors.Product.Create.InvalidDescription();
         }
 
-        return new Product(name, description, price);
+        var product = new Product(name, description, price);
+
+        product.QueueDomainEvent(new ProductCreated(product));
+
+        return product;
     }
 }
