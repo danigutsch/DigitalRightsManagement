@@ -14,6 +14,8 @@ public sealed class Product : AggregateRoot
         Name = name;
         Description = description;
         Price = price;
+
+        QueueDomainEvent(new ProductCreated(name, description, price));
     }
 
     public static Result<Product> Create(string name, string description, Price price)
@@ -30,8 +32,15 @@ public sealed class Product : AggregateRoot
 
         var product = new Product(name, description, price);
 
-        product.QueueDomainEvent(new ProductCreated(product));
-
         return product;
+    }
+
+    public void UpdatePrice(Price newPrice, string reason)
+    {
+        var oldPrice = Price;
+
+        Price = newPrice;
+
+        QueueDomainEvent(new PriceUpdated(Id, oldPrice, oldPrice, reason));
     }
 }

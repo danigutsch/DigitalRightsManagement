@@ -106,7 +106,7 @@ public class ProductTests
     }
 
     [Fact]
-    public void Successful_Creation_Queues_Event()
+    public void Creation_Queues_Event()
     {
         // Arrange
         // Act
@@ -115,5 +115,32 @@ public class ProductTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.DomainEvents.Should().ContainSingle().Which.Should().BeOfType<ProductCreated>();
+    }
+
+    [Fact]
+    public void Can_Update_Price()
+    {
+        // Arrange
+        var newPrice = Price.Create(2m, Currency.Euro).Value;
+
+        // Act
+        ValidProduct.UpdatePrice(newPrice, "reason");
+
+        // Assert
+        ValidProduct.Price.Should().Be(newPrice);
+        ValidProduct.DomainEvents.OfType<PriceUpdated>().Should().ContainSingle();
+    }
+
+    [Fact]
+    public void Price_Update_Queues_Event()
+    {
+        // Arrange
+        var newPrice = Price.Create(2m, Currency.Euro).Value;
+
+        // Act
+        ValidProduct.UpdatePrice(newPrice, "reason");
+
+        // Assert
+        ValidProduct.Price.Should().Be(newPrice);
     }
 }
