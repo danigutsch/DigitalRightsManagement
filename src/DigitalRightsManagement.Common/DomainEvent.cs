@@ -1,6 +1,6 @@
 ﻿namespace DigitalRightsManagement.Common;
 
-public abstract class DomainEvent
+public abstract record DomainEvent()
 {
-    public DateTimeOffset OccurredOn { get; }
+    public DateTimeOffset OccurredOn { get; } = DateTimeOffset.UtcNow;
 }
