@@ -51,4 +51,36 @@ public sealed class Product : AggregateRoot
 
         QueueDomainEvent(new PriceUpdated(Id, newPrice, oldPrice, reason));
     }
+
+    public void Publish(Guid userId)
+    {
+        if (Status != ProductStatus.Draft) throw new InvalidOperationException("Only draft products can be published.");
+
+        Status = ProductStatus.Published;
+        QueueDomainEvent(new ProductPublished(Id, userId));
+    }
+
+    public void Deprecate(Guid userId)
+    {
+        if (Status != ProductStatus.Published) throw new InvalidOperationException("Only published products can be deprecated.");
+
+        Status = ProductStatus.Deprecated;
+        QueueDomainEvent(new ProductDeprecated(Id, userId));
+    }
+
+    public void MarkOutOfSupport(Guid userId)
+    {
+        if (Status != ProductStatus.Deprecated) throw new InvalidOperationException("Only deprecated products can be marked out of support.");
+
+        Status = ProductStatus.OutOfSupport;
+        QueueDomainEvent(new ProductOutOfSupport(Id, userId));
+    }
+
+    public void Archive(Guid userId)
+    {
+        if (Status != ProductStatus.OutOfSupport && Status != ProductStatus.Published) throw new InvalidOperationException("Only out-of-support or published products can be archived.");
+
+        Status = ProductStatus.Archived;
+        QueueDomainEvent(new ProductArchived(Id, userId));
+    }
 }
