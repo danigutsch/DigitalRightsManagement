@@ -1,5 +1,4 @@
 ﻿using Ardalis.Result;
-using CommunityToolkit.Diagnostics;
 using DigitalRightsManagement.Common;
 
 namespace DigitalRightsManagement.Domain.ProductAggregate;
@@ -19,10 +18,6 @@ public sealed class Product : AggregateRoot
 
     public static Result<Product> Create(string name, string description, Price price)
     {
-        Guard.IsNotNull(name);
-        Guard.IsNotNull(description);
-        Guard.IsNotNull(price);
-
         if (string.IsNullOrWhiteSpace(name))
         {
             return Errors.Product.Create.InvalidName();

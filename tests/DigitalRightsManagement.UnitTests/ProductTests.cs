@@ -25,19 +25,6 @@ public class ProductTests
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("name");
     }
 
-    [Fact]
-    public void Throws_On_Null_Name()
-    {
-        // Arrange
-        string? name = null;
-
-        // Act
-        var action = () => Product.Create(name!, ValidProduct.Description, ValidProduct.Price);
-
-        // Assert
-        action.Should().Throw<ArgumentException>().WithParameterName("name");
-    }
-
     [Theory]
     [InlineData("")]
     [InlineData(" ")]
@@ -53,19 +40,6 @@ public class ProductTests
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("description");
-    }
-
-    [Fact]
-    public void Throws_On_Null_Description()
-    {
-        // Arrange
-        string? description = null;
-
-        // Act
-        var action = () => Product.Create(ValidProduct.Name, description!, ValidProduct.Price);
-
-        // Assert
-        action.Should().Throw<ArgumentException>().WithParameterName("description");
     }
 
     [Theory]
