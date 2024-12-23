@@ -3,6 +3,7 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+		<NoWarn>CA1812</NoWarn>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoDefaultExcludes>true</NoDefaultExcludes>
 		<ImplicitUsings>enable</ImplicitUsings>
