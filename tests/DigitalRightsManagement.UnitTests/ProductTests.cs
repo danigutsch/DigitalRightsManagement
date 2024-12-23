@@ -4,7 +4,7 @@ using FluentAssertions;
 
 namespace DigitalRightsManagement.UnitTests;
 
-public class ProductTests
+public sealed class ProductTests
 {
     private readonly Product _validProduct = ProductFactory.InDevelopment();
 
@@ -201,6 +201,19 @@ public class ProductTests
     }
 
     [Fact]
+    public void Can_Not_Publish_With_Empty_User_Id()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+
+        // Act
+        var result = product.Publish(Guid.Empty);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
     public void Publish_Queues_Event()
     {
         // Arrange
@@ -249,6 +262,19 @@ public class ProductTests
 
         // Act
         var result = product.Obsolete(Guid.NewGuid());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
+    public void Can_Not_Obsolete_With_Empty_User_Id()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+
+        // Act
+        var result = product.Obsolete(Guid.Empty);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
