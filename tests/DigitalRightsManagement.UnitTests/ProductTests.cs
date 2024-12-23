@@ -8,12 +8,7 @@ public class ProductTests
 {
     private readonly Product _validProduct = ProductFactory.InDevelopment();
 
-    [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("\t")]
-    [InlineData("\r")]
-    [InlineData("\n")]
+    [Theory, ClassData(typeof(EmptyStringTestData))]
     public void Cannot_Create_With_Empty_Name(string name)
     {
         // Arrange
@@ -25,12 +20,7 @@ public class ProductTests
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("name");
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("\t")]
-    [InlineData("\r")]
-    [InlineData("\n")]
+    [Theory, ClassData(typeof(EmptyStringTestData))]
     public void Cannot_Create_With_Empty_Description(string description)
     {
         // Arrange
@@ -306,12 +296,7 @@ public class ProductTests
         product.DomainEvents.OfType<DescriptionUpdated>().Should().ContainSingle();
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("\t")]
-    [InlineData("\r")]
-    [InlineData("\n")]
+    [Theory, ClassData(typeof(EmptyStringTestData))]
     public void Cannot_Update_With_Empty_Description(string newDescription)
     {
         // Arrange
