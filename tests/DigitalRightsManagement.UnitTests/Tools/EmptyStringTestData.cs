@@ -1,4 +1,4 @@
-﻿namespace DigitalRightsManagement.UnitTests;
+﻿namespace DigitalRightsManagement.UnitTests.Tools;
 
 internal sealed class EmptyStringTestData : TheoryData<string>
 {

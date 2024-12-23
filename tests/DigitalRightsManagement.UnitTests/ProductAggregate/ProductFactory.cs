@@ -1,6 +1,6 @@
 ﻿using DigitalRightsManagement.Domain.ProductAggregate;
 
-namespace DigitalRightsManagement.UnitTests;
+namespace DigitalRightsManagement.UnitTests.ProductAggregate;
 
 internal static class ProductFactory
 {

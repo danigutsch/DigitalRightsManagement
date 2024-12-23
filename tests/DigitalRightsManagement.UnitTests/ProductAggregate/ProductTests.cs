@@ -1,8 +1,9 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.ProductAggregate;
+using DigitalRightsManagement.UnitTests.Tools;
 using FluentAssertions;
 
-namespace DigitalRightsManagement.UnitTests;
+namespace DigitalRightsManagement.UnitTests.ProductAggregate;
 
 public sealed class ProductTests
 {
