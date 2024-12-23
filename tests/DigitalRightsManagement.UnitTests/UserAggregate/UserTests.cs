@@ -21,14 +21,7 @@ public sealed class UserTests
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("username");
     }
 
-    [Theory]
-    [InlineData("invalidemail")]
-    [InlineData("invalidemail@")]
-    [InlineData("invalid@ email.com")]
-    [InlineData("invalidemail.com")]
-    [InlineData("invalid@@example.com")]
-    [InlineData("@example.com")]
-    [InlineData("inv alid@example.com")]
+    [Theory, ClassData(typeof(InvalidEmailTestData))]
     [ClassData(typeof(EmptyStringTestData))]
     public void Cannot_Create_With_Invalid_Email(string invalidEmail)
     {
@@ -80,5 +73,47 @@ public sealed class UserTests
         result.IsSuccess.Should().BeTrue();
         result.Value.DomainEvents.Should().ContainSingle()
             .Which.Should().BeOfType<UserCreated>();
+    }
+
+    [Theory, ClassData(typeof(InvalidEmailTestData))]
+    public void Cannot_Update_With_Invalid_Email(string invalidEmail)
+    {
+        // Arrange
+        var user = UserFactory.CreateValidUser();
+
+        // Act
+        var result = user.UpdateEmail(invalidEmail);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("email");
+    }
+
+    [Fact]
+    public void Can_Update_Email()
+    {
+        // Arrange
+        var user = UserFactory.CreateValidUser();
+
+        // Act
+        var result = user.UpdateEmail(_validUser.Email);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        user.Email.Should().Be(_validUser.Email);
+    }
+
+    [Fact]
+    public void Update_Queues_Event()
+    {
+        // Arrange
+        var user = UserFactory.CreateValidUser();
+
+        // Act
+        var result = user.UpdateEmail(_validUser.Email);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        user.DomainEvents.OfType<EmailUpdated>().Should().ContainSingle();
     }
 }

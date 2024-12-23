@@ -41,6 +41,21 @@ public sealed class User : AggregateRoot
         return user;
     }
 
+    public Result UpdateEmail(string newEmail)
+    {
+        var emailValidation = ValidateEmail(newEmail);
+        if (!emailValidation.IsSuccess)
+        {
+            return emailValidation;
+        }
+
+        Email = newEmail.Trim();
+
+        QueueDomainEvent(new EmailUpdated(Id, newEmail));
+
+        return Result.Success();
+    }
+
     private static Result ValidateEmail(string email)
     {
         var trimmedEmail = email.Trim();
