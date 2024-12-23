@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Common;
+using DigitalRightsManagement.Domain.ProductAggregate.Events;
 
 namespace DigitalRightsManagement.Domain.ProductAggregate;
 

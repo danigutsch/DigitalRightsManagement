@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Domain.UserAggregate.Events;
 using DigitalRightsManagement.UnitTests.Tools;
 using FluentAssertions;
 
