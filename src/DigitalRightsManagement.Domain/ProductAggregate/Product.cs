@@ -52,6 +52,22 @@ public sealed class Product : AggregateRoot
         QueueDomainEvent(new PriceUpdated(Id, newPrice, oldPrice, reason));
     }
 
+    public Result UpdateDescription(string newDescription)
+    {
+        if (string.IsNullOrWhiteSpace(newDescription))
+        {
+            return Errors.Product.InvalidDescription();
+        }
+
+        var oldDescription = Description;
+
+        Description = newDescription;
+
+        QueueDomainEvent(new DescriptionUpdated(Id, newDescription, oldDescription));
+
+        return Result.Success();
+    }
+
     public Result Publish(Guid userId)
     {
         if (userId == Guid.Empty)
@@ -93,3 +109,5 @@ public sealed class Product : AggregateRoot
         return Result.Success();
     }
 }
+
+public sealed record DescriptionUpdated(Guid ProductId, string NewDescription, string OldDescription) : DomainEvent;
