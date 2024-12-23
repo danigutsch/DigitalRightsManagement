@@ -51,18 +51,23 @@ public sealed class User : AggregateRoot
         }
 
         var indexOfAt = trimmedEmail.IndexOf('@', StringComparison.Ordinal);
-
         if (indexOfAt <= 0)
         {
             return Errors.User.InvalidEmail();
         }
 
-        if (indexOfAt == trimmedEmail.Length - 1)
+        var indexOfDot = trimmedEmail.LastIndexOf('.');
+        if (indexOfDot <= 0)
         {
             return Errors.User.InvalidEmail();
         }
 
-        if (indexOfAt != trimmedEmail.LastIndexOf('@'))
+        if (indexOfDot <= indexOfAt + 2)
+        {
+            return Errors.User.InvalidEmail();
+        }
+
+        if (indexOfDot == trimmedEmail.Length - 1)
         {
             return Errors.User.InvalidEmail();
         }
