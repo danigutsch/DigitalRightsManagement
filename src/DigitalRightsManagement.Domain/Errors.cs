@@ -7,41 +7,56 @@ internal static class Errors
 {
     internal static class Product
     {
-            public static Result InvalidName()
-            {
-                const string code = "product.name.invalid";
-                const string message = "Invalid name.";
-                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
-            }
-
-            public static Result InvalidDescription()
-            {
-                const string code = "product.description.invalid";
-                const string message = "Invalid description.";
-                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
-            }
-
-            public static Result InvalidPrice(decimal price)
-            {
-                const string code = "product.price.negative-value";
-                var message = $"The price can not be negative. Was: {price:C}.";
-                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
-            }
-
-            public static Result InvalidCurrency(Currency currency)
-            {
-                const string code = "product.price.unknown-currency";
-                var message = $"Unknown currency: {currency}.";
-                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
-            }
-
-            public static Result EmptyId()
-            {
-                const string code = "product.created-by.empty";
-                const string message = "The creator ID can not be empty.";
-                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
-            }
+        public static Result InvalidName()
+        {
+            const string code = "product.name.invalid";
+            const string message = "Invalid name.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
+
+        public static Result InvalidDescription()
+        {
+            const string code = "product.description.invalid";
+            const string message = "Invalid description.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result InvalidPrice(decimal price)
+        {
+            const string code = "product.price.negative-value";
+            var message = $"The price can not be negative. Was: {price:C}.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result InvalidCurrency(Currency currency)
+        {
+            const string code = "product.price.unknown-currency";
+            var message = $"Unknown currency: {currency}.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result EmptyId()
+        {
+            const string code = "product.created-by.empty";
+            const string message = "The creator ID can not be empty.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result InvalidStatusChange(ProductStatus currentStatus, ProductStatus desiredStatus)
+        {
+            const string code = "product.status.invalid-change";
+            var message = $"Invalid status change from {currentStatus} to {desiredStatus}.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+    }
+
+    internal static class User
+    {
+        public static Result EmptyId()
+        {
+            const string code = "user.id.empty";
+            const string message = "The user ID can not be empty.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
     }
 }

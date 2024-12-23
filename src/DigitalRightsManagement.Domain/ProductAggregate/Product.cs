@@ -52,35 +52,59 @@ public sealed class Product : AggregateRoot
         QueueDomainEvent(new PriceUpdated(Id, newPrice, oldPrice, reason));
     }
 
-    public void Publish(Guid userId)
+    public Result Publish(Guid userId)
     {
-        if (Status != ProductStatus.Draft) throw new InvalidOperationException("Only draft products can be published.");
+        var result = ChangeStatus(userId, ProductStatus.Draft, ProductStatus.Published);
+        if (!result.IsSuccess)
+        {
+            return result;
+        }
 
-        Status = ProductStatus.Published;
         QueueDomainEvent(new ProductPublished(Id, userId));
+
+        return Result.Success();
     }
 
-    public void Deprecate(Guid userId)
+    public Result Deprecate(Guid userId)
     {
-        if (Status != ProductStatus.Published) throw new InvalidOperationException("Only published products can be deprecated.");
+        var result = ChangeStatus(userId, ProductStatus.Published, ProductStatus.Deprecated);
+        if (!result.IsSuccess)
+        {
+            return result;
+        }
 
-        Status = ProductStatus.Deprecated;
         QueueDomainEvent(new ProductDeprecated(Id, userId));
+
+        return Result.Success();
     }
 
-    public void MarkOutOfSupport(Guid userId)
+    public Result MarkOutOfSupport(Guid userId)
     {
-        if (Status != ProductStatus.Deprecated) throw new InvalidOperationException("Only deprecated products can be marked out of support.");
+        var result = ChangeStatus(userId, ProductStatus.Deprecated, ProductStatus.OutOfSupport);
+        if (!result.IsSuccess)
+        {
+            return result;
+        }
 
-        Status = ProductStatus.OutOfSupport;
         QueueDomainEvent(new ProductOutOfSupport(Id, userId));
+
+        return Result.Success();
     }
 
-    public void Archive(Guid userId)
+    private Result ChangeStatus(Guid userId, ProductStatus validToProceed, ProductStatus desiredStatus)
     {
-        if (Status != ProductStatus.OutOfSupport && Status != ProductStatus.Published) throw new InvalidOperationException("Only out-of-support or published products can be archived.");
+        if (userId == Guid.Empty)
+        {
+            return Errors.User.EmptyId();
+        }
 
-        Status = ProductStatus.Archived;
-        QueueDomainEvent(new ProductArchived(Id, userId));
+        if (Status != validToProceed)
+        {
+            return Errors.Product.InvalidStatusChange(Status, desiredStatus);
+        }
+
+        Status = desiredStatus;
+
+        return Result.Success();
     }
 }

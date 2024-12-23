@@ -144,7 +144,6 @@ public class ProductTests
 
         // Assert
         ValidProduct.Price.Should().Be(newPrice);
-        ValidProduct.DomainEvents.OfType<PriceUpdated>().Should().ContainSingle();
     }
 
     [Fact]
@@ -157,6 +156,31 @@ public class ProductTests
         ValidProduct.UpdatePrice(newPrice, "reason");
 
         // Assert
-        ValidProduct.Price.Should().Be(newPrice);
+        ValidProduct.DomainEvents.OfType<PriceUpdated>().Should().ContainSingle();
+    }
+
+    [Fact]
+    public void Is_Draft_After_Creation()
+    {
+        // Arrange
+        // Act
+        var product = Product.Create(ValidProduct.Name, ValidProduct.Description, ValidProduct.Price, ValidProduct.CreatedBy).Value;
+
+        // Assert
+        product.Status.Should().Be(ProductStatus.Draft);
+    }
+
+    [Fact]
+    public void Can_Be_Published_From_Draft()
+    {
+        // Arrange
+
+        // Act
+        var result = ValidProduct.Publish(Guid.NewGuid());
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        ValidProduct.Status.Should().Be(ProductStatus.Published);
+        ValidProduct.DomainEvents.OfType<ProductPublished>().Should().ContainSingle();
     }
 }

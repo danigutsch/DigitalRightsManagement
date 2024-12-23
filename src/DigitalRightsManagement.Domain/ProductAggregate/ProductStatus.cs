@@ -5,6 +5,5 @@ public enum ProductStatus
     Draft,
     Published,
     Deprecated,
-    OutOfSupport,
-    Archived
+    OutOfSupport
 }
