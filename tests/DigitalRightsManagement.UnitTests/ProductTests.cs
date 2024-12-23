@@ -183,6 +183,19 @@ public class ProductTests
     }
 
     [Fact]
+    public void Can_Not_Publish_From_Published()
+    {
+        // Arrange
+        _validProduct.Publish(Guid.NewGuid());
+
+        // Act
+        var result = _validProduct.Publish(Guid.NewGuid());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
     public void Can_Not_Publish_From_Obsolete()
     {
         // Arrange
