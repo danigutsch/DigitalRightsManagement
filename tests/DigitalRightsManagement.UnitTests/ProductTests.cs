@@ -276,4 +276,51 @@ public class ProductTests
         // Assert
         product.DomainEvents.OfType<ProductObsoleted>().Should().ContainSingle();
     }
+
+    [Fact]
+    public void Can_Update_Description()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        const string newDescription = "new description";
+
+        // Act
+        var result = product.UpdateDescription(newDescription);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        product.Description.Should().Be(newDescription);
+    }
+
+    [Fact]
+    public void Description_Update_Queues_Event()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        const string newDescription = "new description";
+
+        // Act
+        product.UpdateDescription(newDescription);
+
+        // Assert
+        product.DomainEvents.OfType<DescriptionUpdated>().Should().ContainSingle();
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("\t")]
+    [InlineData("\r")]
+    [InlineData("\n")]
+    public void Cannot_Update_With_Empty_Description(string newDescription)
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+
+        // Act
+        var result = product.UpdateDescription(newDescription);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
 }
