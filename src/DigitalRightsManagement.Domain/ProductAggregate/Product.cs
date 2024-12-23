@@ -13,8 +13,8 @@ public sealed class Product : AggregateRoot
 
     private Product(string name, string description, Price price, Guid createdBy) : base(Guid.CreateVersion7())
     {
-        Name = name;
-        Description = description;
+        Name = name.Trim();
+        Description = description.Trim();
         Price = price;
         CreatedBy = createdBy;
 
