@@ -56,6 +56,11 @@ public sealed class User : AggregateRoot
             return Errors.User.InvalidEmail();
         }
 
+        if (indexOfAt != trimmedEmail.LastIndexOf('@'))
+        {
+            return Errors.User.InvalidEmail();
+        }
+
         var indexOfDot = trimmedEmail.LastIndexOf('.');
         if (indexOfDot <= 0)
         {
