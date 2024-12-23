@@ -86,5 +86,15 @@ internal static class Errors
             const string message = "Invalid role.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
+
+        internal static class Unauthorized
+        {
+            public static Result CreateManager()
+            {
+                const string code = "user.unauthorized.create-manager";
+                const string message = "Only an admin can create a manager.";
+                return Result.Unauthorized(code, message);
+            }
+        }
     }
 }
