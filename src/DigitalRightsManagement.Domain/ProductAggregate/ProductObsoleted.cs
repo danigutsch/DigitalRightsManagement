@@ -2,4 +2,4 @@
 
 namespace DigitalRightsManagement.Domain.ProductAggregate;
 
-public sealed record ProductOutOfSupport(Guid ProductId, Guid UserId) : DomainEvent;
+public sealed record ProductObsoleted(Guid ProductId, Guid UserId) : DomainEvent;

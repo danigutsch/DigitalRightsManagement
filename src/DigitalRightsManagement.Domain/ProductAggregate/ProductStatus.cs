@@ -2,8 +2,7 @@
 
 public enum ProductStatus
 {
-    Draft,
+    Development,
     Published,
-    Deprecated,
-    OutOfSupport
+    Obsolete
 }

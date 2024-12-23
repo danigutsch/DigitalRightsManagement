@@ -48,6 +48,13 @@ internal static class Errors
             var message = $"Invalid status change from {currentStatus} to {desiredStatus}.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
+
+        public static Result AlreadyInStatus(ProductStatus status)
+        {
+            const string code = "product.status.already-in-status";
+            var message = $"The product is already in status {status}.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
     }
 
     internal static class User

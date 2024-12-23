@@ -9,7 +9,7 @@ public sealed class Product : AggregateRoot
     public string Description { get; private set; }
     public Price Price { get; private set; }
     public Guid CreatedBy { get; private init; }
-    public ProductStatus Status { get; private set; } = ProductStatus.Draft;
+    public ProductStatus Status { get; private set; } = ProductStatus.Development;
 
     private Product(string name, string description, Price price, Guid createdBy) : base(Guid.CreateVersion7())
     {
@@ -54,56 +54,41 @@ public sealed class Product : AggregateRoot
 
     public Result Publish(Guid userId)
     {
-        var result = ChangeStatus(userId, ProductStatus.Draft, ProductStatus.Published);
-        if (!result.IsSuccess)
+        if (userId == Guid.Empty)
         {
-            return result;
+            return Errors.User.EmptyId();
         }
+
+        switch (Status)
+        {
+            case ProductStatus.Obsolete:
+                return Errors.Product.InvalidStatusChange(Status, ProductStatus.Published);
+            case ProductStatus.Published:
+                return Errors.Product.AlreadyInStatus(Status);
+        }
+
+        Status = ProductStatus.Published;
 
         QueueDomainEvent(new ProductPublished(Id, userId));
 
         return Result.Success();
     }
 
-    public Result Deprecate(Guid userId)
-    {
-        var result = ChangeStatus(userId, ProductStatus.Published, ProductStatus.Deprecated);
-        if (!result.IsSuccess)
-        {
-            return result;
-        }
-
-        QueueDomainEvent(new ProductDeprecated(Id, userId));
-
-        return Result.Success();
-    }
-
-    public Result MarkOutOfSupport(Guid userId)
-    {
-        var result = ChangeStatus(userId, ProductStatus.Deprecated, ProductStatus.OutOfSupport);
-        if (!result.IsSuccess)
-        {
-            return result;
-        }
-
-        QueueDomainEvent(new ProductOutOfSupport(Id, userId));
-
-        return Result.Success();
-    }
-
-    private Result ChangeStatus(Guid userId, ProductStatus validToProceed, ProductStatus desiredStatus)
+    public Result Obsolete(Guid userId)
     {
         if (userId == Guid.Empty)
         {
             return Errors.User.EmptyId();
         }
 
-        if (Status != validToProceed)
+        if (Status == ProductStatus.Obsolete)
         {
-            return Errors.Product.InvalidStatusChange(Status, desiredStatus);
+            return Errors.Product.AlreadyInStatus(Status);
         }
 
-        Status = desiredStatus;
+        Status = ProductStatus.Obsolete;
+
+        QueueDomainEvent(new ProductObsoleted(Id, userId));
 
         return Result.Success();
     }
