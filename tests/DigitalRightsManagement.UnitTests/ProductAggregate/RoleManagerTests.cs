@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Domain.UserAggregate.Events;
 using DigitalRightsManagement.UnitTests.Common.Factories;
 using DigitalRightsManagement.UnitTests.Common.TestData;
 using FluentAssertions;
@@ -21,8 +22,20 @@ public class RoleManagerTests
         var result = RoleManager.CreateManager(admin, _validUser.Username, _validUser.Email);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
+        result.IsSuccess.Should().BeTrue();
         result.Value.Role.Should().Be(UserRoles.Manager);
+    }
+
+    [Fact]
+    public void Manager_Creation_Queues_event()
+    {
+        // Arrange
+        // Act
+        var result = RoleManager.CreateManager(_validAdmin, _validUser.Username, _validUser.Email);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        _validAdmin.DomainEvents.OfType<ManagerCreated>().Should().ContainSingle();
     }
 
     [Fact]
