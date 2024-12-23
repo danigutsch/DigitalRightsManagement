@@ -25,17 +25,17 @@ public sealed class Product : AggregateRoot
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            return Errors.Product.Create.InvalidName();
+            return Errors.Product.InvalidName();
         }
 
         if (string.IsNullOrWhiteSpace(description))
         {
-            return Errors.Product.Create.InvalidDescription();
+            return Errors.Product.InvalidDescription();
         }
 
         if (createdBy == Guid.Empty)
         {
-            return Errors.Product.Create.EmptyId();
+            return Errors.Product.EmptyId();
         }
 
         var product = new Product(name, description, price, createdBy);

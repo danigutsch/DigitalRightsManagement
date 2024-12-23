@@ -7,8 +7,6 @@ internal static class Errors
 {
     internal static class Product
     {
-        internal static class Create
-        {
             public static Result InvalidName()
             {
                 const string code = "product.name.invalid";
@@ -43,6 +41,7 @@ internal static class Errors
                 const string message = "The creator ID can not be empty.";
                 return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
             }
+        }
         }
     }
 }
