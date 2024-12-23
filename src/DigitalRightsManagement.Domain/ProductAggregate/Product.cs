@@ -109,5 +109,3 @@ public sealed class Product : AggregateRoot
         return Result.Success();
     }
 }
-
-public sealed record DescriptionUpdated(Guid ProductId, string NewDescription, string OldDescription) : DomainEvent;
