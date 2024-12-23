@@ -6,11 +6,7 @@ namespace DigitalRightsManagement.UnitTests;
 
 public class ProductTests
 {
-    private readonly Product _validProduct = Product.Create(
-        "name",
-        "description",
-        Price.Create(1m, Currency.Euro),
-        Guid.NewGuid());
+    private readonly Product _validProduct = ProductFactory.InDevelopment();
 
     [Theory]
     [InlineData("")]
@@ -88,12 +84,14 @@ public class ProductTests
     public void Can_Create_Product_With_Zero_Price()
     {
         // Arrange
+        const decimal zeroPrice = 0m;
+
         // Act
-        var priceResult = Price.Create(0m, _validProduct.Price.Currency);
+        var priceResult = Price.Create(zeroPrice, _validProduct.Price.Currency);
 
         // Assert
         priceResult.IsSuccess.Should().BeTrue();
-        priceResult.Value.Value.Should().Be(0m);
+        priceResult.Value.Value.Should().Be(zeroPrice);
         priceResult.Value.Currency.Should().Be(_validProduct.Price.Currency);
 
         // Act
@@ -103,7 +101,7 @@ public class ProductTests
         productResult.IsSuccess.Should().BeTrue();
         productResult.Value.Name.Should().Be(_validProduct.Name);
         productResult.Value.Description.Should().Be(_validProduct.Description);
-        productResult.Value.Price.Value.Should().Be(0m);
+        productResult.Value.Price.Value.Should().Be(zeroPrice);
         productResult.Value.Price.Currency.Should().Be(_validProduct.Price.Currency);
     }
 
@@ -137,26 +135,28 @@ public class ProductTests
     public void Can_Update_Price()
     {
         // Arrange
+        var product = ProductFactory.InDevelopment();
         var newPrice = Price.Create(2m, Currency.Euro).Value;
 
         // Act
-        _validProduct.UpdatePrice(newPrice, "reason");
+        product.UpdatePrice(newPrice, "reason");
 
         // Assert
-        _validProduct.Price.Should().Be(newPrice);
+        product.Price.Should().Be(newPrice);
     }
 
     [Fact]
     public void Price_Update_Queues_Event()
     {
         // Arrange
+        var product = ProductFactory.InDevelopment();
         var newPrice = Price.Create(2m, Currency.Euro).Value;
 
         // Act
-        _validProduct.UpdatePrice(newPrice, "reason");
+        product.UpdatePrice(newPrice, "reason");
 
         // Assert
-        _validProduct.DomainEvents.OfType<PriceUpdated>().Should().ContainSingle();
+        product.DomainEvents.OfType<PriceUpdated>().Should().ContainSingle();
     }
 
     [Fact]
@@ -174,22 +174,24 @@ public class ProductTests
     public void Can_Publish_From_Development()
     {
         // Arrange
+        var product = ProductFactory.InDevelopment();
+
         // Act
-        var result = _validProduct.Publish(Guid.NewGuid());
+        var result = product.Publish(Guid.NewGuid());
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        _validProduct.Status.Should().Be(ProductStatus.Published);
+        product.Status.Should().Be(ProductStatus.Published);
     }
 
     [Fact]
     public void Can_Not_Publish_From_Published()
     {
         // Arrange
-        _validProduct.Publish(Guid.NewGuid());
+        var product = ProductFactory.Published();
 
         // Act
-        var result = _validProduct.Publish(Guid.NewGuid());
+        var result = product.Publish(Guid.NewGuid());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -199,10 +201,10 @@ public class ProductTests
     public void Can_Not_Publish_From_Obsolete()
     {
         // Arrange
-        _validProduct.Obsolete(Guid.NewGuid());
+        var product = ProductFactory.Obsolete();
 
         // Act
-        var result = _validProduct.Publish(Guid.NewGuid());
+        var result = product.Publish(Guid.NewGuid());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -212,47 +214,51 @@ public class ProductTests
     public void Publish_Queues_Event()
     {
         // Arrange
+        var product = ProductFactory.InDevelopment();
+
         // Act
-        _validProduct.Publish(Guid.NewGuid());
+        product.Publish(Guid.NewGuid());
 
         // Assert
-        _validProduct.DomainEvents.OfType<ProductPublished>().Should().ContainSingle();
+        product.DomainEvents.OfType<ProductPublished>().Should().ContainSingle();
     }
 
     [Fact]
     public void Can_Obsolete_From_Development()
     {
         // Arrange
+        var product = ProductFactory.InDevelopment();
+
         // Act
-        var result = _validProduct.Obsolete(Guid.NewGuid());
+        var result = product.Obsolete(Guid.NewGuid());
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        _validProduct.Status.Should().Be(ProductStatus.Obsolete);
+        product.Status.Should().Be(ProductStatus.Obsolete);
     }
 
     [Fact]
     public void Can_Obsolete_From_Published()
     {
         // Arrange
-        _validProduct.Publish(Guid.NewGuid());
+        var product = ProductFactory.Published();
 
         // Act
-        var result = _validProduct.Obsolete(Guid.NewGuid());
+        var result = product.Obsolete(Guid.NewGuid());
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        _validProduct.Status.Should().Be(ProductStatus.Obsolete);
+        product.Status.Should().Be(ProductStatus.Obsolete);
     }
 
     [Fact]
     public void Can_Not_Obsolete_From_Obsolete()
     {
         // Arrange
-        _validProduct.Obsolete(Guid.NewGuid());
+        var product = ProductFactory.Obsolete();
 
         // Act
-        var result = _validProduct.Obsolete(Guid.NewGuid());
+        var result = product.Obsolete(Guid.NewGuid());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -262,10 +268,12 @@ public class ProductTests
     public void Obsolete_Queues_Event()
     {
         // Arrange
+        var product = ProductFactory.Published();
+
         // Act
-        _validProduct.Obsolete(Guid.NewGuid());
+        product.Obsolete(Guid.NewGuid());
 
         // Assert
-        _validProduct.DomainEvents.OfType<ProductObsoleted>().Should().ContainSingle();
+        product.DomainEvents.OfType<ProductObsoleted>().Should().ContainSingle();
     }
 }
