@@ -1,24 +1,31 @@
-﻿using DigitalRightsManagement.Domain.ProductAggregate;
+﻿using Bogus;
+using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.UnitTests.ProductAggregate;
 
 internal static class ProductFactory
 {
-    public static Product InDevelopment(string name = "name", string description = "description", decimal price = 2.00m, Currency currency = Currency.Euro, Guid? createdBy = null)
-    {
-        return Product.Create(name, description, Price.Create(price, currency), createdBy ?? Guid.NewGuid());
-    }
+    private static readonly Faker<Product> Faker = new Faker<Product>()
+        .CustomInstantiator(f => Product.Create(
+            f.Commerce.ProductName(),
+            f.Commerce.ProductDescription(),
+            Price.Create(f.Random.Decimal(1.00m, 100.00m), f.PickRandom<Currency>()),
+            f.Random.Guid()
+            ).Value
+        );
 
-    public static Product Published(string name = "name", string description = "description", decimal price = 2.00m, Currency currency = Currency.Euro, Guid? createdBy = null)
+    public static Product InDevelopment() => Faker.Generate();
+
+    public static Product Published()
     {
-        var product = InDevelopment(name, description, price, currency, createdBy);
+        var product = InDevelopment();
         product.Publish(product.CreatedBy);
         return product;
     }
 
-    public static Product Obsolete(string name = "name", string description = "description", decimal price = 2.00m, Currency currency = Currency.Euro, Guid? createdBy = null)
+    public static Product Obsolete()
     {
-        var product = Published(name, description, price, currency, createdBy);
+        var product = Published();
         product.Publish(product.CreatedBy);
         product.Obsolete(product.CreatedBy);
         return product;
