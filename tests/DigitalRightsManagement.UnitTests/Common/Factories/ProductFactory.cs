@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using DigitalRightsManagement.Domain.ProductAggregate;
 
-namespace DigitalRightsManagement.UnitTests.ProductAggregate;
+namespace DigitalRightsManagement.UnitTests.Common.Factories;
 
 internal static class ProductFactory
 {

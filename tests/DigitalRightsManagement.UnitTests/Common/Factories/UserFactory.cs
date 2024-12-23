@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using DigitalRightsManagement.Domain.UserAggregate;
 
-namespace DigitalRightsManagement.UnitTests.UserAggregate;
+namespace DigitalRightsManagement.UnitTests.Common.Factories;
 
 internal static class UserFactory
 {
