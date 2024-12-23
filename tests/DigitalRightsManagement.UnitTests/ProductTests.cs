@@ -183,6 +183,19 @@ public class ProductTests
     }
 
     [Fact]
+    public void Can_Not_Publish_From_Obsolete()
+    {
+        // Arrange
+        _validProduct.Obsolete(Guid.NewGuid());
+
+        // Act
+        var result = _validProduct.Publish(Guid.NewGuid());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
     public void Publish_Queues_Event()
     {
         // Arrange
@@ -206,6 +219,33 @@ public class ProductTests
     }
 
     [Fact]
+    public void Can_Obsolete_From_Published()
+    {
+        // Arrange
+        _validProduct.Publish(Guid.NewGuid());
+
+        // Act
+        var result = _validProduct.Obsolete(Guid.NewGuid());
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        _validProduct.Status.Should().Be(ProductStatus.Obsolete);
+    }
+
+    [Fact]
+    public void Can_Not_Obsolete_From_Obsolete()
+    {
+        // Arrange
+        _validProduct.Obsolete(Guid.NewGuid());
+
+        // Act
+        var result = _validProduct.Obsolete(Guid.NewGuid());
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
     public void Obsolete_Queues_Event()
     {
         // Arrange
@@ -214,18 +254,5 @@ public class ProductTests
 
         // Assert
         _validProduct.DomainEvents.OfType<ProductObsoleted>().Should().ContainSingle();
-    }
-
-    [Fact]
-    public void Cannot_Publish_From_Obsolete()
-    {
-        // Arrange
-        _validProduct.Obsolete(Guid.NewGuid());
-
-        // Act
-        var result = _validProduct.Publish(Guid.NewGuid());
-
-        // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
     }
 }
