@@ -7,15 +7,14 @@ namespace DigitalRightsManagement.UnitTests.UserAggregate;
 
 public sealed class UserTests
 {
+    private readonly User _validUser = UserFactory.CreateValidUser();
+
     [Theory, ClassData(typeof(EmptyStringTestData))]
-    public void Cannot_Create_With_Empty_Username(string username)
+    public void Cannot_Create_With_Empty_Username(string emptyUsername)
     {
         // Arrange
-        const string validEmail = "user@example.com";
-        const UserRoles validRole = UserRoles.Viewer;
-
         // Act
-        var result = User.Create(username, validEmail, validRole);
+        var result = User.Create(emptyUsername, _validUser.Email, _validUser.Role);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -31,14 +30,11 @@ public sealed class UserTests
     [InlineData("@example.com")]
     [InlineData("inv alid@example.com")]
     [ClassData(typeof(EmptyStringTestData))]
-    public void Cannot_Create_With_Invalid_Email(string email)
+    public void Cannot_Create_With_Invalid_Email(string invalidEmail)
     {
         // Arrange
-        const string validUsername = "ValidUser";
-        const UserRoles validRole = UserRoles.Viewer;
-
         // Act
-        var result = User.Create(validUsername, email, validRole);
+        var result = User.Create(_validUser.Username, invalidEmail, _validUser.Role);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -49,12 +45,10 @@ public sealed class UserTests
     public void Cannot_Create_With_Invalid_Role()
     {
         // Arrange
-        const string validUsername = "ValidUser";
-        const string validEmail = "user@example.com";
         const UserRoles invalidRole = (UserRoles)999;
 
         // Act
-        var result = User.Create(validUsername, validEmail, invalidRole);
+        var result = User.Create(_validUser.Username, _validUser.Email, invalidRole);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -65,30 +59,22 @@ public sealed class UserTests
     public void Can_Create_User_With_Valid_Arguments()
     {
         // Arrange
-        const string validUsername = "ValidUser";
-        const string validEmail = "user@example.com";
-        const UserRoles validRole = UserRoles.Viewer;
-
         // Act
-        var result = User.Create(validUsername, validEmail, validRole);
+        var result = User.Create(_validUser.Username, _validUser.Email, _validUser.Role);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Username.Should().Be(validUsername);
-        result.Value.Email.Should().Be(validEmail);
-        result.Value.Role.Should().Be(validRole);
+        result.Value.Username.Should().Be(_validUser.Username);
+        result.Value.Email.Should().Be(_validUser.Email);
+        result.Value.Role.Should().Be(_validUser.Role);
     }
 
     [Fact]
     public void Creation_Queues_Event()
     {
         // Arrange
-        const string validUsername = "ValidUser";
-        const string validEmail = "user@example.com";
-        const UserRoles validRole = UserRoles.Viewer;
-
         // Act
-        var result = User.Create(validUsername, validEmail, validRole);
+        var result = User.Create(_validUser.Username, _validUser.Email, _validUser.Role);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

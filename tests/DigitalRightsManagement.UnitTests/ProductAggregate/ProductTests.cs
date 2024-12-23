@@ -10,11 +10,11 @@ public sealed class ProductTests
     private readonly Product _validProduct = ProductFactory.InDevelopment();
 
     [Theory, ClassData(typeof(EmptyStringTestData))]
-    public void Cannot_Create_With_Empty_Name(string name)
+    public void Cannot_Create_With_Empty_Name(string emptyName)
     {
         // Arrange
         // Act
-        var result = Product.Create(name, _validProduct.Description, _validProduct.Price, Guid.NewGuid());
+        var result = Product.Create(emptyName, _validProduct.Description, _validProduct.Price, Guid.NewGuid());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -22,11 +22,11 @@ public sealed class ProductTests
     }
 
     [Theory, ClassData(typeof(EmptyStringTestData))]
-    public void Cannot_Create_With_Empty_Description(string description)
+    public void Cannot_Create_With_Empty_Description(string emptyDescription)
     {
         // Arrange
         // Act
-        var result = Product.Create(_validProduct.Name, description, _validProduct.Price, Guid.NewGuid());
+        var result = Product.Create(_validProduct.Name, emptyDescription, _validProduct.Price, Guid.NewGuid());
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -36,11 +36,11 @@ public sealed class ProductTests
     [Theory]
     [InlineData(-0.01)]
     [InlineData(-1.00)]
-    public void Cannot_Create_With_Negative_Price(decimal price)
+    public void Cannot_Create_With_Negative_Price(decimal negativePrice)
     {
         // Arrange
         // Act
-        var result = Price.Create(price, _validProduct.Price.Currency);
+        var result = Price.Create(negativePrice, _validProduct.Price.Currency);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -51,8 +51,10 @@ public sealed class ProductTests
     public void Cannot_Create_With_Unknown_Currency()
     {
         // Arrange
+        const Currency unknownCurrency = (Currency)999;
+
         // Act
-        var result = Price.Create(1.00m, (Currency)999);
+        var result = Price.Create(1.00m, unknownCurrency);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -63,8 +65,10 @@ public sealed class ProductTests
     public void Can_Not_Create_With_Empty_Creator_Id()
     {
         // Arrange
+        var emptyGuid = Guid.Empty;
+
         // Act
-        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, Guid.Empty);
+        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, emptyGuid);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
