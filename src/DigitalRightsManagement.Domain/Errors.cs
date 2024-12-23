@@ -65,5 +65,26 @@ internal static class Errors
             const string message = "The user ID can not be empty.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
+
+        public static Result InvalidUsername()
+        {
+            const string code = "user.username.invalid";
+            const string message = "Invalid username.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result InvalidEmail()
+        {
+            const string code = "user.email.invalid";
+            const string message = "Invalid email.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result InvalidRole()
+        {
+            const string code = "user.role.invalid";
+            const string message = "Invalid role.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
     }
 }
