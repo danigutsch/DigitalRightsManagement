@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\DigitalRightsManagement.Domain\DigitalRightsManagement.Domain.csproj" />
+  </ItemGroup>
+</Project>
