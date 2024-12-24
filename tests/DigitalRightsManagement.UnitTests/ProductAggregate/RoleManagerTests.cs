@@ -9,14 +9,14 @@ namespace DigitalRightsManagement.UnitTests.ProductAggregate;
 public class RoleManagerTests
 {
     [Fact]
-    public void Admin_Can_Promote()
+    public void Admin_Can_Change_Role()
     {
         // Arrange
         var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
         var user = UserFactory.CreateValidUser(role: UserRoles.Viewer);
 
         // Act
-        var result = user.Promote(admin, UserRoles.Manager);
+        var result = user.ChangeRole(admin, UserRoles.Manager);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -24,14 +24,14 @@ public class RoleManagerTests
     }
 
     [Fact]
-    public void Promotion_Creation_Queues_event()
+    public void Role_Change_Queues_event()
     {
         // Arrange
         var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
         var user = UserFactory.CreateValidUser(role: UserRoles.Viewer);
 
         // Act
-        var result = user.Promote(admin, UserRoles.Manager);
+        var result = user.ChangeRole(admin, UserRoles.Manager);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -39,7 +39,7 @@ public class RoleManagerTests
     }
 
     [Fact]
-    public void Non_Admin_Cannot_Create_Manager()
+    public void Non_Admin_Cannot_Change_Role()
     {
         // Arrange
         var promotersAndPromotees = Enum.GetValues<UserRoles>()
@@ -53,35 +53,35 @@ public class RoleManagerTests
 
         // Act
         var results = promotersAndPromotees
-            .Select(tuple => tuple.Promotee.Promote(tuple.Promoter, UserRoles.Manager));
+            .Select(tuple => tuple.Promotee.ChangeRole(tuple.Promoter, UserRoles.Manager));
 
         // Assert
         results.Should().AllSatisfy(r => r.IsUnauthorized());
     }
 
     [Fact]
-    public void Cannot_Promote_To_Same_Role()
+    public void Cannot_Change_To_Same_Role()
     {
         // Arrange
         var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
         var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
 
         // Act
-        var result = user.Promote(admin, UserRoles.Manager);
+        var result = user.ChangeRole(admin, UserRoles.Manager);
 
         // Assert
         result.IsInvalid().Should().BeTrue();
     }
 
     [Fact]
-    public void Cannot_Promote_To_Unknown_Role()
+    public void Cannot_Change_To_Unknown_Role()
     {
         // Arrange
         var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
         var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
 
         // Act
-        var result = user.Promote(admin, (UserRoles)999);
+        var result = user.ChangeRole(admin, (UserRoles)999);
 
         // Assert
         result.IsInvalid().Should().BeTrue();

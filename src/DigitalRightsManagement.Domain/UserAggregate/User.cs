@@ -42,7 +42,7 @@ public sealed class User : AggregateRoot
         return user;
     }
 
-    public Result Promote(User promoter, UserRoles newRole)
+    public Result ChangeRole(User promoter, UserRoles newRole)
     {
         if (!Enum.IsDefined(newRole))
         {
