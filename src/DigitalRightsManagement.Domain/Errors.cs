@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.ProductAggregate;
+using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Domain;
 
@@ -80,21 +81,25 @@ internal static class Errors
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
-        public static Result InvalidRole()
+        public static Result UnknownRole()
         {
-            const string code = "user.role.invalid";
-            const string message = "Invalid role.";
+            const string code = "user.role.unknown";
+            const string message = "Unknown role.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
-        internal static class Unauthorized
+        public static Result UnauthorizedToPromote(Guid promoterId, Guid promoteeId, UserRoles desiredRole)
         {
-            public static Result CreateManager()
-            {
-                const string code = "user.unauthorized.create-manager";
-                const string message = "Only an admin can create a manager.";
-                return Result.Unauthorized(code, message);
-            }
+            const string code = "user.unauthorized.promote";
+            var message = $"User [{promoterId}] can not promote [{promoteeId}] to role {desiredRole}.";
+            return Result.Unauthorized(code, message);
+        }
+
+        public static Result AlreadyInRole(Guid userId, UserRoles desiredRole)
+        {
+            const string code = "user.role.already-in-role";
+            var message = $"The user [{userId}] is already in role {desiredRole}.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
     }
 }

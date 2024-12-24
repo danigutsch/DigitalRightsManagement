@@ -2,74 +2,86 @@
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate.Events;
 using DigitalRightsManagement.UnitTests.Common.Factories;
-using DigitalRightsManagement.UnitTests.Common.TestData;
 using FluentAssertions;
 
 namespace DigitalRightsManagement.UnitTests.ProductAggregate;
 
 public class RoleManagerTests
 {
-    private readonly User _validUser = UserFactory.CreateValidUser();
-    private readonly User _validAdmin = UserFactory.CreateValidUser(role: UserRoles.Admin);
-
     [Fact]
-    public void Admin_Can_Create_Manager()
+    public void Admin_Can_Promote()
     {
         // Arrange
         var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var user = UserFactory.CreateValidUser(role: UserRoles.Viewer);
 
         // Act
-        var result = RoleManager.CreateManager(admin, _validUser.Username, _validUser.Email);
+        var result = user.Promote(admin, UserRoles.Manager);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Role.Should().Be(UserRoles.Manager);
+        user.Role.Should().Be(UserRoles.Manager);
     }
 
     [Fact]
-    public void Manager_Creation_Queues_event()
+    public void Promotion_Creation_Queues_event()
     {
         // Arrange
+        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var user = UserFactory.CreateValidUser(role: UserRoles.Viewer);
+
         // Act
-        var result = RoleManager.CreateManager(_validAdmin, _validUser.Username, _validUser.Email);
+        var result = user.Promote(admin, UserRoles.Manager);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        _validAdmin.DomainEvents.OfType<ManagerCreated>().Should().ContainSingle();
+        user.DomainEvents.OfType<UserPromoted>().Should().ContainSingle();
     }
 
     [Fact]
     public void Non_Admin_Cannot_Create_Manager()
     {
         // Arrange
-        var nonAdminUsers = Enum.GetValues<UserRoles>()
+        var promotersAndPromotees = Enum.GetValues<UserRoles>()
             .Where(role => role != UserRoles.Admin)
-            .Select(role => UserFactory.CreateValidUser(role: role));
+            .Select(role =>
+                (
+                    Promoter: UserFactory.CreateValidUser(role: role),
+                    Promotee: UserFactory.CreateValidUser(role: UserRoles.Viewer)
+                )
+            );
 
         // Act
-        var results = nonAdminUsers.Select(user => RoleManager.CreateManager(user, _validUser.Username, _validUser.Email));
+        var results = promotersAndPromotees
+            .Select(tuple => tuple.Promotee.Promote(tuple.Promoter, UserRoles.Manager));
 
         // Assert
         results.Should().AllSatisfy(r => r.IsUnauthorized());
     }
 
-    [Theory, ClassData(typeof(EmptyStringTestData))]
-    public void Can_Not_Create_Manager_With_EmptyName(string emptyName)
+    [Fact]
+    public void Cannot_Promote_To_Same_Role()
     {
         // Arrange
+        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+
         // Act
-        var result = RoleManager.CreateManager(_validAdmin, emptyName, _validUser.Email);
+        var result = user.Promote(admin, UserRoles.Manager);
 
         // Assert
         result.IsInvalid().Should().BeTrue();
     }
 
-    [Theory, ClassData(typeof(InvalidEmailTestData))]
-    public void Can_Not_Create_Manager_With_Invalid_Email(string invalidEmail)
+    [Fact]
+    public void Cannot_Promote_To_Unknown_Role()
     {
         // Arrange
+        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+
         // Act
-        var result = RoleManager.CreateManager(_validAdmin, _validUser.Username, invalidEmail);
+        var result = user.Promote(admin, (UserRoles)999);
 
         // Assert
         result.IsInvalid().Should().BeTrue();
