@@ -1,5 +1,10 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-builder.AddProject<Projects.DigitalRightsManagement_Api>("digitalrightsmanagement-api");
+var database = builder.AddPostgres("database")
+    .WithPgWeb();
 
-builder.Build().Run();
+builder.AddProject<Projects.DigitalRightsManagement_Api>("digitalrightsmanagement-api")
+    .WithReference(database)
+    .WaitFor(database);
+
+await builder.Build().RunAsync();
