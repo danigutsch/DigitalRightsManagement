@@ -61,7 +61,7 @@ public sealed class User : AggregateRoot
 
         Role = newRole;
 
-        QueueDomainEvent(new UserPromoted(admin.Id, Id, newRole));
+        QueueDomainEvent(new UserPromoted(admin.Id, Id, Role, newRole));
 
         return Result.Success();
     }
