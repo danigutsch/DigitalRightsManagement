@@ -98,3 +98,5 @@ dotnet_diagnostic.CA1707.severity = none
 dotnet_diagnostic.CA1062.severity = none
 dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
 dotnet_style_namespace_match_folder = true:suggestion
+dotnet_diagnostic.CA2007.severity = none
+dotnet_diagnostic.CA5394.severity = warning
