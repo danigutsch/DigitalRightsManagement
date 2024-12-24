@@ -34,12 +34,36 @@ public sealed class User : AggregateRoot
 
         if (!Enum.IsDefined(role))
         {
-            return Errors.User.InvalidRole();
+            return Errors.User.UnknownRole();
         }
 
         var user = new User(username, email, role);
 
         return user;
+    }
+
+    public Result ChangeRole(User promoter, UserRoles newRole)
+    {
+        if (!Enum.IsDefined(newRole))
+        {
+            return Errors.User.UnknownRole();
+        }
+
+        if (Role == newRole)
+        {
+            return Errors.User.AlreadyInRole(Id, newRole);
+        }
+
+        if (promoter.Role != UserRoles.Admin)
+        {
+            return Errors.User.UnauthorizedToPromote(promoter.Id, Id, newRole);
+        }
+
+        Role = newRole;
+
+        QueueDomainEvent(new UserPromoted(promoter.Id, Id, newRole));
+
+        return Result.Success();
     }
 
     public Result UpdateEmail(string newEmail)

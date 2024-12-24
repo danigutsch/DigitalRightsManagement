@@ -5,28 +5,40 @@ namespace DigitalRightsManagement.UnitTests.Common.Factories;
 
 internal static class ProductFactory
 {
-    private static readonly Faker<Product> Faker = new Faker<Product>()
-        .CustomInstantiator(f => Product.Create(
-            f.Commerce.ProductName(),
-            f.Commerce.ProductDescription(),
-            Price.Create(f.Random.Decimal(1.00m, 100.00m), f.PickRandom<Currency>()),
-            f.Random.Guid()
-            ).Value
-        );
+    private static readonly Faker Faker = new();
 
-    public static Product InDevelopment() => Faker.Generate();
-
-    public static Product Published()
+    public static Product InDevelopment(
+        string? name = null,
+        string? description = null,
+        Price? price = null,
+        Guid? createdBy = null)
     {
-        var product = InDevelopment();
+        return Product.Create(
+            name ?? Faker.Commerce.ProductName(),
+            description ?? Faker.Commerce.ProductDescription(),
+            price ?? Price.Create(Faker.Random.Decimal(1.00m, 100.00m), Faker.PickRandom<Currency>()).Value,
+            createdBy ?? Faker.Random.Guid()
+        ).Value;
+    }
+
+    public static Product Published(
+        string? name = null,
+        string? description = null,
+        Price? price = null,
+        Guid? createdBy = null)
+    {
+        var product = InDevelopment(name, description, price, createdBy);
         product.Publish(product.CreatedBy);
         return product;
     }
 
-    public static Product Obsolete()
+    public static Product Obsolete(
+        string? name = null,
+        string? description = null,
+        Price? price = null,
+        Guid? createdBy = null)
     {
-        var product = Published();
-        product.Publish(product.CreatedBy);
+        var product = Published(name, description, price, createdBy);
         product.Obsolete(product.CreatedBy);
         return product;
     }

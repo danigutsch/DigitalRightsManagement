@@ -118,4 +118,102 @@ public sealed class UserTests
         result.IsSuccess.Should().BeTrue();
         user.DomainEvents.OfType<EmailUpdated>().Should().ContainSingle();
     }
+
+    [Fact]
+    public void Admin_Can_Promote()
+    {
+        // Arrange
+        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+
+        const UserRoles targetRole = UserRoles.Manager;
+        var user = UserFactory.CreateValidUser(role: UserRoles.Viewer);
+
+        // Act
+        var result = user.ChangeRole(admin, targetRole);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        user.Role.Should().Be(targetRole);
+    }
+
+    [Fact]
+    public void Admin_Can_Demote()
+    {
+        // Arrange
+        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+
+        const UserRoles targetRole = UserRoles.Viewer;
+        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+
+        // Act
+        var result = user.ChangeRole(admin, targetRole);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        user.Role.Should().Be(targetRole);
+    }
+
+    [Fact]
+    public void Role_Change_Queues_event()
+    {
+        // Arrange
+        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var user = UserFactory.CreateValidUser(role: UserRoles.Viewer);
+
+        // Act
+        var result = user.ChangeRole(admin, UserRoles.Manager);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        user.DomainEvents.OfType<UserPromoted>().Should().ContainSingle();
+    }
+
+    [Fact]
+    public void Non_Admin_Cannot_Change_Role()
+    {
+        // Arrange
+        var promotersAndPromotees = Enum.GetValues<UserRoles>()
+            .Where(role => role != UserRoles.Admin)
+            .Select(role =>
+                (
+                    Promoter: UserFactory.CreateValidUser(role: role),
+                    Promotee: UserFactory.CreateValidUser(role: UserRoles.Viewer)
+                )
+            );
+
+        // Act
+        var results = promotersAndPromotees
+            .Select(tuple => tuple.Promotee.ChangeRole(tuple.Promoter, UserRoles.Manager));
+
+        // Assert
+        results.Should().AllSatisfy(r => r.IsUnauthorized());
+    }
+
+    [Fact]
+    public void Cannot_Change_To_Same_Role()
+    {
+        // Arrange
+        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+
+        // Act
+        var result = user.ChangeRole(admin, UserRoles.Manager);
+
+        // Assert
+        result.IsInvalid().Should().BeTrue();
+    }
+
+    [Fact]
+    public void Cannot_Change_To_Unknown_Role()
+    {
+        // Arrange
+        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+
+        // Act
+        var result = user.ChangeRole(admin, (UserRoles)999);
+
+        // Assert
+        result.IsInvalid().Should().BeTrue();
+    }
 }
