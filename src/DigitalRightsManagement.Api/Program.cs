@@ -1,3 +1,5 @@
+using DigitalRightsManagement.ServiceDefaults;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
