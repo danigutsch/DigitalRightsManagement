@@ -42,7 +42,7 @@ public sealed class User : AggregateRoot
         return user;
     }
 
-    public Result ChangeRole(User promoter, UserRoles newRole)
+    public Result ChangeRole(User admin, UserRoles newRole)
     {
         if (!Enum.IsDefined(newRole))
         {
@@ -54,14 +54,14 @@ public sealed class User : AggregateRoot
             return Errors.User.AlreadyInRole(Id, newRole);
         }
 
-        if (promoter.Role != UserRoles.Admin)
+        if (admin.Role != UserRoles.Admin)
         {
-            return Errors.User.UnauthorizedToPromote(promoter.Id, Id, newRole);
+            return Errors.User.UnauthorizedToPromote(admin.Id, Id, newRole);
         }
 
         Role = newRole;
 
-        QueueDomainEvent(new UserPromoted(promoter.Id, Id, newRole));
+        QueueDomainEvent(new UserPromoted(admin.Id, Id, newRole));
 
         return Result.Success();
     }
