@@ -1,9 +1,10 @@
 ﻿using Ardalis.Result;
+using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Infrastructure;
 
-internal class UserRepository(ApplicationDbContext context)
+internal class UserRepository(ApplicationDbContext context) : IUserRepository
 {
     public async Task<Result<User>> GetById(Guid id, CancellationToken cancellationToken)
     {
