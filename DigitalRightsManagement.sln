@@ -23,11 +23,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.App
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.Infrastructure", "src\DigitalRightsManagement.Infrastructure\DigitalRightsManagement.Infrastructure.csproj", "{131709A7-3247-4AB3-83C3-F50A91C01B1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.Api", "src/DigitalRightsManagement.Api\DigitalRightsManagement.Api.csproj", "{42B22333-34F6-B040-5E14-1843D6383E89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.Api", "src\DigitalRightsManagement.Api\DigitalRightsManagement.Api.csproj", "{42B22333-34F6-B040-5E14-1843D6383E89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.AppHost", "src/DigitalRightsManagement.AppHost\DigitalRightsManagement.AppHost.csproj", "{502CE9E6-8AD0-4B69-8492-2DB9027A2029}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.AppHost", "src\DigitalRightsManagement.AppHost\DigitalRightsManagement.AppHost.csproj", "{502CE9E6-8AD0-4B69-8492-2DB9027A2029}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.ServiceDefaults", "src/DigitalRightsManagement.ServiceDefaults\DigitalRightsManagement.ServiceDefaults.csproj", "{E4BFF0B3-A6B3-39D8-9D2A-651BC6BD4C28}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.ServiceDefaults", "src\DigitalRightsManagement.ServiceDefaults\DigitalRightsManagement.ServiceDefaults.csproj", "{E4BFF0B3-A6B3-39D8-9D2A-651BC6BD4C28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,6 +80,7 @@ Global
 		{42B22333-34F6-B040-5E14-1843D6383E89} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{502CE9E6-8AD0-4B69-8492-2DB9027A2029} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{E4BFF0B3-A6B3-39D8-9D2A-651BC6BD4C28} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D30165F9-58BA-444B-87C4-D4010A4653B5}
