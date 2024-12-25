@@ -4,9 +4,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace DigitalRightsManagement.Infrastructure;
 
-public static class CompositionRoot
+public static class DependencyInjection
 {
-    public static THostApplicationBuilder AddInfrastructure<THostApplicationBuilder>(this THostApplicationBuilder builder) where THostApplicationBuilder : IHostApplicationBuilder
+    public static THostBuilder AddInfrastructure<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
         builder.AddNpgsqlDbContext<ApplicationDbContext>(PersistenceDefaults.ConnectionStringName);
 

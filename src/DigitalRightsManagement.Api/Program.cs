@@ -1,12 +1,16 @@
 using DigitalRightsManagement.Api;
+using DigitalRightsManagement.Application;
+using DigitalRightsManagement.Infrastructure;
 using DigitalRightsManagement.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder
+    .AddApplication()
+    .AddInfrastructure();
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
