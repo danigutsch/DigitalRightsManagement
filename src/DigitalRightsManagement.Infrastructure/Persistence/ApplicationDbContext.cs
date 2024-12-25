@@ -7,8 +7,13 @@ namespace DigitalRightsManagement.Infrastructure.Persistence;
 
 internal sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options), IUnitOfWork
 {
-    public DbSet<User> Users { get; set; }
-    public DbSet<Product> Products { get; set; }
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Product> Products => Set<Product>();
 
     public async Task SaveChanges(CancellationToken cancellationToken) => await SaveChangesAsync(cancellationToken);
+
+    override protected void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
 }
