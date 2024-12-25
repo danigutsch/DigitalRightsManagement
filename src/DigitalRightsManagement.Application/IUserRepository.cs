@@ -5,5 +5,5 @@ namespace DigitalRightsManagement.Application;
 
 public interface IUserRepository
 {
-    Task<Result<User>> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<Result<User>> GetById(Guid id, CancellationToken cancellationToken);
 }
