@@ -29,4 +29,39 @@ public static class ResultExtensions
     {
         return previousResultTask.BindAsync(bindFunc).MapAsync(async next => ((await previousResultTask).Value, next));
     }
+
+    /// <summary>
+    /// Executes a function if the result is successful.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result.</param>
+    /// <param name="bindFunc">The function to execute if the result is successful.</param>
+    /// <returns>The original result.</returns>
+    public static Result<T> Tap<T>(this Result<T> result, Func<T, Action> bindFunc)
+    {
+        if (result.IsSuccess)
+        {
+            bindFunc(result.Value);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Asynchronously executes a function if the result is successful.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The task representing the result.</param>
+    /// <param name="bindFunc">The function to execute if the result is successful.</param>
+    /// <returns>A task representing the original result.</returns>
+    public static async Task<Result<T>> Tap<T>(this Task<Result<T>> resultTask, Func<T, Task> bindFunc)
+    {
+        var result = await resultTask;
+        if (result.IsSuccess)
+        {
+            await bindFunc(result.Value);
+        }
+
+        return result;
+    }
 }
