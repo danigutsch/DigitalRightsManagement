@@ -5,6 +5,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DigitalRightsManagement.Application\DigitalRightsManagement.Application.csproj" />
+    <ProjectReference Include="..\DigitalRightsManagement.Infrastructure\DigitalRightsManagement.Infrastructure.csproj" />
     <ProjectReference Include="..\DigitalRightsManagement.ServiceDefaults\DigitalRightsManagement.ServiceDefaults.csproj" />
   </ItemGroup>
 
