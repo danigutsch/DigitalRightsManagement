@@ -3,7 +3,7 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 
-namespace DigitalRightsManagement.Infrastructure;
+namespace DigitalRightsManagement.Infrastructure.Persistence;
 
 internal sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options), IUnitOfWork
 {

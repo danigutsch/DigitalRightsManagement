@@ -1,4 +1,5 @@
 ﻿using DigitalRightsManagement.Application;
+using DigitalRightsManagement.Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
