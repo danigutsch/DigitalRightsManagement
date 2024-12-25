@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Ardalis.Result" Version="10.1.0" />
+    <PackageVersion Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.0.0" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.0.0" />
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
