@@ -1,3 +1,4 @@
+using DigitalRightsManagement.Api;
 using DigitalRightsManagement.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,5 +20,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapUserEndpoints();
 
 await app.RunAsync();

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigitalRightsManagement.Infrastructure;
 
-internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options), IUnitOfWork
+internal sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options), IUnitOfWork
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Product> Products { get; set; }
