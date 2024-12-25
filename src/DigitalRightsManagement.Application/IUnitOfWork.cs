@@ -1,8 +1,6 @@
-﻿using Ardalis.Result;
-
-namespace DigitalRightsManagement.Application;
+﻿namespace DigitalRightsManagement.Application;
 
 public interface IUnitOfWork
 {
-    Task<Result> SaveChanges(CancellationToken cancellationToken);
+    Task SaveChanges(CancellationToken cancellationToken);
 }
