@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DigitalRightsManagement.Api\DigitalRightsManagement.Api.csproj" />
+    <ProjectReference Include="..\DigitalRightsManagement.MigrationService\DigitalRightsManagement.MigrationService.csproj" />
   </ItemGroup>
 
 </Project>
