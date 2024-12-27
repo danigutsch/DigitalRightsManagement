@@ -18,29 +18,30 @@ internal sealed class DatabaseManager(ApplicationDbContext context) : IDatabaseM
             {
                 await dbCreator.CreateAsync(ct);
             }
-        });
+        }).ConfigureAwait(false);
     }
 
-    public async Task InitializeDatabase(IEnumerable<User> users, CancellationToken ct)
+    public async Task RunMigration(CancellationToken ct) => await context.Database.MigrateAsync(ct).ConfigureAwait(false);
+
+    public async Task SeedData(IEnumerable<User> users, CancellationToken ct)
     {
         var strategy = context.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
             await using var transaction = await context.Database.BeginTransactionAsync(ct);
 
-            await context.Database.MigrateAsync(ct);
-
-            var users = await context.Users.ToArrayAsync();
-
             context.Users.AddRange(users);
 
+            await context.SaveChangesAsync(ct);
+
             await transaction.CommitAsync(ct);
-        });
+        }).ConfigureAwait(false);
     }
 }
 
 public interface IDatabaseManager
 {
     Task EnsureDatabase(CancellationToken ct);
-    Task InitializeDatabase(IEnumerable<User> users, CancellationToken ct);
+    Task RunMigration(CancellationToken ct);
+    Task SeedData(IEnumerable<User> users, CancellationToken ct);
 }
