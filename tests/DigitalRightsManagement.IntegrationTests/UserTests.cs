@@ -14,6 +14,10 @@ public sealed class UserTests
     {
         // Arrange
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.DigitalRightsManagement_AppHost>();
+        appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
+        {
+            clientBuilder.AddStandardResilienceHandler();
+        });
 
         await using var app = await appHost.BuildAsync();
         var resourceNotificationService = app.Services.GetRequiredService<ResourceNotificationService>();
