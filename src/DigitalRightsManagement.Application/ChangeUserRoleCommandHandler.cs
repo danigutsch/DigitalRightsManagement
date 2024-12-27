@@ -10,8 +10,8 @@ public sealed class ChangeUserRoleCommandHandler(IUserRepository userRepository,
     {
         return await userRepository.GetById(command.AdminId, ct)
             .DoubleBind(_ => userRepository.GetById(command.TargetId, ct))
-            .BindAsync(t => t.Prev.ChangeRole(t.Next, command.DesiredRole))
-            .Tap(_ => unitOfWork.SaveChanges(ct));
+            .BindAsync(t => t.Next.ChangeRole(t.Prev, command.DesiredRole))
+            .Tap(() => unitOfWork.SaveChanges(ct));
     }
 }
 

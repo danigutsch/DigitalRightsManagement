@@ -23,9 +23,30 @@ public sealed class User : AggregateRoot
 
     public static Result<User> Create(Guid id, string username, string email, UserRoles role)
     {
-        return id == Guid.Empty
-            ? Errors.User.EmptyId()
-            : Create(username, email, role);
+        if (id == Guid.Empty)
+        {
+            return Errors.User.EmptyId();
+        }
+
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            return Errors.User.InvalidUsername();
+        }
+
+        var emailValidation = ValidateEmail(email);
+        if (!emailValidation.IsSuccess)
+        {
+            return emailValidation;
+        }
+
+        if (!Enum.IsDefined(role))
+        {
+            return Errors.User.UnknownRole();
+        }
+        
+        var user = new User(id, username, email, role);
+
+        return user;
     }
 
     public static Result<User> Create(string username, string email, UserRoles role)
