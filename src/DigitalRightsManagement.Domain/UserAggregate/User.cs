@@ -10,13 +10,22 @@ public sealed class User : AggregateRoot
     public string Email { get; private set; }
     public UserRoles Role { get; private set; }
 
-    private User(string username, string email, UserRoles role) : base(Guid.CreateVersion7())
+    private User(Guid id, string username, string email, UserRoles role) : base(id)
     {
         Username = username.Trim();
         Email = email.Trim();
         Role = role;
 
         QueueDomainEvent(new UserCreated(Id, username, email, role));
+    }
+
+    private User(string username, string email, UserRoles role) : this(Guid.CreateVersion7(), username, email, role) { }
+
+    public static Result<User> Create(Guid id, string username, string email, UserRoles role)
+    {
+        return id == Guid.Empty
+            ? Errors.User.EmptyId()
+            : Create(username, email, role);
     }
 
     public static Result<User> Create(string username, string email, UserRoles role)
