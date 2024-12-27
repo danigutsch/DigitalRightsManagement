@@ -10,7 +10,7 @@ namespace DigitalRightsManagement.IntegrationTests;
 public sealed class UserTests
 {
     [Fact]
-    public async Task ChangeRole_With_Valid_Data()
+    public async Task Change_Role_Returns_No_Content()
     {
         // Arrange
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.DigitalRightsManagement_AppHost>();
