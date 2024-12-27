@@ -1,7 +1,11 @@
+using DigitalRightsManagement.Infrastructure.Persistence;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
-var database = builder.AddPostgres("database")
+var postgresServer = builder.AddPostgres("database")
     .WithPgWeb();
+
+var database = postgresServer.AddDatabase(PersistenceDefaults.ConnectionStringName);
 
 var dbInitializer = builder.AddProject<Projects.DigitalRightsManagement_MigrationService>("digitalrightsmanagement-migrationservice")
     .WithReference(database)

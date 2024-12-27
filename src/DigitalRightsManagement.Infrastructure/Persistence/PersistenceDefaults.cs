@@ -2,5 +2,5 @@
 
 public static class PersistenceDefaults
 {
-    public const string ConnectionStringName = "database";
+    public const string ConnectionStringName = "digitalrightsmanagement";
 }

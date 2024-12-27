@@ -10,7 +10,7 @@ public static class DependencyInjection
 {
     public static THostBuilder AddInfrastructure<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
-        builder.AddNpgsqlDbContext<ApplicationDbContext>("database");
+        builder.AddNpgsqlDbContext<ApplicationDbContext>(PersistenceDefaults.ConnectionStringName);
 
         builder.Services
             .AddScoped<IUnitOfWork, ApplicationDbContext>()
@@ -21,7 +21,7 @@ public static class DependencyInjection
 
     public static THostBuilder AddMigrationInfrastructure<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
-        builder.AddNpgsqlDbContext<ApplicationDbContext>("database");
+        builder.AddNpgsqlDbContext<ApplicationDbContext>(PersistenceDefaults.ConnectionStringName);
 
         builder.Services.AddScoped<IDatabaseManager, DatabaseManager>();
 
