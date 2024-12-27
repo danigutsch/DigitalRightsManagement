@@ -21,4 +21,4 @@ internal static class UserEndpoints
     }
 }
 
-internal sealed record ChangeUserDto(Guid AdminId, Guid TargetId, UserRoles DesiredRole);
+public sealed record ChangeUserDto(Guid AdminId, Guid TargetId, UserRoles DesiredRole);
