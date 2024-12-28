@@ -1,7 +1,7 @@
 ﻿using DigitalRightsManagement.Common;
 using Ardalis.Result;
 
-namespace DigitalRightsManagement.Application;
+namespace DigitalRightsManagement.Application.UserAggregate;
 
 public class ChangeEmailCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
 {

@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result.AspNetCore;
-using DigitalRightsManagement.Application;
+using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Api;

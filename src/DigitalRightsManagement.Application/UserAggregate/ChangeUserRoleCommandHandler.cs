@@ -2,7 +2,7 @@
 using DigitalRightsManagement.Common;
 using DigitalRightsManagement.Domain.UserAggregate;
 
-namespace DigitalRightsManagement.Application;
+namespace DigitalRightsManagement.Application.UserAggregate;
 
 public sealed class ChangeUserRoleCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
 {
