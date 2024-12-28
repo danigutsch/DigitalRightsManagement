@@ -88,7 +88,7 @@ public sealed class ProductTests
 
         // Assert
         priceResult.IsSuccess.Should().BeTrue();
-        priceResult.Value.Value.Should().Be(zeroPrice);
+        priceResult.Value.Amount.Should().Be(zeroPrice);
         priceResult.Value.Currency.Should().Be(_validProduct.Price.Currency);
 
         // Act
@@ -98,7 +98,7 @@ public sealed class ProductTests
         productResult.IsSuccess.Should().BeTrue();
         productResult.Value.Name.Should().Be(_validProduct.Name);
         productResult.Value.Description.Should().Be(_validProduct.Description);
-        productResult.Value.Price.Value.Should().Be(zeroPrice);
+        productResult.Value.Price.Amount.Should().Be(zeroPrice);
         productResult.Value.Price.Currency.Should().Be(_validProduct.Price.Currency);
     }
 

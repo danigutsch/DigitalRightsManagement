@@ -5,12 +5,12 @@ namespace DigitalRightsManagement.Domain.ProductAggregate;
 
 public sealed class Price : ValueObject
 {
-    public decimal Value { get; }
-    public Currency Currency { get; }
+    public decimal Amount { get; private init; }
+    public Currency Currency { get; private init; }
 
-    private Price(decimal value, Currency currency)
+    private Price(decimal amount, Currency currency)
     {
-        Value = value;
+        Amount = amount;
         Currency = currency;
     }
 
@@ -31,7 +31,7 @@ public sealed class Price : ValueObject
 
     protected override IEnumerable<object?> GetEqualityComponents()
     {
-        yield return Value;
+        yield return Amount;
         yield return Currency;
     }
 }
