@@ -84,7 +84,7 @@ public sealed class UserTests
         var user = UserFactory.CreateValidUser();
 
         // Act
-        var result = user.UpdateEmail(invalidEmail);
+        var result = user.ChangeEmail(invalidEmail);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -98,7 +98,7 @@ public sealed class UserTests
         var user = UserFactory.CreateValidUser();
 
         // Act
-        var result = user.UpdateEmail(_validUser.Email);
+        var result = user.ChangeEmail(_validUser.Email);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -112,7 +112,7 @@ public sealed class UserTests
         var user = UserFactory.CreateValidUser();
 
         // Act
-        var result = user.UpdateEmail(_validUser.Email);
+        var result = user.ChangeEmail(_validUser.Email);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
