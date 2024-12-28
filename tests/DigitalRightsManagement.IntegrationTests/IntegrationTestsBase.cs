@@ -1,4 +1,5 @@
 ﻿using Aspire.Hosting;
+using Bogus;
 using DigitalRightsManagement.AppHost;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
@@ -9,6 +10,7 @@ public abstract class IntegrationTestsBase(ITestOutputHelper outputHelper) : IAs
 {
     private DistributedApplication _app = null!;
     protected HttpClient HttpClient = null!;
+    protected readonly Faker Faker = new();
 
     public async Task InitializeAsync()
     {

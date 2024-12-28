@@ -3,11 +3,12 @@
 	<PropertyGroup>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
-		<NoWarn>CA1051</NoWarn>
+		<NoWarn>CA1051;CA5394</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Aspire.Hosting.Testing" />
+		<PackageReference Include="Bogus" />
 		<PackageReference Include="coverlet.collector" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="FluentAssertions.Analyzers">
