@@ -13,6 +13,14 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_NOLOGO: true
+      DOTNET_MULTILEVEL_LOOKUP: false
+      DOTNET_INSTALL_DIR: ${{ matrix.os == 'ubuntu-latest' && '' || 'dotnet' }}
+      ASPIRE_ALLOW_UNSECURED_TRANSPORT: true
+      SuppressNETCoreSdkPreviewMessage: true
 
     steps:
     - uses: actions/checkout@v4
