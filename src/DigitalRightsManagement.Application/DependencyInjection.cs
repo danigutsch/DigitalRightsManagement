@@ -1,4 +1,5 @@
-﻿using DigitalRightsManagement.Application.UserAggregate;
+﻿using DigitalRightsManagement.Application.ProductAggregate;
+using DigitalRightsManagement.Application.UserAggregate;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -10,6 +11,8 @@ public static class DependencyInjection
     {
         builder.Services.AddScoped<ChangeUserRoleCommandHandler>();
         builder.Services.AddScoped<ChangeEmailCommandHandler>();
+
+        builder.Services.AddScoped<CreateProductCommandHandler>();
 
         return builder;
     }
