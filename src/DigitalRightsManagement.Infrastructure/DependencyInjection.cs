@@ -14,7 +14,8 @@ public static class DependencyInjection
 
         builder.Services
             .AddScoped<IUnitOfWork, ApplicationDbContext>()
-            .AddScoped<IUserRepository, UserRepository>();
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IProductRepository, ProductRepository>();
 
         return builder;
     }
