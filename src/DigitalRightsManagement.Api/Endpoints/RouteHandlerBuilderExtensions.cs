@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace DigitalRightsManagement.Api;
+namespace DigitalRightsManagement.Api.Endpoints;
 
 public static class RouteHandlerBuilderExtensions
 {

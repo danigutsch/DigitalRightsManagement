@@ -2,7 +2,7 @@
 using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 
-namespace DigitalRightsManagement.Api;
+namespace DigitalRightsManagement.Api.Endpoints;
 
 internal static class UserEndpoints
 {

@@ -2,7 +2,7 @@
 using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
 
-namespace DigitalRightsManagement.Api;
+namespace DigitalRightsManagement.Api.Endpoints;
 
 internal static class ProductEndpoints
 {

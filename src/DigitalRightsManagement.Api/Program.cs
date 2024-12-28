@@ -1,4 +1,4 @@
-using DigitalRightsManagement.Api;
+using DigitalRightsManagement.Api.Endpoints;
 using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Infrastructure;
 using DigitalRightsManagement.ServiceDefaults;

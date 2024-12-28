@@ -1,4 +1,4 @@
-﻿using DigitalRightsManagement.Api;
+﻿using DigitalRightsManagement.Api.Endpoints;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.MigrationService;
 using FluentAssertions;
