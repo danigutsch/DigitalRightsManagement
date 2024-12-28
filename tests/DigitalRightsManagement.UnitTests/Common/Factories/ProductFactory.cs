@@ -28,7 +28,7 @@ internal static class ProductFactory
         Guid? createdBy = null)
     {
         var product = InDevelopment(name, description, price, createdBy);
-        product.Publish(product.CreatedBy);
+        product.Publish(product.Manager);
         return product;
     }
 
@@ -39,7 +39,7 @@ internal static class ProductFactory
         Guid? createdBy = null)
     {
         var product = Published(name, description, price, createdBy);
-        product.Obsolete(product.CreatedBy);
+        product.Obsolete(product.Manager);
         return product;
     }
 }

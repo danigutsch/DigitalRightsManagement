@@ -9,7 +9,7 @@ public sealed class Product : AggregateRoot
     public string Name { get; private set; }
     public string Description { get; private set; }
     public Price Price { get; private set; }
-    public Guid CreatedBy { get; private init; }
+    public Guid Manager { get; private init; }
     public ProductStatus Status { get; private set; } = ProductStatus.Development;
 
     private Product(string name, string description, Price price, Guid createdBy) : base(Guid.CreateVersion7())
@@ -17,7 +17,7 @@ public sealed class Product : AggregateRoot
         Name = name.Trim();
         Description = description.Trim();
         Price = price;
-        CreatedBy = createdBy;
+        Manager = createdBy;
 
         QueueDomainEvent(new ProductCreated(name, description, price));
     }

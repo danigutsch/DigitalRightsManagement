@@ -92,7 +92,7 @@ public sealed class ProductTests
         priceResult.Value.Currency.Should().Be(_validProduct.Price.Currency);
 
         // Act
-        var productResult = Product.Create(_validProduct.Name, _validProduct.Description, priceResult.Value, _validProduct.CreatedBy);
+        var productResult = Product.Create(_validProduct.Name, _validProduct.Description, priceResult.Value, _validProduct.Manager);
 
         // Assert
         productResult.IsSuccess.Should().BeTrue();
@@ -107,7 +107,7 @@ public sealed class ProductTests
     {
         // Arrange
         // Act
-        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.CreatedBy);
+        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.Manager);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -121,7 +121,7 @@ public sealed class ProductTests
     {
         // Arrange
         // Act
-        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.CreatedBy);
+        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.Manager);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -161,7 +161,7 @@ public sealed class ProductTests
     {
         // Arrange
         // Act
-        var product = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.CreatedBy).Value;
+        var product = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.Manager).Value;
 
         // Assert
         product.Status.Should().Be(ProductStatus.Development);
