@@ -22,6 +22,10 @@ public sealed class Product : AggregateRoot
         QueueDomainEvent(new ProductCreated(name, description, price));
     }
 
+#pragma warning disable CS8618, CS9264
+    private Product() { } // Do not use
+#pragma warning restore CS8618, CS9264
+
     public static Result<Product> Create(string name, string description, Price price, Guid createdBy)
     {
         if (string.IsNullOrWhiteSpace(name))
