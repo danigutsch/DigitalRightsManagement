@@ -1,7 +1,6 @@
 ﻿using Ardalis.Result.AspNetCore;
 using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Domain.UserAggregate;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DigitalRightsManagement.Api;
 
@@ -16,17 +15,13 @@ internal static class UserEndpoints
             .WithName("ChangeUserRole")
             .WithSummary("Change the role of another user")
             .WithDescription("Allows an admin to change the role of a target user to a desired role.")
-            .Produces<Ok>()
-            .Produces(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .ProducesDefault();
 
         group.MapPost("/change-email", ChangeEmail)
             .WithName("ChangeEmail")
             .WithSummary("Change the role of a user")
             .WithDescription("Allows an user to change his/her e-mail address.")
-            .Produces<Ok>()
-            .Produces(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .ProducesDefault();
     }
 
     private static async Task<IResult> ChangeRole(ChangeUserDto dto, ChangeUserRoleCommandHandler handler, CancellationToken ct)
