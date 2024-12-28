@@ -8,6 +8,7 @@ public static class DependencyInjection
     public static THostBuilder AddApplication<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
         builder.Services.AddScoped<ChangeUserRoleCommandHandler>();
+        builder.Services.AddScoped<ChangeEmailCommandHandler>();
 
         return builder;
     }

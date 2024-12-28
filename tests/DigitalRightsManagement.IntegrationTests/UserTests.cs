@@ -20,8 +20,23 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
         var changeRoleDto = new ChangeUserDto(admin.Id, target.Id, desiredRole);
 
         // Act
-        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
-        var response = await HttpClient.PostAsJsonAsync("/users/change-role", changeRoleDto, cts.Token);
+        var response = await HttpClient.PostAsJsonAsync("/users/change-role", changeRoleDto);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Change_Email_Returns_Success()
+    {
+        // Arrange
+        var user = Random.Shared.GetItems(SeedData.Users.ToArray(), 1)[0];
+        var newEmail = Faker.Internet.Email();
+
+        var changeEmailDto = new ChangeEmailDto(user.Id, newEmail);
+
+        // Act
+        var response = await HttpClient.PostAsJsonAsync("/users/change-email", changeEmailDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

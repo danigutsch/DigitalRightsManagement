@@ -96,7 +96,7 @@ public sealed class User : AggregateRoot
         return Result.Success();
     }
 
-    public Result UpdateEmail(string newEmail)
+    public Result ChangeEmail(string newEmail)
     {
         var emailValidation = ValidateEmail(newEmail);
         if (!emailValidation.IsSuccess)
