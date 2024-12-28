@@ -10,13 +10,43 @@ public sealed class User : AggregateRoot
     public string Email { get; private set; }
     public UserRoles Role { get; private set; }
 
-    private User(string username, string email, UserRoles role) : base(Guid.CreateVersion7())
+    private User(Guid id, string username, string email, UserRoles role) : base(id)
     {
         Username = username.Trim();
         Email = email.Trim();
         Role = role;
 
         QueueDomainEvent(new UserCreated(Id, username, email, role));
+    }
+
+    private User(string username, string email, UserRoles role) : this(Guid.CreateVersion7(), username, email, role) { }
+
+    public static Result<User> Create(Guid id, string username, string email, UserRoles role)
+    {
+        if (id == Guid.Empty)
+        {
+            return Errors.User.EmptyId();
+        }
+
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            return Errors.User.InvalidUsername();
+        }
+
+        var emailValidation = ValidateEmail(email);
+        if (!emailValidation.IsSuccess)
+        {
+            return emailValidation;
+        }
+
+        if (!Enum.IsDefined(role))
+        {
+            return Errors.User.UnknownRole();
+        }
+        
+        var user = new User(id, username, email, role);
+
+        return user;
     }
 
     public static Result<User> Create(string username, string email, UserRoles role)
@@ -42,7 +72,7 @@ public sealed class User : AggregateRoot
         return user;
     }
 
-    public Result ChangeRole(User promoter, UserRoles newRole)
+    public Result ChangeRole(User admin, UserRoles newRole)
     {
         if (!Enum.IsDefined(newRole))
         {
@@ -54,14 +84,14 @@ public sealed class User : AggregateRoot
             return Errors.User.AlreadyInRole(Id, newRole);
         }
 
-        if (promoter.Role != UserRoles.Admin)
+        if (admin.Role != UserRoles.Admin)
         {
-            return Errors.User.UnauthorizedToPromote(promoter.Id, Id, newRole);
+            return Errors.User.UnauthorizedToPromote(admin.Id, Id, newRole);
         }
 
         Role = newRole;
 
-        QueueDomainEvent(new UserPromoted(promoter.Id, Id, newRole));
+        QueueDomainEvent(new UserPromoted(admin.Id, Id, Role, newRole));
 
         return Result.Success();
     }

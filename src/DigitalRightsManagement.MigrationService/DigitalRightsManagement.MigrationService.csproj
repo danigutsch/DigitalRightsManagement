@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DigitalRightsManagement.Infrastructure\DigitalRightsManagement.Infrastructure.csproj" />
+    <ProjectReference Include="..\DigitalRightsManagement.ServiceDefaults\DigitalRightsManagement.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>
