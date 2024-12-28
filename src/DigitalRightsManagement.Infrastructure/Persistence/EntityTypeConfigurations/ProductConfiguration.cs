@@ -12,9 +12,11 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Id)
             .ValueGeneratedNever();
 
-        builder.Property(p => p.Name);
+        builder.Property(p => p.Name)
+            .HasMaxLength(50);
 
-        builder.Property(p => p.Description);
+        builder.Property(p => p.Description)
+            .HasMaxLength(200);
 
         builder.OwnsOne(p => p.Price);
 

@@ -12,9 +12,11 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Id)
             .ValueGeneratedNever();
 
-        builder.Property(u => u.Username);
+        builder.Property(u => u.Username)
+            .HasMaxLength(50);
 
-        builder.Property(u => u.Email);
+        builder.Property(u => u.Email)
+            .HasMaxLength(100);
 
         builder.Property(u => u.Role)
             .HasConversion<string>();
