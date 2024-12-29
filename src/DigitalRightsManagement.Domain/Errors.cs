@@ -36,7 +36,7 @@ internal static class Errors
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
-        public static Result EmptyId()
+        public static Result EmptyCreatorId()
         {
             const string code = "product.created-by.empty";
             const string message = "The creator ID can not be empty.";
@@ -61,6 +61,13 @@ internal static class Errors
         {
             const string code = "product.manager.invalid";
             var message = $"The user [{userId}] is not the manager of the product. Manager: [{manager}].";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result EmptyId()
+        {
+            const string code = "product.id.empty";
+            const string message = "The product ID can not be empty.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
     }

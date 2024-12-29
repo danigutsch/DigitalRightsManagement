@@ -10,7 +10,7 @@ public sealed class User : AggregateRoot
     public string Email { get; private set; }
     public UserRoles Role { get; private set; }
 
-    private User(Guid id, string username, string email, UserRoles role) : base(id)
+    private User(string username, string email, UserRoles role, Guid? id = null) : base(id ?? Guid.CreateVersion7())
     {
         Username = username.Trim();
         Email = email.Trim();
@@ -19,55 +19,30 @@ public sealed class User : AggregateRoot
         QueueDomainEvent(new UserCreated(Id, username, email, role));
     }
 
-    private User(string username, string email, UserRoles role) : this(Guid.CreateVersion7(), username, email, role) { }
-
-    public static Result<User> Create(Guid id, string username, string email, UserRoles role)
+    public static Result<User> Create(string username, string email, UserRoles role, Guid? id = null)
     {
-        if (id == Guid.Empty)
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            return Errors.User.InvalidUsername();
+        }
+
+        var emailValidation = ValidateEmail(email);
+        if (!emailValidation.IsSuccess)
+        {
+            return emailValidation;
+        }
+
+        if (!Enum.IsDefined(role))
+        {
+            return Errors.User.UnknownRole();
+        }
+
+        if (id is not null && id == Guid.Empty)
         {
             return Errors.User.EmptyId();
         }
 
-        if (string.IsNullOrWhiteSpace(username))
-        {
-            return Errors.User.InvalidUsername();
-        }
-
-        var emailValidation = ValidateEmail(email);
-        if (!emailValidation.IsSuccess)
-        {
-            return emailValidation;
-        }
-
-        if (!Enum.IsDefined(role))
-        {
-            return Errors.User.UnknownRole();
-        }
-        
-        var user = new User(id, username, email, role);
-
-        return user;
-    }
-
-    public static Result<User> Create(string username, string email, UserRoles role)
-    {
-        if (string.IsNullOrWhiteSpace(username))
-        {
-            return Errors.User.InvalidUsername();
-        }
-
-        var emailValidation = ValidateEmail(email);
-        if (!emailValidation.IsSuccess)
-        {
-            return emailValidation;
-        }
-
-        if (!Enum.IsDefined(role))
-        {
-            return Errors.User.UnknownRole();
-        }
-
-        var user = new User(username, email, role);
+        var user = new User(username, email, role, id);
 
         return user;
     }

@@ -12,7 +12,7 @@ public sealed class Product : AggregateRoot
     public Guid Manager { get; private init; }
     public ProductStatus Status { get; private set; } = ProductStatus.Development;
 
-    private Product(string name, string description, Price price, Guid createdBy) : base(Guid.CreateVersion7())
+    private Product(string name, string description, Price price, Guid createdBy, Guid? id = null) : base(id ?? Guid.CreateVersion7())
     {
         Name = name.Trim();
         Description = description.Trim();
@@ -26,7 +26,7 @@ public sealed class Product : AggregateRoot
     private Product() { } // Do not use
 #pragma warning restore CS8618, CS9264
 
-    public static Result<Product> Create(string name, string description, Price price, Guid manager)
+    public static Result<Product> Create(string name, string description, Price price, Guid manager, Guid? id = null)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -40,10 +40,15 @@ public sealed class Product : AggregateRoot
 
         if (manager == Guid.Empty)
         {
+            return Errors.Product.EmptyCreatorId();
+        }
+
+        if (id is not null && id == Guid.Empty)
+        {
             return Errors.Product.EmptyId();
         }
 
-        var product = new Product(name, description, price, manager);
+        var product = new Product(name, description, price, manager, id);
 
         return product;
     }
