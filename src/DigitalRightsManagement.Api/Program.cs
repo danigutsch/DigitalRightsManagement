@@ -18,12 +18,14 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// TODÖ: Move to later in pipeline after authentication is added. Also remove corresponding comments in method.
+// TODO: Move to later in pipeline after authentication is added. Also remove corresponding comments in method.
 app.MapDefaultEndpoints();
 
 app.UseOpenApi();
 
 app.UseHttpsRedirection();
+
+app.UseExceptionHandler();
 
 app.MapUserEndpoints();
 app.MapProductEndpoints();
