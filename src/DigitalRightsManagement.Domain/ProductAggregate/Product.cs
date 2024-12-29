@@ -50,9 +50,10 @@ public sealed class Product : AggregateRoot
 
     public Result UpdatePrice(Guid userId, Price newPrice, string reason)
     {
-        if (!IsOwner(userId))
+        var ownerValidation = ValidateOwner(userId);
+        if (!ownerValidation.IsSuccess)
         {
-            return Errors.Product.InvalidManager(userId, Manager);
+            return ownerValidation;
         }
 
         var oldPrice = Price;
@@ -64,8 +65,14 @@ public sealed class Product : AggregateRoot
         return Result.Success();
     }
 
-    public Result UpdateDescription(string newDescription)
+    public Result UpdateDescription(Guid userId, string newDescription)
     {
+        var ownerValidation = ValidateOwner(userId);
+        if (!ownerValidation.IsSuccess)
+        {
+            return ownerValidation;
+        }
+
         if (string.IsNullOrWhiteSpace(newDescription))
         {
             return Errors.Product.InvalidDescription();
@@ -82,9 +89,10 @@ public sealed class Product : AggregateRoot
 
     public Result Publish(Guid userId)
     {
-        if (userId == Guid.Empty)
+        var ownerValidation = ValidateOwner(userId);
+        if (!ownerValidation.IsSuccess)
         {
-            return Errors.User.EmptyId();
+            return ownerValidation;
         }
 
         switch (Status)
@@ -104,9 +112,10 @@ public sealed class Product : AggregateRoot
 
     public Result Obsolete(Guid userId)
     {
-        if (userId == Guid.Empty)
+        var ownerValidation = ValidateOwner(userId);
+        if (!ownerValidation.IsSuccess)
         {
-            return Errors.User.EmptyId();
+            return ownerValidation;
         }
 
         if (Status == ProductStatus.Obsolete)
@@ -121,5 +130,18 @@ public sealed class Product : AggregateRoot
         return Result.Success();
     }
 
-    private bool IsOwner(Guid userId) => userId == Manager;
+    private Result ValidateOwner(Guid userId)
+    {   
+        if (userId == Guid.Empty)
+        {
+            return Errors.User.EmptyId();
+        }
+
+        if (userId != Manager)
+        {
+            return Errors.Product.InvalidManager(userId, Manager);
+        }
+
+        return Result.Success();
+    }
 }

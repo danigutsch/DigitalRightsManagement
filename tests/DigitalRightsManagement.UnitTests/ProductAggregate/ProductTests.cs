@@ -146,7 +146,7 @@ public sealed class ProductTests : UnitTestBase
     }
 
     [Fact]
-    public void Can_Not_Update_With_Empty_User_Id()
+    public void Can_Not_Update_Price_With_Empty_User_Id()
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
@@ -207,7 +207,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = product.Publish(Guid.NewGuid());
+        var result = product.Publish(product.Manager);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -221,7 +221,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Published();
 
         // Act
-        var result = product.Publish(Guid.NewGuid());
+        var result = product.Publish(product.Manager);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -234,7 +234,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Obsolete();
 
         // Act
-        var result = product.Publish(Guid.NewGuid());
+        var result = product.Publish(product.Manager);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -260,7 +260,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        product.Publish(Guid.NewGuid());
+        product.Publish(product.Manager);
 
         // Assert
         product.DomainEvents.OfType<ProductPublished>().Should().ContainSingle();
@@ -273,7 +273,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = product.Obsolete(Guid.NewGuid());
+        var result = product.Obsolete(product.Manager);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -287,7 +287,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Published();
 
         // Act
-        var result = product.Obsolete(Guid.NewGuid());
+        var result = product.Obsolete(product.Manager);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -301,7 +301,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Obsolete();
 
         // Act
-        var result = product.Obsolete(Guid.NewGuid());
+        var result = product.Obsolete(product.Manager);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -327,7 +327,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Published();
 
         // Act
-        product.Obsolete(Guid.NewGuid());
+        product.Obsolete(product.Manager);
 
         // Assert
         product.DomainEvents.OfType<ProductObsoleted>().Should().ContainSingle();
@@ -341,11 +341,40 @@ public sealed class ProductTests : UnitTestBase
         const string newDescription = "new description";
 
         // Act
-        var result = product.UpdateDescription(newDescription);
+        var result = product.UpdateDescription(product.Manager, newDescription);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         product.Description.Should().Be(newDescription);
+    }
+
+    [Fact]
+    public void Only_Owner_Can_Update_Description()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var randomUserId = Guid.NewGuid();
+
+        // Act
+        var result = product.UpdateDescription(randomUserId, string.Empty);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
+    public void Can_Not_Update_Description_With_Empty_User_Id()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        const string newDescription = "new description";
+        var emptyUserId = Guid.Empty;
+
+        // Act
+        var result = product.UpdateDescription(emptyUserId, newDescription);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
     }
 
     [Fact]
@@ -356,7 +385,7 @@ public sealed class ProductTests : UnitTestBase
         const string newDescription = "new description";
 
         // Act
-        product.UpdateDescription(newDescription);
+        product.UpdateDescription(product.Manager, newDescription);
 
         // Assert
         product.DomainEvents.OfType<DescriptionUpdated>().Should().ContainSingle();
@@ -369,7 +398,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = product.UpdateDescription(newDescription);
+        var result = product.UpdateDescription(product.Manager, newDescription);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
