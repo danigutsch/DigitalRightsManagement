@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate.Events;
+using DigitalRightsManagement.MigrationService.Factories;
 using DigitalRightsManagement.UnitTests.Common.Abstractions;
-using DigitalRightsManagement.UnitTests.Common.Factories;
 using DigitalRightsManagement.UnitTests.Common.TestData;
 using FluentAssertions;
 

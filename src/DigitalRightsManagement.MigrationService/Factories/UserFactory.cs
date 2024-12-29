@@ -1,9 +1,9 @@
 ﻿using Bogus;
 using DigitalRightsManagement.Domain.UserAggregate;
 
-namespace DigitalRightsManagement.UnitTests.Common.Factories;
+namespace DigitalRightsManagement.MigrationService.Factories;
 
-internal static class UserFactory
+public static class UserFactory
 {
     private static readonly Faker Faker = new();
 

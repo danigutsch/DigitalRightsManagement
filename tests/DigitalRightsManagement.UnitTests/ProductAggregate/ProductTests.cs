@@ -2,8 +2,8 @@
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate.Events;
 using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.MigrationService.Factories;
 using DigitalRightsManagement.UnitTests.Common.Abstractions;
-using DigitalRightsManagement.UnitTests.Common.Factories;
 using DigitalRightsManagement.UnitTests.Common.TestData;
 using FluentAssertions;
 

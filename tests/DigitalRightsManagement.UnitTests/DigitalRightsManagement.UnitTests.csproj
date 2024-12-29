@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DigitalRightsManagement.Domain\DigitalRightsManagement.Domain.csproj" />
+    <ProjectReference Include="..\..\src\DigitalRightsManagement.MigrationService\DigitalRightsManagement.MigrationService.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Xunit" />
