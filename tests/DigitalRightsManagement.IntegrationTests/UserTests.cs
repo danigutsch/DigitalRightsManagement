@@ -13,11 +13,11 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
     public async Task Change_Role_Returns_Success()
     {
         // Arrange
-        var admin = SeedData.Users.First(u => u.Role == UserRoles.Admin);
-        var target = SeedData.Users.First(u => u.Role == UserRoles.Viewer);
+        var adminId = SeedData.AdminIds[0];
+        var targetId = SeedData.ViewerIds[0];
         const UserRoles desiredRole = UserRoles.Admin;
 
-        var changeRoleDto = new ChangeUserDto(admin.Id, target.Id, desiredRole);
+        var changeRoleDto = new ChangeUserDto(adminId, targetId, desiredRole);
 
         // Act
         var response = await HttpClient.PostAsJsonAsync("/users/change-role", changeRoleDto);
@@ -30,10 +30,10 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
     public async Task Change_Email_Returns_Success()
     {
         // Arrange
-        var user = Random.Shared.GetItems(SeedData.Users.ToArray(), 1)[0];
+        var userId = SeedData.ViewerIds[0];
         var newEmail = Faker.Internet.Email();
 
-        var changeEmailDto = new ChangeEmailDto(user.Id, newEmail);
+        var changeEmailDto = new ChangeEmailDto(userId, newEmail);
 
         // Act
         var response = await HttpClient.PostAsJsonAsync("/users/change-email", changeEmailDto);

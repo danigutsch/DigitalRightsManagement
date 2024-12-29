@@ -21,7 +21,7 @@ internal sealed class DbInitializer(
             var databaseManager = scope.ServiceProvider.GetRequiredService<IDatabaseManager>();
             await databaseManager.EnsureDatabase(stoppingToken);
             await databaseManager.RunMigration(stoppingToken);
-            await databaseManager.SeedData(SeedData.Users, stoppingToken);
+            await databaseManager.SeedData(SeedData.GetUsers(), stoppingToken);
         }
         catch (Exception ex)
         {

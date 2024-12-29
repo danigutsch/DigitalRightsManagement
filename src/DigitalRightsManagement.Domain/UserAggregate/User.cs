@@ -19,6 +19,10 @@ public sealed class User : AggregateRoot
         QueueDomainEvent(new UserCreated(Id, username, email, role));
     }
 
+#pragma warning disable CS8618, CS9264
+    private User() { } // Do not use
+#pragma warning restore CS8618, CS9264
+
     public static Result<User> Create(string username, string email, UserRoles role, Guid? id = null)
     {
         if (string.IsNullOrWhiteSpace(username))
