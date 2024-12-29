@@ -246,4 +246,24 @@ public sealed class UserTests : UnitTestBase
         // Assert
         result.IsUnauthorized().Should().BeTrue();
     }
+
+    [Fact]
+    public void Cannot_Add_Same_Product_Twice()
+    {
+        // Arrange
+        var user = UserFactory.Create(role: UserRoles.Manager);
+        var product = ProductFactory.InDevelopment();
+
+        // Act
+        var result = user.AddProduct(product);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+
+        // Act
+        result = user.AddProduct(product);
+
+        // Assert
+        result.IsInvalid().Should().BeTrue();
+    }
 }

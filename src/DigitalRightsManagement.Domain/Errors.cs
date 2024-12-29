@@ -54,7 +54,7 @@ internal static class Errors
         {
             const string code = "product.status.already-in-status";
             var message = $"The product is already in status {status}.";
-            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
         public static Result InvalidManager(Guid userId, Guid manager)
@@ -69,6 +69,13 @@ internal static class Errors
             const string code = "product.id.empty";
             const string message = "The product ID can not be empty.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result AlreadyOwned(Guid userId, Guid productId)
+        {
+            const string code = "product.already-owned";
+            var message = $"The user [{userId}] already owns the product [{productId}].";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
     }
 
@@ -113,7 +120,7 @@ internal static class Errors
         {
             const string code = "user.role.already-in-role";
             var message = $"The user [{userId}] is already in role {desiredRole}.";
-            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
         public static Result UnauthorizedToOwnProduct(Guid id)

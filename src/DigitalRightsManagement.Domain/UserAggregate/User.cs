@@ -81,6 +81,11 @@ public sealed class User : AggregateRoot
 
     public Result AddProduct(Product product)
     {
+        if (Products.Contains(product.Id))
+        {
+            return Errors.Product.AlreadyOwned(Id, product.Id);
+        }
+
         if (Role != UserRoles.Manager)
         {
             return Errors.User.UnauthorizedToOwnProduct(Id);
