@@ -115,5 +115,12 @@ internal static class Errors
             var message = $"The user [{userId}] is already in role {desiredRole}.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
+
+        public static Result UnauthorizedToOwnProduct(Guid id)
+        {
+            const string code = "user.unauthorized.own-product";
+            var message = $"The can not [{id}] own a product.";
+            return Result.Unauthorized(code, message);
+        }
     }
 }

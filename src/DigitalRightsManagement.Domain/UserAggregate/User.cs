@@ -79,11 +79,18 @@ public sealed class User : AggregateRoot
         return Result.Success();
     }
 
-    public void AddProduct(Product product)
+    public Result AddProduct(Product product)
     {
+        if (Role != UserRoles.Manager)
+        {
+            return Errors.User.UnauthorizedToOwnProduct(Id);
+        }
+
         _products.Add(product);
 
         QueueDomainEvent(new ProductAdded(Id, product.Id));
+
+        return Result.Success();
     }
 
     public Result ChangeEmail(string newEmail)
