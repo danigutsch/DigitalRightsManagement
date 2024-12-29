@@ -12,6 +12,20 @@ public sealed class UserTests : UnitTestBase
 {
     private readonly User _user = UserFactory.Create();
 
+    [Fact]
+    public void Cannot_Create_With_Empty_Id()
+    {
+        // Arrange
+        var emptyId = Guid.Empty;
+
+        // Act
+        var result = User.Create(_user.Username, _user.Email, _user.Role, emptyId);
+
+        // Assert
+        result.IsInvalid().Should().BeTrue();
+        result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("id");
+    }
+
     [Theory, ClassData(typeof(EmptyStringTestData))]
     public void Cannot_Create_With_Empty_Username(string emptyUsername)
     {
@@ -20,7 +34,7 @@ public sealed class UserTests : UnitTestBase
         var result = User.Create(emptyUsername, _user.Email, _user.Role);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("username");
     }
 
@@ -33,7 +47,7 @@ public sealed class UserTests : UnitTestBase
         var result = User.Create(_user.Username, invalidEmail, _user.Role);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("email");
     }
 
@@ -47,7 +61,7 @@ public sealed class UserTests : UnitTestBase
         var result = User.Create(_user.Username, _user.Email, invalidRole);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("role");
     }
 
@@ -88,7 +102,7 @@ public sealed class UserTests : UnitTestBase
         var result = user.ChangeEmail(invalidEmail);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("email");
     }
 
