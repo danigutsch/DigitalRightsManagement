@@ -1,22 +1,23 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate.Events;
+using DigitalRightsManagement.UnitTests.Common.Abstractions;
 using DigitalRightsManagement.UnitTests.Common.Factories;
 using DigitalRightsManagement.UnitTests.Common.TestData;
 using FluentAssertions;
 
 namespace DigitalRightsManagement.UnitTests.UserAggregate;
 
-public sealed class UserTests
+public sealed class UserTests : UnitTestBase
 {
-    private readonly User _validUser = UserFactory.Create();
+    private readonly User _user = UserFactory.Create();
 
     [Theory, ClassData(typeof(EmptyStringTestData))]
     public void Cannot_Create_With_Empty_Username(string emptyUsername)
     {
         // Arrange
         // Act
-        var result = User.Create(emptyUsername, _validUser.Email, _validUser.Role);
+        var result = User.Create(emptyUsername, _user.Email, _user.Role);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -29,7 +30,7 @@ public sealed class UserTests
     {
         // Arrange
         // Act
-        var result = User.Create(_validUser.Username, invalidEmail, _validUser.Role);
+        var result = User.Create(_user.Username, invalidEmail, _user.Role);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -43,7 +44,7 @@ public sealed class UserTests
         const UserRoles invalidRole = (UserRoles)999;
 
         // Act
-        var result = User.Create(_validUser.Username, _validUser.Email, invalidRole);
+        var result = User.Create(_user.Username, _user.Email, invalidRole);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Invalid);
@@ -55,13 +56,13 @@ public sealed class UserTests
     {
         // Arrange
         // Act
-        var result = User.Create(_validUser.Username, _validUser.Email, _validUser.Role);
+        var result = User.Create(_user.Username, _user.Email, _user.Role);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Username.Should().Be(_validUser.Username);
-        result.Value.Email.Should().Be(_validUser.Email);
-        result.Value.Role.Should().Be(_validUser.Role);
+        result.Value.Username.Should().Be(_user.Username);
+        result.Value.Email.Should().Be(_user.Email);
+        result.Value.Role.Should().Be(_user.Role);
     }
 
     [Fact]
@@ -69,7 +70,7 @@ public sealed class UserTests
     {
         // Arrange
         // Act
-        var result = User.Create(_validUser.Username, _validUser.Email, _validUser.Role);
+        var result = User.Create(_user.Username, _user.Email, _user.Role);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -98,11 +99,11 @@ public sealed class UserTests
         var user = UserFactory.Create();
 
         // Act
-        var result = user.ChangeEmail(_validUser.Email);
+        var result = user.ChangeEmail(_user.Email);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        user.Email.Should().Be(_validUser.Email);
+        user.Email.Should().Be(_user.Email);
     }
 
     [Fact]
@@ -112,7 +113,7 @@ public sealed class UserTests
         var user = UserFactory.Create();
 
         // Act
-        var result = user.ChangeEmail(_validUser.Email);
+        var result = user.ChangeEmail(_user.Email);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

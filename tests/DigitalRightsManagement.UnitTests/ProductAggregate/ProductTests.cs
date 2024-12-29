@@ -1,13 +1,14 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate.Events;
+using DigitalRightsManagement.UnitTests.Common.Abstractions;
 using DigitalRightsManagement.UnitTests.Common.Factories;
 using DigitalRightsManagement.UnitTests.Common.TestData;
 using FluentAssertions;
 
 namespace DigitalRightsManagement.UnitTests.ProductAggregate;
 
-public sealed class ProductTests
+public sealed class ProductTests : UnitTestBase
 {
     private readonly Product _validProduct = ProductFactory.InDevelopment();
 
