@@ -226,9 +226,24 @@ public sealed class UserTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        user.AddProduct(product);
+        var result = user.AddProduct(product);
 
         // Assert
-        user.Products.Should().ContainSingle().Which.Should().Be(product);
+        result.IsSuccess.Should().BeTrue();
+        user.Products.Should().ContainSingle().Which.Should().Be(product.Id);
+    }
+
+    [Fact]
+    public void Cannot_Add_Product_To_Non_Manager()
+    {
+        // Arrange
+        var user = UserFactory.Create(role: UserRoles.Viewer);
+        var product = ProductFactory.InDevelopment();
+
+        // Act
+        var result = user.AddProduct(product);
+
+        // Assert
+        result.IsUnauthorized().Should().BeTrue();
     }
 }

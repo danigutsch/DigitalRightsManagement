@@ -11,8 +11,8 @@ public sealed class User : AggregateRoot
     public string Email { get; private set; }
     public UserRoles Role { get; private set; }
 
-    private readonly List<Product> _products = [];
-    public IReadOnlyList<Product> Products => _products.AsReadOnly();
+    private readonly List<Guid> _products = [];
+    public IReadOnlyList<Guid> Products => _products.AsReadOnly();
 
     private User(string username, string email, UserRoles role, Guid? id = null) : base(id ?? Guid.CreateVersion7())
     {
@@ -86,7 +86,7 @@ public sealed class User : AggregateRoot
             return Errors.User.UnauthorizedToOwnProduct(Id);
         }
 
-        _products.Add(product);
+        _products.Add(product.Id);
 
         QueueDomainEvent(new ProductAdded(Id, product.Id));
 

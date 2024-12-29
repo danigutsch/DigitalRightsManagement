@@ -2,4 +2,4 @@
 
 namespace DigitalRightsManagement.Domain.UserAggregate.Events;
 
-public sealed record ProductAdded(Guid Id, Guid ProductId) : DomainEvent;
+public sealed record ProductAdded(Guid UserId, Guid ProductId) : DomainEvent;
