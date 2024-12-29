@@ -79,7 +79,12 @@ public sealed class User : AggregateRoot
         return Result.Success();
     }
 
-    public void AddProduct(Product product) => _products.Add(product);
+    public void AddProduct(Product product)
+    {
+        _products.Add(product);
+
+        QueueDomainEvent(new ProductAdded(Id, product.Id));
+    }
 
     public Result ChangeEmail(string newEmail)
     {
@@ -135,3 +140,5 @@ public sealed class User : AggregateRoot
         return Result.Success();
     }
 }
+
+public sealed record ProductAdded(Guid Id, Guid ProductId) : DomainEvent;
