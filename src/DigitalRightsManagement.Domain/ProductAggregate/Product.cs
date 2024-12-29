@@ -9,15 +9,15 @@ public sealed class Product : AggregateRoot
     public string Name { get; private set; }
     public string Description { get; private set; }
     public Price Price { get; private set; }
-    public Guid CreatedBy { get; private init; }
+    public Guid Manager { get; private init; }
     public ProductStatus Status { get; private set; } = ProductStatus.Development;
 
-    private Product(string name, string description, Price price, Guid createdBy) : base(Guid.CreateVersion7())
+    private Product(string name, string description, Price price, Guid createdBy, Guid? id = null) : base(id ?? Guid.CreateVersion7())
     {
         Name = name.Trim();
         Description = description.Trim();
         Price = price;
-        CreatedBy = createdBy;
+        Manager = createdBy;
 
         QueueDomainEvent(new ProductCreated(name, description, price));
     }
@@ -26,7 +26,7 @@ public sealed class Product : AggregateRoot
     private Product() { } // Do not use
 #pragma warning restore CS8618, CS9264
 
-    public static Result<Product> Create(string name, string description, Price price, Guid createdBy)
+    public static Result<Product> Create(string name, string description, Price price, Guid manager, Guid? id = null)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -38,27 +38,46 @@ public sealed class Product : AggregateRoot
             return Errors.Product.InvalidDescription();
         }
 
-        if (createdBy == Guid.Empty)
+        if (manager == Guid.Empty)
+        {
+            return Errors.Product.EmptyCreatorId();
+        }
+
+        if (id is not null && id == Guid.Empty)
         {
             return Errors.Product.EmptyId();
         }
 
-        var product = new Product(name, description, price, createdBy);
+        var product = new Product(name, description, price, manager, id);
 
         return product;
     }
 
-    public void UpdatePrice(Price newPrice, string reason)
+    public Result UpdatePrice(Guid userId, Price newPrice, string reason)
     {
+        var ownerValidation = ValidateOwner(userId);
+        if (!ownerValidation.IsSuccess)
+        {
+            return ownerValidation;
+        }
+
         var oldPrice = Price;
 
         Price = newPrice;
 
         QueueDomainEvent(new PriceUpdated(Id, newPrice, oldPrice, reason));
+
+        return Result.Success();
     }
 
-    public Result UpdateDescription(string newDescription)
+    public Result UpdateDescription(Guid userId, string newDescription)
     {
+        var ownerValidation = ValidateOwner(userId);
+        if (!ownerValidation.IsSuccess)
+        {
+            return ownerValidation;
+        }
+
         if (string.IsNullOrWhiteSpace(newDescription))
         {
             return Errors.Product.InvalidDescription();
@@ -75,9 +94,10 @@ public sealed class Product : AggregateRoot
 
     public Result Publish(Guid userId)
     {
-        if (userId == Guid.Empty)
+        var ownerValidation = ValidateOwner(userId);
+        if (!ownerValidation.IsSuccess)
         {
-            return Errors.User.EmptyId();
+            return ownerValidation;
         }
 
         switch (Status)
@@ -97,9 +117,10 @@ public sealed class Product : AggregateRoot
 
     public Result Obsolete(Guid userId)
     {
-        if (userId == Guid.Empty)
+        var ownerValidation = ValidateOwner(userId);
+        if (!ownerValidation.IsSuccess)
         {
-            return Errors.User.EmptyId();
+            return ownerValidation;
         }
 
         if (Status == ProductStatus.Obsolete)
@@ -110,6 +131,21 @@ public sealed class Product : AggregateRoot
         Status = ProductStatus.Obsolete;
 
         QueueDomainEvent(new ProductObsoleted(Id, userId));
+
+        return Result.Success();
+    }
+
+    private Result ValidateOwner(Guid userId)
+    {   
+        if (userId == Guid.Empty)
+        {
+            return Errors.User.EmptyId();
+        }
+
+        if (userId != Manager)
+        {
+            return Errors.Product.InvalidManager(userId, Manager);
+        }
 
         return Result.Success();
     }

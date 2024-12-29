@@ -1,25 +1,40 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate.Events;
-using DigitalRightsManagement.UnitTests.Common.Factories;
+using DigitalRightsManagement.MigrationService.Factories;
+using DigitalRightsManagement.UnitTests.Common.Abstractions;
 using DigitalRightsManagement.UnitTests.Common.TestData;
 using FluentAssertions;
 
 namespace DigitalRightsManagement.UnitTests.UserAggregate;
 
-public sealed class UserTests
+public sealed class UserTests : UnitTestBase
 {
-    private readonly User _validUser = UserFactory.CreateValidUser();
+    private readonly User _user = UserFactory.Create();
+
+    [Fact]
+    public void Cannot_Create_With_Empty_Id()
+    {
+        // Arrange
+        var emptyId = Guid.Empty;
+
+        // Act
+        var result = User.Create(_user.Username, _user.Email, _user.Role, emptyId);
+
+        // Assert
+        result.IsInvalid().Should().BeTrue();
+        result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("id");
+    }
 
     [Theory, ClassData(typeof(EmptyStringTestData))]
     public void Cannot_Create_With_Empty_Username(string emptyUsername)
     {
         // Arrange
         // Act
-        var result = User.Create(emptyUsername, _validUser.Email, _validUser.Role);
+        var result = User.Create(emptyUsername, _user.Email, _user.Role);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("username");
     }
 
@@ -29,10 +44,10 @@ public sealed class UserTests
     {
         // Arrange
         // Act
-        var result = User.Create(_validUser.Username, invalidEmail, _validUser.Role);
+        var result = User.Create(_user.Username, invalidEmail, _user.Role);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("email");
     }
 
@@ -43,10 +58,10 @@ public sealed class UserTests
         const UserRoles invalidRole = (UserRoles)999;
 
         // Act
-        var result = User.Create(_validUser.Username, _validUser.Email, invalidRole);
+        var result = User.Create(_user.Username, _user.Email, invalidRole);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("role");
     }
 
@@ -55,13 +70,13 @@ public sealed class UserTests
     {
         // Arrange
         // Act
-        var result = User.Create(_validUser.Username, _validUser.Email, _validUser.Role);
+        var result = User.Create(_user.Username, _user.Email, _user.Role);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Username.Should().Be(_validUser.Username);
-        result.Value.Email.Should().Be(_validUser.Email);
-        result.Value.Role.Should().Be(_validUser.Role);
+        result.Value.Username.Should().Be(_user.Username);
+        result.Value.Email.Should().Be(_user.Email);
+        result.Value.Role.Should().Be(_user.Role);
     }
 
     [Fact]
@@ -69,7 +84,7 @@ public sealed class UserTests
     {
         // Arrange
         // Act
-        var result = User.Create(_validUser.Username, _validUser.Email, _validUser.Role);
+        var result = User.Create(_user.Username, _user.Email, _user.Role);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -81,13 +96,13 @@ public sealed class UserTests
     public void Cannot_Update_With_Invalid_Email(string invalidEmail)
     {
         // Arrange
-        var user = UserFactory.CreateValidUser();
+        var user = UserFactory.Create();
 
         // Act
         var result = user.ChangeEmail(invalidEmail);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("email");
     }
 
@@ -95,24 +110,24 @@ public sealed class UserTests
     public void Can_Update_Email()
     {
         // Arrange
-        var user = UserFactory.CreateValidUser();
+        var user = UserFactory.Create();
 
         // Act
-        var result = user.ChangeEmail(_validUser.Email);
+        var result = user.ChangeEmail(_user.Email);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        user.Email.Should().Be(_validUser.Email);
+        user.Email.Should().Be(_user.Email);
     }
 
     [Fact]
     public void Update_Queues_Event()
     {
         // Arrange
-        var user = UserFactory.CreateValidUser();
+        var user = UserFactory.Create();
 
         // Act
-        var result = user.ChangeEmail(_validUser.Email);
+        var result = user.ChangeEmail(_user.Email);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -123,10 +138,10 @@ public sealed class UserTests
     public void Admin_Can_Promote()
     {
         // Arrange
-        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var admin = UserFactory.Create(role: UserRoles.Admin);
 
         const UserRoles targetRole = UserRoles.Manager;
-        var user = UserFactory.CreateValidUser(role: UserRoles.Viewer);
+        var user = UserFactory.Create(role: UserRoles.Viewer);
 
         // Act
         var result = user.ChangeRole(admin, targetRole);
@@ -140,10 +155,10 @@ public sealed class UserTests
     public void Admin_Can_Demote()
     {
         // Arrange
-        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var admin = UserFactory.Create(role: UserRoles.Admin);
 
         const UserRoles targetRole = UserRoles.Viewer;
-        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+        var user = UserFactory.Create(role: UserRoles.Manager);
 
         // Act
         var result = user.ChangeRole(admin, targetRole);
@@ -157,8 +172,8 @@ public sealed class UserTests
     public void Role_Change_Queues_event()
     {
         // Arrange
-        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
-        var user = UserFactory.CreateValidUser(role: UserRoles.Viewer);
+        var admin = UserFactory.Create(role: UserRoles.Admin);
+        var user = UserFactory.Create(role: UserRoles.Viewer);
 
         // Act
         var result = user.ChangeRole(admin, UserRoles.Manager);
@@ -176,8 +191,8 @@ public sealed class UserTests
             .Where(role => role != UserRoles.Admin)
             .Select(role =>
                 (
-                    Promoter: UserFactory.CreateValidUser(role: role),
-                    Promotee: UserFactory.CreateValidUser(role: UserRoles.Viewer)
+                    Promoter: UserFactory.Create(role: role),
+                    Promotee: UserFactory.Create(role: UserRoles.Viewer)
                 )
             );
 
@@ -193,8 +208,8 @@ public sealed class UserTests
     public void Cannot_Change_To_Same_Role()
     {
         // Arrange
-        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
-        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+        var admin = UserFactory.Create(role: UserRoles.Admin);
+        var user = UserFactory.Create(role: UserRoles.Manager);
 
         // Act
         var result = user.ChangeRole(admin, UserRoles.Manager);
@@ -207,11 +222,60 @@ public sealed class UserTests
     public void Cannot_Change_To_Unknown_Role()
     {
         // Arrange
-        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
-        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+        var admin = UserFactory.Create(role: UserRoles.Admin);
+        var user = UserFactory.Create(role: UserRoles.Manager);
 
         // Act
         var result = user.ChangeRole(admin, (UserRoles)999);
+
+        // Assert
+        result.IsInvalid().Should().BeTrue();
+    }
+
+    [Fact]
+    public void Can_Add_Product_To_Manager()
+    {
+        // Arrange
+        var user = UserFactory.Create(role: UserRoles.Manager);
+        var product = ProductFactory.InDevelopment();
+
+        // Act
+        var result = user.AddProduct(product);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        user.Products.Should().ContainSingle().Which.Should().Be(product.Id);
+    }
+
+    [Fact]
+    public void Cannot_Add_Product_To_Non_Manager()
+    {
+        // Arrange
+        var user = UserFactory.Create(role: UserRoles.Viewer);
+        var product = ProductFactory.InDevelopment();
+
+        // Act
+        var result = user.AddProduct(product);
+
+        // Assert
+        result.IsUnauthorized().Should().BeTrue();
+    }
+
+    [Fact]
+    public void Cannot_Add_Same_Product_Twice()
+    {
+        // Arrange
+        var user = UserFactory.Create(role: UserRoles.Manager);
+        var product = ProductFactory.InDevelopment();
+
+        // Act
+        var result = user.AddProduct(product);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+
+        // Act
+        result = user.AddProduct(product);
 
         // Assert
         result.IsInvalid().Should().BeTrue();

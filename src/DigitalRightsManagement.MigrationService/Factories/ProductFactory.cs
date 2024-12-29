@@ -1,9 +1,9 @@
 ﻿using Bogus;
 using DigitalRightsManagement.Domain.ProductAggregate;
 
-namespace DigitalRightsManagement.UnitTests.Common.Factories;
+namespace DigitalRightsManagement.MigrationService.Factories;
 
-internal static class ProductFactory
+public static class ProductFactory
 {
     private static readonly Faker Faker = new();
 
@@ -11,13 +11,15 @@ internal static class ProductFactory
         string? name = null,
         string? description = null,
         Price? price = null,
-        Guid? createdBy = null)
+        Guid? manager = null,
+        Guid? id = null)
     {
         return Product.Create(
             name ?? Faker.Commerce.ProductName(),
             description ?? Faker.Commerce.ProductDescription(),
             price ?? Price.Create(Faker.Random.Decimal(1.00m, 100.00m), Faker.PickRandom<Currency>()).Value,
-            createdBy ?? Faker.Random.Guid()
+            manager ?? Faker.Random.Guid(),
+            id
         ).Value;
     }
 
@@ -25,10 +27,11 @@ internal static class ProductFactory
         string? name = null,
         string? description = null,
         Price? price = null,
-        Guid? createdBy = null)
+        Guid? manager = null,
+        Guid? id = null)
     {
-        var product = InDevelopment(name, description, price, createdBy);
-        product.Publish(product.CreatedBy);
+        var product = InDevelopment(name, description, price, manager, id);
+        product.Publish(product.Manager);
         return product;
     }
 
@@ -36,10 +39,11 @@ internal static class ProductFactory
         string? name = null,
         string? description = null,
         Price? price = null,
-        Guid? createdBy = null)
+        Guid? manager = null,
+        Guid? id = null)
     {
-        var product = Published(name, description, price, createdBy);
-        product.Obsolete(product.CreatedBy);
+        var product = Published(name, description, price, manager, id);
+        product.Obsolete(product.Manager);
         return product;
     }
 }

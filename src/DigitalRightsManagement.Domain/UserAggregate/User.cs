@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Common;
+using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate.Events;
 
 namespace DigitalRightsManagement.Domain.UserAggregate;
@@ -10,7 +11,10 @@ public sealed class User : AggregateRoot
     public string Email { get; private set; }
     public UserRoles Role { get; private set; }
 
-    private User(Guid id, string username, string email, UserRoles role) : base(id)
+    private readonly List<Guid> _products = [];
+    public IReadOnlyList<Guid> Products => _products.AsReadOnly();
+
+    private User(string username, string email, UserRoles role, Guid? id = null) : base(id ?? Guid.CreateVersion7())
     {
         Username = username.Trim();
         Email = email.Trim();
@@ -19,55 +23,34 @@ public sealed class User : AggregateRoot
         QueueDomainEvent(new UserCreated(Id, username, email, role));
     }
 
-    private User(string username, string email, UserRoles role) : this(Guid.CreateVersion7(), username, email, role) { }
+#pragma warning disable CS8618, CS9264
+    private User() { } // Do not use
+#pragma warning restore CS8618, CS9264
 
-    public static Result<User> Create(Guid id, string username, string email, UserRoles role)
+    public static Result<User> Create(string username, string email, UserRoles role, Guid? id = null)
     {
-        if (id == Guid.Empty)
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            return Errors.User.InvalidUsername();
+        }
+
+        var emailValidation = ValidateEmail(email);
+        if (!emailValidation.IsSuccess)
+        {
+            return emailValidation;
+        }
+
+        if (!Enum.IsDefined(role))
+        {
+            return Errors.User.UnknownRole();
+        }
+
+        if (id is not null && id == Guid.Empty)
         {
             return Errors.User.EmptyId();
         }
 
-        if (string.IsNullOrWhiteSpace(username))
-        {
-            return Errors.User.InvalidUsername();
-        }
-
-        var emailValidation = ValidateEmail(email);
-        if (!emailValidation.IsSuccess)
-        {
-            return emailValidation;
-        }
-
-        if (!Enum.IsDefined(role))
-        {
-            return Errors.User.UnknownRole();
-        }
-        
-        var user = new User(id, username, email, role);
-
-        return user;
-    }
-
-    public static Result<User> Create(string username, string email, UserRoles role)
-    {
-        if (string.IsNullOrWhiteSpace(username))
-        {
-            return Errors.User.InvalidUsername();
-        }
-
-        var emailValidation = ValidateEmail(email);
-        if (!emailValidation.IsSuccess)
-        {
-            return emailValidation;
-        }
-
-        if (!Enum.IsDefined(role))
-        {
-            return Errors.User.UnknownRole();
-        }
-
-        var user = new User(username, email, role);
+        var user = new User(username, email, role, id);
 
         return user;
     }
@@ -92,6 +75,25 @@ public sealed class User : AggregateRoot
         Role = newRole;
 
         QueueDomainEvent(new UserPromoted(admin.Id, Id, Role, newRole));
+
+        return Result.Success();
+    }
+
+    public Result AddProduct(Product product)
+    {
+        if (Products.Contains(product.Id))
+        {
+            return Errors.Product.AlreadyOwned(Id, product.Id);
+        }
+
+        if (Role != UserRoles.Manager)
+        {
+            return Errors.User.UnauthorizedToOwnProduct(Id);
+        }
+
+        _products.Add(product.Id);
+
+        QueueDomainEvent(new ProductAdded(Id, product.Id));
 
         return Result.Success();
     }
