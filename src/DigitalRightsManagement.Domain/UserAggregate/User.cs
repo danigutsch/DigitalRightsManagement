@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Common;
+using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate.Events;
 
 namespace DigitalRightsManagement.Domain.UserAggregate;
@@ -9,6 +10,9 @@ public sealed class User : AggregateRoot
     public string Username { get; private set; }
     public string Email { get; private set; }
     public UserRoles Role { get; private set; }
+
+    private readonly List<Product> _products = [];
+    public IReadOnlyList<Product> Products => _products.AsReadOnly();
 
     private User(string username, string email, UserRoles role, Guid? id = null) : base(id ?? Guid.CreateVersion7())
     {
@@ -74,6 +78,8 @@ public sealed class User : AggregateRoot
 
         return Result.Success();
     }
+
+    public void AddProduct(Product product) => _products.Add(product);
 
     public Result ChangeEmail(string newEmail)
     {

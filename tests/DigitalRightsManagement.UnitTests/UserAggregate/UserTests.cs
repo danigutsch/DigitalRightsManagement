@@ -217,4 +217,18 @@ public sealed class UserTests : UnitTestBase
         // Assert
         result.IsInvalid().Should().BeTrue();
     }
+
+    [Fact]
+    public void Can_Add_Product_To_Manager()
+    {
+        // Arrange
+        var user = UserFactory.Create(role: UserRoles.Manager);
+        var product = ProductFactory.InDevelopment();
+
+        // Act
+        user.AddProduct(product);
+
+        // Assert
+        user.Products.Should().ContainSingle().Which.Should().Be(product);
+    }
 }
