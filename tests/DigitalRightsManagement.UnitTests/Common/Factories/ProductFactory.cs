@@ -11,13 +11,13 @@ internal static class ProductFactory
         string? name = null,
         string? description = null,
         Price? price = null,
-        Guid? createdBy = null)
+        Guid? manager = null)
     {
         return Product.Create(
             name ?? Faker.Commerce.ProductName(),
             description ?? Faker.Commerce.ProductDescription(),
             price ?? Price.Create(Faker.Random.Decimal(1.00m, 100.00m), Faker.PickRandom<Currency>()).Value,
-            createdBy ?? Faker.Random.Guid()
+            manager ?? Faker.Random.Guid()
         ).Value;
     }
 
@@ -25,9 +25,9 @@ internal static class ProductFactory
         string? name = null,
         string? description = null,
         Price? price = null,
-        Guid? createdBy = null)
+        Guid? manager = null)
     {
-        var product = InDevelopment(name, description, price, createdBy);
+        var product = InDevelopment(name, description, price, manager);
         product.Publish(product.Manager);
         return product;
     }
@@ -36,9 +36,9 @@ internal static class ProductFactory
         string? name = null,
         string? description = null,
         Price? price = null,
-        Guid? createdBy = null)
+        Guid? manager = null)
     {
-        var product = Published(name, description, price, createdBy);
+        var product = Published(name, description, price, manager);
         product.Obsolete(product.Manager);
         return product;
     }

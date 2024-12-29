@@ -26,7 +26,7 @@ public sealed class Product : AggregateRoot
     private Product() { } // Do not use
 #pragma warning restore CS8618, CS9264
 
-    public static Result<Product> Create(string name, string description, Price price, Guid createdBy)
+    public static Result<Product> Create(string name, string description, Price price, Guid manager)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -38,18 +38,18 @@ public sealed class Product : AggregateRoot
             return Errors.Product.InvalidDescription();
         }
 
-        if (createdBy == Guid.Empty)
+        if (manager == Guid.Empty)
         {
             return Errors.Product.EmptyId();
         }
 
-        var product = new Product(name, description, price, createdBy);
+        var product = new Product(name, description, price, manager);
 
         return product;
     }
 
     public void UpdatePrice(Price newPrice, string reason)
-    {
+        {
         var oldPrice = Price;
 
         Price = newPrice;
