@@ -1,14 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <ItemGroup>
-    <PackageReference Include="Ardalis.Result.AspNetCore" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Ardalis.Result.AspNetCore" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+		<PackageReference Include="Scalar.AspNetCore" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DigitalRightsManagement.Application\DigitalRightsManagement.Application.csproj" />
-    <ProjectReference Include="..\DigitalRightsManagement.Infrastructure\DigitalRightsManagement.Infrastructure.csproj" />
-    <ProjectReference Include="..\DigitalRightsManagement.ServiceDefaults\DigitalRightsManagement.ServiceDefaults.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DigitalRightsManagement.Application\DigitalRightsManagement.Application.csproj" />
+		<ProjectReference Include="..\DigitalRightsManagement.Infrastructure\DigitalRightsManagement.Infrastructure.csproj" />
+		<ProjectReference Include="..\DigitalRightsManagement.ServiceDefaults\DigitalRightsManagement.ServiceDefaults.csproj" />
+	</ItemGroup>
 
 </Project>

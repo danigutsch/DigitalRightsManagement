@@ -1,3 +1,4 @@
+using DigitalRightsManagement.Api;
 using DigitalRightsManagement.Api.Endpoints;
 using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Infrastructure;
@@ -15,13 +16,10 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// TODÖ: Move to later in pipeline after authentication is added. Also remove corresponding comments in method.
 app.MapDefaultEndpoints();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.UseOpenApi();
 
 app.UseHttpsRedirection();
 
