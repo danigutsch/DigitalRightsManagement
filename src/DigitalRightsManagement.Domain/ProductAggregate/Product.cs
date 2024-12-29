@@ -48,13 +48,20 @@ public sealed class Product : AggregateRoot
         return product;
     }
 
-    public void UpdatePrice(Price newPrice, string reason)
+    public Result UpdatePrice(Guid userId, Price newPrice, string reason)
+    {
+        if (!IsOwner(userId))
         {
+            return Errors.Product.InvalidManager(userId, Manager);
+        }
+
         var oldPrice = Price;
 
         Price = newPrice;
 
         QueueDomainEvent(new PriceUpdated(Id, newPrice, oldPrice, reason));
+
+        return Result.Success();
     }
 
     public Result UpdateDescription(string newDescription)
@@ -113,4 +120,6 @@ public sealed class Product : AggregateRoot
 
         return Result.Success();
     }
+
+    private bool IsOwner(Guid userId) => userId == Manager;
 }

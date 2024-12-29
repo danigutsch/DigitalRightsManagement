@@ -4,5 +4,5 @@ namespace DigitalRightsManagement.UnitTests.Common.Abstractions;
 
 public abstract class UnitTestBase
 {
-    protected readonly Faker Faker = new();
+    protected Faker Faker { get; } = new();
 }

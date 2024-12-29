@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate.Events;
+using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.UnitTests.Common.Abstractions;
 using DigitalRightsManagement.UnitTests.Common.Factories;
 using DigitalRightsManagement.UnitTests.Common.TestData;
@@ -133,25 +134,56 @@ public sealed class ProductTests : UnitTestBase
     public void Can_Update_Price()
     {
         // Arrange
-        var product = ProductFactory.InDevelopment();
+        var manager = UserFactory.Create(role: UserRoles.Manager);
+        var product = ProductFactory.InDevelopment(manager: manager.Id);
         var newPrice = Price.Create(2m, Currency.Euro).Value;
 
         // Act
-        product.UpdatePrice(newPrice, "reason");
+        product.UpdatePrice(manager.Id, newPrice, "reason");
 
         // Assert
         product.Price.Should().Be(newPrice);
     }
 
     [Fact]
-    public void Price_Update_Queues_Event()
+    public void Can_Not_Update_With_Empty_User_Id()
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
         var newPrice = Price.Create(2m, Currency.Euro).Value;
 
         // Act
-        product.UpdatePrice(newPrice, "reason");
+        var result = product.UpdatePrice(Guid.Empty, newPrice, "reason");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
+    public void Can_Not_Update_Without_Owner_Id()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var newPrice = Price.Create(2m, Currency.Euro).Value;
+        var randomUserId = Guid.NewGuid();
+
+        // Act
+        var result = product.UpdatePrice(randomUserId, newPrice, "reason");
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+    }
+
+    [Fact]
+    public void Price_Update_Queues_Event()
+    {
+        // Arrange
+        var manager = UserFactory.Create(role: UserRoles.Manager);
+        var product = ProductFactory.InDevelopment(manager: manager.Id);
+        var newPrice = Price.Create(2m, Currency.Euro).Value;
+
+        // Act
+        product.UpdatePrice(manager.Id, newPrice, "reason");
 
         // Assert
         product.DomainEvents.OfType<PriceUpdated>().Should().ContainSingle();

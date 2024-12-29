@@ -56,6 +56,13 @@ internal static class Errors
             var message = $"The product is already in status {status}.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
+
+        public static Result InvalidManager(Guid userId, Guid manager)
+        {
+            const string code = "product.manager.invalid";
+            var message = $"The user [{userId}] is not the manager of the product. Manager: [{manager}].";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
     }
 
     internal static class User
