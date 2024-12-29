@@ -7,7 +7,7 @@ internal static class UserFactory
 {
     private static readonly Faker Faker = new();
 
-    public static User CreateValidUser(
+    public static User Create(
         string? username = null,
         string? email = null,
         UserRoles? role = null)

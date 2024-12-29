@@ -9,7 +9,7 @@ namespace DigitalRightsManagement.UnitTests.UserAggregate;
 
 public sealed class UserTests
 {
-    private readonly User _validUser = UserFactory.CreateValidUser();
+    private readonly User _validUser = UserFactory.Create();
 
     [Theory, ClassData(typeof(EmptyStringTestData))]
     public void Cannot_Create_With_Empty_Username(string emptyUsername)
@@ -81,7 +81,7 @@ public sealed class UserTests
     public void Cannot_Update_With_Invalid_Email(string invalidEmail)
     {
         // Arrange
-        var user = UserFactory.CreateValidUser();
+        var user = UserFactory.Create();
 
         // Act
         var result = user.ChangeEmail(invalidEmail);
@@ -95,7 +95,7 @@ public sealed class UserTests
     public void Can_Update_Email()
     {
         // Arrange
-        var user = UserFactory.CreateValidUser();
+        var user = UserFactory.Create();
 
         // Act
         var result = user.ChangeEmail(_validUser.Email);
@@ -109,7 +109,7 @@ public sealed class UserTests
     public void Update_Queues_Event()
     {
         // Arrange
-        var user = UserFactory.CreateValidUser();
+        var user = UserFactory.Create();
 
         // Act
         var result = user.ChangeEmail(_validUser.Email);
@@ -123,10 +123,10 @@ public sealed class UserTests
     public void Admin_Can_Promote()
     {
         // Arrange
-        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var admin = UserFactory.Create(role: UserRoles.Admin);
 
         const UserRoles targetRole = UserRoles.Manager;
-        var user = UserFactory.CreateValidUser(role: UserRoles.Viewer);
+        var user = UserFactory.Create(role: UserRoles.Viewer);
 
         // Act
         var result = user.ChangeRole(admin, targetRole);
@@ -140,10 +140,10 @@ public sealed class UserTests
     public void Admin_Can_Demote()
     {
         // Arrange
-        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
+        var admin = UserFactory.Create(role: UserRoles.Admin);
 
         const UserRoles targetRole = UserRoles.Viewer;
-        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+        var user = UserFactory.Create(role: UserRoles.Manager);
 
         // Act
         var result = user.ChangeRole(admin, targetRole);
@@ -157,8 +157,8 @@ public sealed class UserTests
     public void Role_Change_Queues_event()
     {
         // Arrange
-        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
-        var user = UserFactory.CreateValidUser(role: UserRoles.Viewer);
+        var admin = UserFactory.Create(role: UserRoles.Admin);
+        var user = UserFactory.Create(role: UserRoles.Viewer);
 
         // Act
         var result = user.ChangeRole(admin, UserRoles.Manager);
@@ -176,8 +176,8 @@ public sealed class UserTests
             .Where(role => role != UserRoles.Admin)
             .Select(role =>
                 (
-                    Promoter: UserFactory.CreateValidUser(role: role),
-                    Promotee: UserFactory.CreateValidUser(role: UserRoles.Viewer)
+                    Promoter: UserFactory.Create(role: role),
+                    Promotee: UserFactory.Create(role: UserRoles.Viewer)
                 )
             );
 
@@ -193,8 +193,8 @@ public sealed class UserTests
     public void Cannot_Change_To_Same_Role()
     {
         // Arrange
-        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
-        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+        var admin = UserFactory.Create(role: UserRoles.Admin);
+        var user = UserFactory.Create(role: UserRoles.Manager);
 
         // Act
         var result = user.ChangeRole(admin, UserRoles.Manager);
@@ -207,8 +207,8 @@ public sealed class UserTests
     public void Cannot_Change_To_Unknown_Role()
     {
         // Arrange
-        var admin = UserFactory.CreateValidUser(role: UserRoles.Admin);
-        var user = UserFactory.CreateValidUser(role: UserRoles.Manager);
+        var admin = UserFactory.Create(role: UserRoles.Admin);
+        var user = UserFactory.Create(role: UserRoles.Manager);
 
         // Act
         var result = user.ChangeRole(admin, (UserRoles)999);
