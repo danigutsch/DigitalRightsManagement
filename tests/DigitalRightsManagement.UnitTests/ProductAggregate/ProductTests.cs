@@ -13,6 +13,20 @@ public sealed class ProductTests : UnitTestBase
 {
     private readonly Product _validProduct = ProductFactory.InDevelopment();
 
+    [Fact]
+    public void Cannot_Create_With_Empty_Id()
+    {
+        // Arrange
+        var emptyId = Guid.Empty;
+
+        // Act
+        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, Guid.NewGuid(), emptyId);
+
+        // Assert
+        result.IsInvalid().Should().BeTrue();
+        result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("id");
+    }
+
     [Theory, ClassData(typeof(EmptyStringTestData))]
     public void Cannot_Create_With_Empty_Name(string emptyName)
     {
@@ -21,7 +35,7 @@ public sealed class ProductTests : UnitTestBase
         var result = Product.Create(emptyName, _validProduct.Description, _validProduct.Price, Guid.NewGuid());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("name");
     }
 
@@ -33,7 +47,7 @@ public sealed class ProductTests : UnitTestBase
         var result = Product.Create(_validProduct.Name, emptyDescription, _validProduct.Price, Guid.NewGuid());
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("description");
     }
 
@@ -47,7 +61,7 @@ public sealed class ProductTests : UnitTestBase
         var result = Price.Create(negativePrice, _validProduct.Price.Currency);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("price");
     }
 
@@ -61,7 +75,7 @@ public sealed class ProductTests : UnitTestBase
         var result = Price.Create(1.00m, unknownCurrency);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("price");
     }
 
@@ -75,7 +89,7 @@ public sealed class ProductTests : UnitTestBase
         var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, emptyGuid);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
         result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("created-by");
     }
 
@@ -156,7 +170,7 @@ public sealed class ProductTests : UnitTestBase
         var result = product.UpdatePrice(Guid.Empty, newPrice, "reason");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
     }
 
     [Fact]
@@ -171,7 +185,7 @@ public sealed class ProductTests : UnitTestBase
         var result = product.UpdatePrice(randomUserId, newPrice, "reason");
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
     }
 
     [Fact]
@@ -224,7 +238,7 @@ public sealed class ProductTests : UnitTestBase
         var result = product.Publish(product.Manager);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
     }
 
     [Fact]
@@ -237,7 +251,7 @@ public sealed class ProductTests : UnitTestBase
         var result = product.Publish(product.Manager);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
     }
 
     [Fact]
@@ -250,7 +264,7 @@ public sealed class ProductTests : UnitTestBase
         var result = product.Publish(Guid.Empty);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
     }
 
     [Fact]
@@ -304,7 +318,7 @@ public sealed class ProductTests : UnitTestBase
         var result = product.Obsolete(product.Manager);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
     }
 
     [Fact]
@@ -317,7 +331,7 @@ public sealed class ProductTests : UnitTestBase
         var result = product.Obsolete(Guid.Empty);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
     }
 
     [Fact]
@@ -359,7 +373,7 @@ public sealed class ProductTests : UnitTestBase
         var result = product.UpdateDescription(randomUserId, string.Empty);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
     }
 
     [Fact]
@@ -374,7 +388,7 @@ public sealed class ProductTests : UnitTestBase
         var result = product.UpdateDescription(emptyUserId, newDescription);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
     }
 
     [Fact]
@@ -401,6 +415,6 @@ public sealed class ProductTests : UnitTestBase
         var result = product.UpdateDescription(product.Manager, newDescription);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
+        result.IsInvalid().Should().BeTrue();
     }
 }
