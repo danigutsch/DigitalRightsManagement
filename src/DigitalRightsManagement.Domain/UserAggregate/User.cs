@@ -140,5 +140,3 @@ public sealed class User : AggregateRoot
         return Result.Success();
     }
 }
-
-public sealed record ProductAdded(Guid Id, Guid ProductId) : DomainEvent;
