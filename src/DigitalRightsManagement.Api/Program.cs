@@ -12,6 +12,8 @@ builder
     .AddApplication()
     .AddInfrastructure();
 
+builder.Services.AddProblemDetails();
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
