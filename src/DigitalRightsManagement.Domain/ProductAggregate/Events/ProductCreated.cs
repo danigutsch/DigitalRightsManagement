@@ -1,4 +1,4 @@
-﻿using DigitalRightsManagement.Common;
+﻿using DigitalRightsManagement.Common.DDD;
 
 namespace DigitalRightsManagement.Domain.ProductAggregate.Events;
 
