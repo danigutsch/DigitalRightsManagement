@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DigitalRightsManagement.Application.Persistence;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DigitalRightsManagement.Application.Messaging;
 

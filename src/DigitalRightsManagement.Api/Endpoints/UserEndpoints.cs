@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result.AspNetCore;
 using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
+using MediatR;
 
 namespace DigitalRightsManagement.Api.Endpoints;
 
@@ -24,18 +25,18 @@ internal static class UserEndpoints
             .ProducesDefault();
     }
 
-    private static async Task<IResult> ChangeRole(ChangeUserDto dto, ChangeUserRoleCommandHandler handler, CancellationToken ct)
+    private static async Task<IResult> ChangeRole(ChangeUserDto dto, IMediator mediator, CancellationToken ct)
     {
         var command = new ChangeUserRoleCommand(dto.AdminId, dto.TargetId, dto.DesiredRole);
-        var result = await handler.Handle(command, ct);
+        var result = await mediator.Send(command, ct);
 
         return result.ToMinimalApiResult();
     }
 
-    private static async Task<IResult> ChangeEmail(ChangeEmailDto dto, ChangeEmailCommandHandler handler, CancellationToken ct)
+    private static async Task<IResult> ChangeEmail(ChangeEmailDto dto, IMediator mediator, CancellationToken ct)
     {
         var command = new ChangeEmailCommand(dto.UserId, dto.NewEmail);
-        var result = await handler.Handle(command, ct);
+        var result = await mediator.Send(command, ct);
 
         return result.ToMinimalApiResult();
     }
