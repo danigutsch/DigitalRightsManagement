@@ -1,4 +1,6 @@
-﻿namespace DigitalRightsManagement.Common.Messaging;
+﻿using DigitalRightsManagement.Common.Messaging;
+
+namespace DigitalRightsManagement.Application;
 
 public interface ICommandHandler<in TCommand, TResponse>
     where TCommand : ICommand<TResponse>
