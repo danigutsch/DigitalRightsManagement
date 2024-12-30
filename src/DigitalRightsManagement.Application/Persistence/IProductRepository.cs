@@ -1,6 +1,6 @@
 ﻿using DigitalRightsManagement.Domain.ProductAggregate;
 
-namespace DigitalRightsManagement.Application;
+namespace DigitalRightsManagement.Application.Persistence;
 
 public interface IProductRepository
 {

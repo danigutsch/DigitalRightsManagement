@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Ardalis.Result" />
+    <PackageReference Include="MediatR.Contracts" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="CommunityToolkit.Diagnostics" />

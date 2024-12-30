@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result.AspNetCore;
 using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
+using MediatR;
 
 namespace DigitalRightsManagement.Api.Endpoints;
 
@@ -18,10 +19,10 @@ internal static class ProductEndpoints
             .ProducesDefault();
     }
 
-    private static async Task<IResult> Create(CreateProductDto dto, CreateProductCommandHandler handler, CancellationToken ct)
+    private static async Task<IResult> Create(CreateProductDto dto, IMediator mediator, CancellationToken ct)
     {
         var command = new CreateProductCommand(dto.UserId, dto.ProductName, dto.ProductDescription, dto.Price, dto.Currency);
-        var result = await handler.Handle(command, ct);
+        var result = await mediator.Send(command, ct);
 
         return result.ToMinimalApiResult();
     }

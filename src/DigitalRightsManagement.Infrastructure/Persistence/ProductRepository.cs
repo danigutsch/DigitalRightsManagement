@@ -1,4 +1,4 @@
-﻿using DigitalRightsManagement.Application;
+﻿using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Infrastructure.Persistence;

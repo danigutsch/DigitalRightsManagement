@@ -1,6 +1,4 @@
-﻿using DigitalRightsManagement.Application.ProductAggregate;
-using DigitalRightsManagement.Application.UserAggregate;
-using Microsoft.Extensions.DependencyInjection;
+﻿using DigitalRightsManagement.Application.Messaging;
 using Microsoft.Extensions.Hosting;
 
 namespace DigitalRightsManagement.Application;
@@ -9,10 +7,7 @@ public static class DependencyInjection
 {
     public static THostBuilder AddApplication<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
-        builder.Services.AddScoped<ChangeUserRoleCommandHandler>();
-        builder.Services.AddScoped<ChangeEmailCommandHandler>();
-
-        builder.Services.AddScoped<CreateProductCommandHandler>();
+        builder.Services.AddMessaging();
 
         return builder;
     }

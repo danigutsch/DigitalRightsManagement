@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result;
-using DigitalRightsManagement.Application;
+using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Infrastructure.Persistence;

@@ -1,3 +1,5 @@
-﻿namespace DigitalRightsManagement.Common.Messaging;
+﻿using MediatR;
 
-public interface ICommand;
+namespace DigitalRightsManagement.Common.Messaging;
+
+public interface ICommand<out TResponse> : IRequest<TResponse>;

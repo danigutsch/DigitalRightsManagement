@@ -1,4 +1,4 @@
-﻿using DigitalRightsManagement.Application;
+﻿using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence.Migrations;
 using Microsoft.Extensions.DependencyInjection;

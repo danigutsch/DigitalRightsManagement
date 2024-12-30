@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.UserAggregate;
 
-namespace DigitalRightsManagement.Application;
+namespace DigitalRightsManagement.Application.Persistence;
 
 public interface IUserRepository
 {
