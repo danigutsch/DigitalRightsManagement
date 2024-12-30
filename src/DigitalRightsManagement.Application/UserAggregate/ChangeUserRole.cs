@@ -16,4 +16,4 @@ public sealed class ChangeUserRoleCommandHandler(IUserRepository userRepository,
     }
 }
 
-public sealed record ChangeUserRoleCommand(Guid AdminId, Guid TargetId, UserRoles DesiredRole) : ICommand;
+public sealed record ChangeUserRoleCommand(Guid AdminId, Guid TargetId, UserRoles DesiredRole) : ICommand<Result>;

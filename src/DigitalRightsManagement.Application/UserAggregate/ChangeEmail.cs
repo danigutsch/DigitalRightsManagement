@@ -14,4 +14,4 @@ public class ChangeEmailCommandHandler(IUserRepository userRepository, IUnitOfWo
     }
 }
 
-public sealed record ChangeEmailCommand(Guid UserId, string NewEmail) : ICommand;
+public sealed record ChangeEmailCommand(Guid UserId, string NewEmail) : ICommand<Result>;
