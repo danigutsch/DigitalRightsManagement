@@ -1,4 +1,5 @@
-﻿using DigitalRightsManagement.Domain.UserAggregate;
+﻿using DigitalRightsManagement.Domain.ProductAggregate;
+using DigitalRightsManagement.Domain.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -23,7 +24,7 @@ internal sealed class DatabaseManager(ApplicationDbContext context) : IDatabaseM
 
     public async Task RunMigration(CancellationToken ct) => await context.Database.MigrateAsync(ct).ConfigureAwait(false);
 
-    public async Task SeedData(IEnumerable<User> users, CancellationToken ct)
+    public async Task SeedData(IEnumerable<User> users, IEnumerable<Product> products, CancellationToken ct)
     {
         var strategy = context.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
@@ -31,6 +32,7 @@ internal sealed class DatabaseManager(ApplicationDbContext context) : IDatabaseM
             await using var transaction = await context.Database.BeginTransactionAsync(ct);
 
             context.Users.AddRange(users);
+            context.Products.AddRange(products);
 
             await context.SaveChangesAsync(ct);
 
@@ -43,5 +45,5 @@ public interface IDatabaseManager
 {
     Task EnsureDatabase(CancellationToken ct);
     Task RunMigration(CancellationToken ct);
-    Task SeedData(IEnumerable<User> users, CancellationToken ct);
+    Task SeedData(IEnumerable<User> users, IEnumerable<Product> products, CancellationToken ct);
 }

@@ -18,7 +18,7 @@ public sealed class ProductTests(ITestOutputHelper outputHelper) : IntegrationTe
         var productPrice = Faker.Random.Decimal(1, 100);
         var productCurrency = Faker.PickRandom<Currency>();
 
-        var managerId = SeedData.ManagerIds[0];
+        var managerId = SeedData.ManagerAndProductIds.Keys.First();
 
         var createProductDto = new CreateProductDto(managerId, productName, productDescription, productPrice, productCurrency);
 

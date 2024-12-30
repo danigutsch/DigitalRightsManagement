@@ -81,19 +81,45 @@ public sealed class User : AggregateRoot
 
     public Result AddProduct(Product product)
     {
-        if (Products.Contains(product.Id))
-        {
-            return Errors.Product.AlreadyOwned(Id, product.Id);
-        }
-
         if (Role != UserRoles.Manager)
         {
             return Errors.User.UnauthorizedToOwnProduct(Id);
         }
 
+        if (Products.Contains(product.Id))
+        {
+            return Errors.Product.AlreadyOwned(Id, product.Id);
+        }
+
         _products.Add(product.Id);
 
         QueueDomainEvent(new ProductAdded(Id, product.Id));
+
+        return Result.Success();
+    }
+
+    public Result AddProducts(IEnumerable<Product> products)
+    {
+        if (Role != UserRoles.Manager)
+        {
+            return Errors.User.UnauthorizedToOwnProduct(Id);
+        }
+
+        Guid[] newProductIds = [..products
+            .Select(p => p.Id)
+            .Except(Products)];
+
+        if (newProductIds.Length > 0)
+        {
+            return Errors.Product.AlreadyOwned(Id);
+        }
+
+        _products.AddRange([.. newProductIds]);
+
+        foreach (var productId in newProductIds)
+        {
+            QueueDomainEvent(new ProductAdded(Id, productId));
+        }
 
         return Result.Success();
     }

@@ -77,6 +77,13 @@ internal static class Errors
             var message = $"The user [{userId}] already owns the product [{productId}].";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
+
+        public static Result AlreadyOwned(Guid userId)
+        {
+            const string code = "product.already-owned";
+            var message = $"The user [{userId}] already owns all products.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
+        }
     }
 
     internal static class User
