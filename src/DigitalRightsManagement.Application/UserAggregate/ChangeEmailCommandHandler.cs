@@ -1,5 +1,5 @@
-﻿using DigitalRightsManagement.Common;
-using Ardalis.Result;
+﻿using Ardalis.Result;
+using DigitalRightsManagement.Common.DDD;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 

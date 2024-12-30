@@ -1,4 +1,4 @@
-﻿namespace DigitalRightsManagement.Common;
+﻿namespace DigitalRightsManagement.Common.DDD;
 
 public abstract record DomainEvent()
 {

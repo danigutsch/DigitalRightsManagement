@@ -1,6 +1,6 @@
-﻿using DigitalRightsManagement.Common;
-using Ardalis.Result;
+﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.ProductAggregate;
+using DigitalRightsManagement.Common.DDD;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 

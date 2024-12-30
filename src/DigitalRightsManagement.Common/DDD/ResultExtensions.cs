@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
+using DigitalRightsManagement.Common.DDD;
 
-namespace DigitalRightsManagement.Common;
+namespace DigitalRightsManagement.Common.DDD;
 
 public static class ResultExtensions
 {
