@@ -1,9 +1,7 @@
 ﻿using DigitalRightsManagement.Common.Messaging;
+using MediatR;
 
 namespace DigitalRightsManagement.Application;
 
-public interface ICommandHandler<in TCommand, TResponse>
-    where TCommand : ICommand<TResponse>
-{
-    Task<TResponse> Handle(TCommand command, CancellationToken ct);
-}
+public interface ICommandHandler<in TCommand, TResponse> : IRequestHandler<TCommand, TResponse>
+    where TCommand : ICommand<TResponse>;

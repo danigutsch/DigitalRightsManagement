@@ -6,11 +6,11 @@ namespace DigitalRightsManagement.Application.UserAggregate;
 
 public class ChangeEmailCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork) : ICommandHandler<ChangeEmailCommand, Result>
 {
-    public async Task<Result> Handle(ChangeEmailCommand command, CancellationToken ct)
+    public async Task<Result> Handle(ChangeEmailCommand command, CancellationToken cancellationToken)
     {
-        return await userRepository.GetById(command.UserId, ct)
+        return await userRepository.GetById(command.UserId, cancellationToken)
             .BindAsync(user => user.ChangeEmail(command.NewEmail))
-            .Tap(() => unitOfWork.SaveChanges(ct));
+            .Tap(() => unitOfWork.SaveChanges(cancellationToken));
     }
 }
 
