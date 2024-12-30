@@ -109,7 +109,7 @@ public sealed class User : AggregateRoot
             .Select(p => p.Id)
             .Except(Products)];
 
-        if (newProductIds.Length > 0)
+        if (newProductIds.Length == 0)
         {
             return Errors.Product.AlreadyOwned(Id);
         }
