@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+	  <NoWarn>CA1040</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Ardalis.Result" />

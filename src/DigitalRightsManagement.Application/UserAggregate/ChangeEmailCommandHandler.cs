@@ -1,9 +1,10 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Common.DDD;
+using DigitalRightsManagement.Common.Messaging;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
-public class ChangeEmailCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+public class ChangeEmailCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork) : ICommandHandler<ChangeEmailCommand, Result>
 {
     public async Task<Result> Handle(ChangeEmailCommand command, CancellationToken ct)
     {
@@ -13,4 +14,4 @@ public class ChangeEmailCommandHandler(IUserRepository userRepository, IUnitOfWo
     }
 }
 
-public sealed record ChangeEmailCommand(Guid UserId, string NewEmail);
+public sealed record ChangeEmailCommand(Guid UserId, string NewEmail) : ICommand;
