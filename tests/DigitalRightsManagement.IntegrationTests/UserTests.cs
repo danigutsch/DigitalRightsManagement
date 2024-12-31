@@ -17,10 +17,10 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
         var targetId = SeedData.ViewerIds[0];
         const UserRoles desiredRole = UserRoles.Admin;
 
-        var changeRoleDto = new ChangeUserDto(adminId, targetId, desiredRole);
+        var changeRoleDto = new ChangeUserDto(targetId, desiredRole);
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("/users/change-role", changeRoleDto);
+        var response = await HttpClient.PostAsJsonAsync($"/users/{adminId}/change-role", changeRoleDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -33,10 +33,10 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
         var userId = SeedData.ViewerIds[0];
         var newEmail = Faker.Internet.Email();
 
-        var changeEmailDto = new ChangeEmailDto(userId, newEmail);
+        var changeEmailDto = new ChangeEmailDto(newEmail);
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("/users/change-email", changeEmailDto);
+        var response = await HttpClient.PostAsJsonAsync($"/users/{userId}/change-email", changeEmailDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

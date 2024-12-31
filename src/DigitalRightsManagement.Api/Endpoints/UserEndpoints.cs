@@ -9,7 +9,7 @@ internal static class UserEndpoints
 {
     public static void MapUserEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/users")
+        var group = app.MapGroup("/users/{userId}")
             .WithTags("Users");
 
         group.MapPost("/change-role", ChangeRole)
@@ -25,23 +25,23 @@ internal static class UserEndpoints
             .ProducesDefault();
     }
 
-    private static async Task<IResult> ChangeRole(ChangeUserDto dto, IMediator mediator, CancellationToken ct)
+    private static async Task<IResult> ChangeRole(Guid userId, ChangeUserDto dto, IMediator mediator, CancellationToken ct)
     {
-        var command = new ChangeUserRoleCommand(dto.AdminId, dto.TargetId, dto.DesiredRole);
+        var command = new ChangeUserRoleCommand(userId, dto.TargetId, dto.DesiredRole);
         var result = await mediator.Send(command, ct);
 
         return result.ToMinimalApiResult();
     }
 
-    private static async Task<IResult> ChangeEmail(ChangeEmailDto dto, IMediator mediator, CancellationToken ct)
+    private static async Task<IResult> ChangeEmail(Guid userId, ChangeEmailDto dto, IMediator mediator, CancellationToken ct)
     {
-        var command = new ChangeEmailCommand(dto.UserId, dto.NewEmail);
+        var command = new ChangeEmailCommand(userId, dto.NewEmail);
         var result = await mediator.Send(command, ct);
 
         return result.ToMinimalApiResult();
     }
 }
 
-public sealed record ChangeUserDto(Guid AdminId, Guid TargetId, UserRoles DesiredRole);
+public sealed record ChangeUserDto(Guid TargetId, UserRoles DesiredRole);
 
-public sealed record ChangeEmailDto(Guid UserId, string NewEmail);
+public sealed record ChangeEmailDto(string NewEmail);
