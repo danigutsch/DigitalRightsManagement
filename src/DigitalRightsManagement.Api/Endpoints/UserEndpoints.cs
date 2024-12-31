@@ -1,7 +1,9 @@
 ﻿using Ardalis.Result.AspNetCore;
+using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalRightsManagement.Api.Endpoints;
 
@@ -11,6 +13,12 @@ internal static class UserEndpoints
     {
         var group = app.MapGroup("/users/{userId}")
             .WithTags("Users");
+
+        group.MapGet("/projects", GetProjects)
+            .WithName("GetUserProjects")
+            .WithSummary("Get the projects of a user")
+            .WithDescription("Allows a user to get the projects he/she is a part of.")
+            .Produces<ProductDto[]>();
 
         group.MapPost("/change-role", ChangeRole)
             .WithName("ChangeUserRole")
@@ -25,7 +33,15 @@ internal static class UserEndpoints
             .ProducesDefault();
     }
 
-    private static async Task<IResult> ChangeRole(Guid userId, ChangeUserDto dto, IMediator mediator, CancellationToken ct)
+    private static async Task<IResult> GetProjects([FromRoute] Guid userId, [FromServices] IMediator mediator, CancellationToken ct)
+    {
+        var query = new GetProductsQuery(userId);
+        var result = await mediator.Send(query, ct);
+
+        return result.ToMinimalApiResult();
+    }
+
+    private static async Task<IResult> ChangeRole([FromRoute] Guid userId, [FromBody] ChangeUserDto dto, [FromServices] IMediator mediator, CancellationToken ct)
     {
         var command = new ChangeUserRoleCommand(userId, dto.TargetId, dto.DesiredRole);
         var result = await mediator.Send(command, ct);
@@ -33,7 +49,7 @@ internal static class UserEndpoints
         return result.ToMinimalApiResult();
     }
 
-    private static async Task<IResult> ChangeEmail(Guid userId, ChangeEmailDto dto, IMediator mediator, CancellationToken ct)
+    private static async Task<IResult> ChangeEmail([FromRoute] Guid userId, [FromBody] ChangeEmailDto dto, [FromServices] IMediator mediator, CancellationToken ct)
     {
         var command = new ChangeEmailCommand(userId, dto.NewEmail);
         var result = await mediator.Send(command, ct);

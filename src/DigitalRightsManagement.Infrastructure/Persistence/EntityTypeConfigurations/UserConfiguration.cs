@@ -1,4 +1,5 @@
 ﻿using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Infrastructure.Persistence.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,6 +21,12 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.Role)
             .HasConversion<string>();
+
+        builder.Property("_products")
+            .HasColumnName("Products")
+            .HasConversion(
+                new ListOfGuidConverter(),
+                new ListOfGuidComparer());
 
         builder.Ignore(u => u.DomainEvents);
     }

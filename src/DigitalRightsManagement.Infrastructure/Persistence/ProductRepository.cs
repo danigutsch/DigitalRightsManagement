@@ -1,9 +1,19 @@
-﻿using DigitalRightsManagement.Application.Persistence;
+﻿using Ardalis.Result;
+using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Domain.ProductAggregate;
+using Microsoft.EntityFrameworkCore;
 
 namespace DigitalRightsManagement.Infrastructure.Persistence;
 
 internal sealed class ProductRepository(ApplicationDbContext context) : IProductRepository
 {
     public void Add(Product product) => context.Products.Add(product);
+    public async Task<Result<IReadOnlyList<Product>>> GetById(IEnumerable<Guid> ids, CancellationToken ct)
+    {
+        var products = await context.Products
+            .Where(p => ids.Contains(p.Id))
+            .ToListAsync(ct);
+
+        return products;
+    }
 }
