@@ -8,12 +8,9 @@ namespace DigitalRightsManagement.Infrastructure.Persistence;
 internal sealed class ProductRepository(ApplicationDbContext context) : IProductRepository
 {
     public void Add(Product product) => context.Products.Add(product);
-    public async Task<Result<IReadOnlyList<Product>>> GetById(IEnumerable<Guid> ids, CancellationToken ct)
-    {
-        var products = await context.Products
+
+    public async Task<Result<IReadOnlyList<Product>>> GetById(IEnumerable<Guid> ids, CancellationToken ct) =>
+        await context.Products
             .Where(p => ids.Contains(p.Id))
             .ToListAsync(ct);
-
-        return products;
-    }
 }
