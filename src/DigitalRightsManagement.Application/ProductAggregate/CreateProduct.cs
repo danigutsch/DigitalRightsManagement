@@ -20,4 +20,4 @@ public sealed class CreateProductCommandHandler(IUserRepository userRepository, 
     }
 }
 
-public sealed record CreateProductCommand(Guid UserId, string Name, string Description, decimal Price, Currency Currency) : ICommand<Result>;
+public sealed record CreateProductCommand(Guid UserId, string Name, string Description, decimal Price, Currency Currency) : ICommand;

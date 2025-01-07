@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using Ardalis.Result;
+using MediatR;
 
 namespace DigitalRightsManagement.Common.Messaging;
 
-public interface ICommand<out TResponse> : IRequest<TResponse>;
+public interface ICommand : IRequest<Result>;
