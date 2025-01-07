@@ -6,7 +6,7 @@ using DigitalRightsManagement.Common.Messaging;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
-public class ChangeEmailCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork) : ICommandHandler<ChangeEmailCommand, Result>
+public class ChangeEmailCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork) : ICommandHandler<ChangeEmailCommand>
 {
     public async Task<Result> Handle(ChangeEmailCommand command, CancellationToken cancellationToken)
     {

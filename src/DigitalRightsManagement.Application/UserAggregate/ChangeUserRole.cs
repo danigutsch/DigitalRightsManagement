@@ -7,7 +7,7 @@ using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
-public sealed class ChangeUserRoleCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork) : ICommandHandler<ChangeUserRoleCommand, Result>
+public sealed class ChangeUserRoleCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork) : ICommandHandler<ChangeUserRoleCommand>
 {
     public async Task<Result> Handle(ChangeUserRoleCommand command, CancellationToken cancellationToken)
     {
