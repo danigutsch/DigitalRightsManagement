@@ -7,17 +7,17 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-public sealed class CreateProductCommandHandler(IUserRepository userRepository, IProductRepository productRepository, IUnitOfWork unitOfWork) : ICommandHandler<CreateProductCommand>
+public sealed class CreateProductCommandHandler(IUserRepository userRepository, IProductRepository productRepository, IUnitOfWork unitOfWork) : ICommandHandler<CreateProductCommand, Guid>
 {
-    public async Task<Result> Handle(CreateProductCommand command, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
         return await userRepository.GetById(command.UserId, cancellationToken)
             .DoubleBind(user => Price.Create(command.Price, command.Currency))
             .BindAsync(t => Product.Create(command.Name, command.Description, t.Next, t.Prev.Id))
             .Tap(productRepository.Add)
             .Tap(_ => unitOfWork.SaveChanges(cancellationToken))
-            .MapAsync(_ => Result.Success());
+            .MapAsync(product => product.Id);
     }
 }
 
-public sealed record CreateProductCommand(Guid UserId, string Name, string Description, decimal Price, Currency Currency) : ICommand;
+public sealed record CreateProductCommand(Guid UserId, string Name, string Description, decimal Price, Currency Currency) : ICommand<Guid>;

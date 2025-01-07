@@ -27,5 +27,7 @@ public sealed class ProductTests(ITestOutputHelper outputHelper) : IntegrationTe
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var id = await response.Content.ReadFromJsonAsync<Guid>();
+        id.Should().NotBeEmpty();
     }
 }
