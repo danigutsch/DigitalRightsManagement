@@ -29,5 +29,12 @@ public sealed class ProductTests(ITestOutputHelper outputHelper) : IntegrationTe
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var id = await response.Content.ReadFromJsonAsync<Guid>();
         id.Should().NotBeEmpty();
+
+        var product = await Products.FindAsync(id);
+        product.Should().NotBeNull();
+        product!.Name.Should().Be(productName);
+        product.Description.Should().Be(productDescription);
+        product.Price.Amount.Should().Be(productPrice);
+        product.Price.Currency.Should().Be(productCurrency);
     }
 }

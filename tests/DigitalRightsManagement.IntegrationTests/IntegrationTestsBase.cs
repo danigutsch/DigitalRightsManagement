@@ -1,6 +1,9 @@
 ﻿using Aspire.Hosting;
 using Bogus;
 using DigitalRightsManagement.AppHost;
+using DigitalRightsManagement.Domain.ProductAggregate;
+using DigitalRightsManagement.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
@@ -9,16 +12,15 @@ namespace DigitalRightsManagement.IntegrationTests;
 public abstract class IntegrationTestsBase(ITestOutputHelper outputHelper) : IAsyncLifetime
 {
     private DistributedApplication _app = null!;
-    protected HttpClient HttpClient = null!;
-    protected readonly Faker Faker = new();
+    private ApplicationDbContext _dbContext = null!;
+
+    protected DbSet<Product> Products => _dbContext.Products;
+    protected HttpClient HttpClient { get; private set; } = null!;
+    protected Faker Faker { get; } = new();
 
     public async Task InitializeAsync()
     {
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.DigitalRightsManagement_AppHost>();
-        appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
-        {
-            clientBuilder.AddStandardResilienceHandler();
-        });
 
         appHost.Services.AddLogging(builder => builder.AddXUnit(outputHelper));
 
@@ -29,10 +31,23 @@ public abstract class IntegrationTestsBase(ITestOutputHelper outputHelper) : IAs
 
         HttpClient = _app.CreateHttpClient(ResourceNames.Api);
 
+        _dbContext = await CreateApplicationDbContext();
+
         await resourceNotificationService
             .WaitForResourceAsync(ResourceNames.Api, KnownResourceStates.Running)
             .WaitAsync(TimeSpan.FromSeconds(30))
             .ConfigureAwait(false);
+    }
+
+    private async  Task<ApplicationDbContext> CreateApplicationDbContext()
+    {
+        var connectionString = await _app.GetConnectionStringAsync(ResourceNames.Database);
+
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseNpgsql(connectionString)
+            .Options;
+
+        return new ApplicationDbContext(options);
     }
 
     public async Task DisposeAsync() => await _app.DisposeAsync().ConfigureAwait(false);
