@@ -15,8 +15,4 @@
     <ProjectReference Include="..\DigitalRightsManagement.Application\DigitalRightsManagement.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persistence\Migrations\" />
-  </ItemGroup>
-
 </Project>
