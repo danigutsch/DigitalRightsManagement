@@ -13,7 +13,7 @@ public static class DependencyInjection
         builder.AddNpgsqlDbContext<ApplicationDbContext>(PersistenceDefaults.ConnectionStringName);
 
         builder.Services
-            .AddScoped<IUnitOfWork, ApplicationDbContext>()
+            .AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>())
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IProductRepository, ProductRepository>();
 
