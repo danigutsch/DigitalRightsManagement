@@ -1,4 +1,4 @@
-﻿using DigitalRightsManagement.Infrastructure.Persistence.Migrations;
+﻿using DigitalRightsManagement.Infrastructure.Persistence;
 using System.Diagnostics;
 
 namespace DigitalRightsManagement.MigrationService;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace DigitalRightsManagement.Infrastructure.Persistence.Migrations;
+namespace DigitalRightsManagement.Infrastructure.Persistence;
 
 internal sealed class DatabaseManager(ApplicationDbContext context) : IDatabaseManager
 {
