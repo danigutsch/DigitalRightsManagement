@@ -40,6 +40,10 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
 
         // Assert
         response.Should().BeSuccessful();
+
+        var target = await Users.FindAsync(targetId);
+        target.Should().NotBeNull();
+        target!.Role.Should().Be(desiredRole);
     }
 
     [Fact]
@@ -56,5 +60,9 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
 
         // Assert
         response.Should().BeSuccessful();
+
+        var user = await Users.FindAsync(userId);
+        user.Should().NotBeNull();
+        user!.Email.Should().Be(newEmail);
     }
 }

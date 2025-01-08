@@ -2,6 +2,7 @@
 using Bogus;
 using DigitalRightsManagement.AppHost;
 using DigitalRightsManagement.Domain.ProductAggregate;
+using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,7 @@ public abstract class IntegrationTestsBase(ITestOutputHelper outputHelper) : IAs
     private ApplicationDbContext _dbContext = null!;
 
     protected DbSet<Product> Products => _dbContext.Products;
+    protected DbSet<User> Users => _dbContext.Users;
     protected HttpClient HttpClient { get; private set; } = null!;
     protected Faker Faker { get; } = new();
 
