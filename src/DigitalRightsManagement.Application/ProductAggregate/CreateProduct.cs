@@ -11,9 +11,17 @@ public sealed class CreateProductCommandHandler(IUserRepository userRepository, 
 {
     public async Task<Result<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        return await userRepository.GetById(command.UserId, cancellationToken)
-            .DoubleBind(user => Price.Create(command.Price, command.Currency))
-            .BindAsync(t => Product.Create(command.Name, command.Description, t.Next, t.Prev.Id))
+        var userResult = await userRepository.GetById(command.UserId, cancellationToken);
+        if (!userResult.IsSuccess)
+        {
+            return userResult.Map();
+        }
+
+        var user = userResult.Value;
+
+        return await Price.Create(command.Price, command.Currency)
+            .Bind(price => Product.Create(command.Name, command.Description, price, user.Id))
+            .Tap(product => user.AddProduct(product))
             .Tap(productRepository.Add)
             .Tap(_ => unitOfWork.SaveChanges(cancellationToken))
             .MapAsync(product => product.Id);
