@@ -5,7 +5,11 @@ namespace DigitalRightsManagement.MigrationService.Factories;
 
 public static class UserFactory
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker<User> Faker = new Faker<User>()
+        .CustomInstantiator(f => User.Create(
+            f.Person.UserName,
+            f.Internet.Email(),
+            f.PickRandom<UserRoles>()));
 
     public static User Create(
         string? username = null,
@@ -13,10 +17,12 @@ public static class UserFactory
         UserRoles? role = null,
         Guid? id = null)
     {
+        var user = Faker.Generate();
+
         return User.Create(
-            username ?? Faker.Person.FullName,
-            email ?? Faker.Internet.Email(),
-            role ?? Faker.PickRandom<UserRoles>(),
+            username ?? user.Username,
+            email ?? user.Email,
+            role ?? user.Role,
             id);
     }
 }
