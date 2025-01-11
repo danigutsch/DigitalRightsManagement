@@ -1,4 +1,4 @@
-﻿using DigitalRightsManagement.Infrastructure.Persistence;
+﻿using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
 using System.Diagnostics;
 
 namespace DigitalRightsManagement.MigrationService;
@@ -18,15 +18,17 @@ internal sealed class DbInitializer(
         try
         {
             using var scope = serviceProvider.CreateScope();
-            var databaseManager = scope.ServiceProvider.GetRequiredService<IDatabaseManager>();
-            await databaseManager.EnsureDatabase(stoppingToken);
-            await databaseManager.RunMigration(stoppingToken);
+            var applicationDbManager = scope.ServiceProvider.GetRequiredService<IApplicationDbManager>();
 
-            var seedData = SeedData.Get();
-            await databaseManager.SeedData(
-                seedData.Select(d => d.User),
-                seedData.SelectMany(d => d.Products),
-                stoppingToken);
+            applicationDbManager.SetSeedData(SeedData.Users, SeedData.Products);
+
+            await applicationDbManager.EnsureDatabase(stoppingToken);
+            await applicationDbManager.RunMigration(stoppingToken);
+            await applicationDbManager.SeedDatabase(stoppingToken);
+
+            var identityDbManager = scope.ServiceProvider.GetRequiredService<IIdentityDbManager>();
+
+            identityDbManager.SetSeedData(SeedData.UsersAndPasswords);
         }
         catch (Exception ex)
         {
