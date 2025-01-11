@@ -29,6 +29,10 @@ internal sealed class DbInitializer(
             var identityDbManager = scope.ServiceProvider.GetRequiredService<IIdentityDbManager>();
 
             identityDbManager.SetSeedData(SeedData.UsersAndPasswords);
+
+            await identityDbManager.EnsureDatabase(stoppingToken);
+            await identityDbManager.RunMigration(stoppingToken);
+            await identityDbManager.SeedDatabase(stoppingToken);
         }
         catch (Exception ex)
         {
