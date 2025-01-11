@@ -2,6 +2,7 @@ using DigitalRightsManagement.Api;
 using DigitalRightsManagement.Api.Endpoints;
 using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Infrastructure;
+using DigitalRightsManagement.Infrastructure.Persistence.Identity;
 using DigitalRightsManagement.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,8 @@ builder.AddServiceDefaults();
 builder
     .AddApplication()
     .AddInfrastructure();
+
+builder.AddBasicAuth();
 
 builder.Services.AddProblemDetails();
 
