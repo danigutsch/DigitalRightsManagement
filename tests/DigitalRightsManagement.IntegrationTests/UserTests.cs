@@ -1,7 +1,7 @@
 ﻿using DigitalRightsManagement.Api.Endpoints;
 using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
-using DigitalRightsManagement.MigrationService;
+using DigitalRightsManagement.Tests.Shared.Factories;
 using FluentAssertions;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
@@ -14,34 +14,34 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
     public async Task Get_Products_Returns_Success()
     {
         // Arrange
-        var managerWithMostProducts = SeedData.ManagerAndProductIds.MaxBy(kvp => kvp.Value.Length);
+        var managerWithProducts = UserFactory.Seeded(user => user.Products.Count > 0);
 
         // Act
-        var response = await HttpClient.GetAsync($"/users/{managerWithMostProducts.Key}/projects");
+        var response = await HttpClient.GetAsync($"/users/{managerWithProducts.Id}/projects");
 
         // Assert
         response.Should().BeSuccessful();
         var products = await response.Content.ReadFromJsonAsync<ProductDto[]>();
-        products.Should().HaveCount(3);
+        products.Should().HaveCount(managerWithProducts.Products.Count);
     }
 
     [Fact]
     public async Task Change_Role_Returns_Success()
     {
         // Arrange
-        var adminId = SeedData.AdminIds[0];
-        var targetId = SeedData.ViewerIds[0];
+        var admin = UserFactory.Seeded(UserRoles.Admin);
+        var target = UserFactory.Seeded(UserRoles.Viewer);
         const UserRoles desiredRole = UserRoles.Admin;
 
-        var changeRoleDto = new ChangeUserDto(targetId, desiredRole);
+        var changeRoleDto = new ChangeUserDto(target.Id, desiredRole);
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync($"/users/{adminId}/change-role", changeRoleDto);
+        var response = await HttpClient.PostAsJsonAsync($"/users/{admin.Id}/change-role", changeRoleDto);
 
         // Assert
         response.Should().BeSuccessful();
 
-        var target = await Users.FindAsync(targetId);
+        target = await Users.FindAsync(target.Id);
         target.Should().NotBeNull();
         target!.Role.Should().Be(desiredRole);
     }
@@ -50,18 +50,18 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
     public async Task Change_Email_Returns_Success()
     {
         // Arrange
-        var userId = SeedData.ViewerIds[0];
+        var user = UserFactory.Seeded();
         var newEmail = Faker.Internet.Email();
 
         var changeEmailDto = new ChangeEmailDto(newEmail);
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync($"/users/{userId}/change-email", changeEmailDto);
+        var response = await HttpClient.PostAsJsonAsync($"/users/{user.Id}/change-email", changeEmailDto);
 
         // Assert
         response.Should().BeSuccessful();
 
-        var user = await Users.FindAsync(userId);
+        user = await Users.FindAsync(user.Id);
         user.Should().NotBeNull();
         user!.Email.Should().Be(newEmail);
     }

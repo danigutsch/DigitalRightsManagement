@@ -1,6 +1,7 @@
 ﻿using DigitalRightsManagement.Api.Endpoints;
 using DigitalRightsManagement.Domain.ProductAggregate;
-using DigitalRightsManagement.MigrationService;
+using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Tests.Shared.Factories;
 using FluentAssertions;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
@@ -18,7 +19,7 @@ public sealed class ProductTests(ITestOutputHelper outputHelper) : IntegrationTe
         var productPrice = Faker.Random.Decimal(1, 100);
         var productCurrency = Faker.PickRandom<Currency>();
 
-        var managerId = SeedData.ManagerAndProductIds.Keys.First();
+        var managerId = UserFactory.Seeded(UserRoles.Manager).Id;
 
         var createProductDto = new CreateProductDto(managerId, productName, productDescription, productPrice, productCurrency);
 

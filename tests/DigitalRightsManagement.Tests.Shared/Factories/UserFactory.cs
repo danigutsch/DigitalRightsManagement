@@ -1,7 +1,8 @@
 ﻿using Bogus;
 using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.MigrationService;
 
-namespace DigitalRightsManagement.MigrationService.Factories;
+namespace DigitalRightsManagement.Tests.Shared.Factories;
 
 public static class UserFactory
 {
@@ -25,4 +26,18 @@ public static class UserFactory
             role ?? user.Role,
             id);
     }
+
+    public static User Seeded(UserRoles? role = null)
+    {
+        IEnumerable<User> filtered = SeedData.Users;
+
+        if (role is not null)
+        {
+            filtered = filtered.Where(u => u.Role == role);
+        }
+
+        return filtered.Random();
+    }
+
+    public static User Seeded(Func<User, bool> func) => SeedData.Users.Where(func).Random();
 }
