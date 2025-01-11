@@ -19,20 +19,12 @@ internal sealed class DbInitializer(
         {
             using var scope = serviceProvider.CreateScope();
             var applicationDbManager = scope.ServiceProvider.GetRequiredService<IApplicationDbManager>();
-
-            applicationDbManager.SetSeedData(SeedData.Users, SeedData.Products);
-
-            await applicationDbManager.EnsureDatabase(stoppingToken);
-            await applicationDbManager.RunMigration(stoppingToken);
-            await applicationDbManager.SeedDatabase(stoppingToken);
-
             var identityDbManager = scope.ServiceProvider.GetRequiredService<IIdentityDbManager>();
 
+            applicationDbManager.SetSeedData(SeedData.Users, SeedData.Products);
             identityDbManager.SetSeedData(SeedData.UsersAndPasswords);
 
-            await identityDbManager.EnsureDatabase(stoppingToken);
-            await identityDbManager.RunMigration(stoppingToken);
-            await identityDbManager.SeedDatabase(stoppingToken);
+            await CreateDatabases(stoppingToken, applicationDbManager, identityDbManager);
         }
         catch (Exception ex)
         {
@@ -41,6 +33,20 @@ internal sealed class DbInitializer(
         }
 
         hostApplicationLifetime.StopApplication();
+    }
+
+    private static async Task CreateDatabases(CancellationToken stoppingToken, params IDatabaseManager[] databaseManagers)
+    {
+        var tasks = databaseManagers.Select(async databaseManager =>
+        {
+            await databaseManager.EnsureDatabase(stoppingToken);
+            await databaseManager.RunMigration(stoppingToken);
+            await databaseManager.SeedDatabase(stoppingToken)
+                .ConfigureAwait(false);
+        });
+
+        await Task.WhenAll(tasks)
+            .ConfigureAwait(false);
     }
 
     public override void Dispose()
