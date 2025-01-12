@@ -35,7 +35,7 @@ internal sealed class IdentityDbManager(AuthDbContext context, UserManager<AuthU
             var authUser = new AuthUser
             {
                 DomainUserId = user.Id,
-                UserName = user.Email,
+                UserName = user.Username,
                 Email = user.Email,
                 EmailConfirmed = true
             };
