@@ -36,4 +36,7 @@ public static class InfrastructureDependencyInjection
 
         return builder;
     }
+
+    public static THostBuilder AddIdentityInfrastructure<THostBuilder>(this THostBuilder builder)
+        where THostBuilder : IHostApplicationBuilder => builder.AddIdentity();
 }

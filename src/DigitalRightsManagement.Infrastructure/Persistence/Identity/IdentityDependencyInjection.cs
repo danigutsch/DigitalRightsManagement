@@ -6,12 +6,13 @@ namespace DigitalRightsManagement.Infrastructure.Persistence.Identity;
 
 public static class IdentityDependencyInjection
 {
-    public static TApplicationBuilder AddBasicAuth<TApplicationBuilder>(this TApplicationBuilder builder) where TApplicationBuilder : IHostApplicationBuilder
+    public static TApplicationBuilder AddIdentity<TApplicationBuilder>(this TApplicationBuilder builder) where TApplicationBuilder : IHostApplicationBuilder
     {
         builder.AddNpgsqlDbContext<AuthDbContext>(PersistenceDefaults.ConnectionStringName, settings => settings.DisableRetry = true);
 
         builder.Services.AddIdentityCore<AuthUser>()
             .AddRoles<IdentityRole>()
+            .AddSignInManager()
             .AddEntityFrameworkStores<AuthDbContext>();
 
         return builder;
