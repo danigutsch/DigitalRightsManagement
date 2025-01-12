@@ -1,4 +1,4 @@
-﻿using DigitalRightsManagement.Infrastructure.Persistence.Identity;
+﻿using DigitalRightsManagement.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -45,7 +45,7 @@ internal sealed class BasicAuthenticationHandler(
 
         Claim[] claims = [
             new(ClaimTypes.Name, user.UserName!, ClaimValueTypes.String, ClaimsIssuer),
-            new(ClaimTypes.NameIdentifier, user.UserName!, ClaimValueTypes.String, ClaimsIssuer),
+            new(ClaimTypes.NameIdentifier, user.DomainUserId.ToString(), ClaimValueTypes.String, ClaimsIssuer),
             new(ClaimTypes.Email, user.Email!, ClaimValueTypes.Email, ClaimsIssuer),
             ..CreateClaimsFromRoles(roles),
         ];
