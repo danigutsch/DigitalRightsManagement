@@ -1,7 +1,7 @@
 ﻿using DigitalRightsManagement.Application.Persistence;
+using DigitalRightsManagement.Infrastructure.Identity;
 using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
-using DigitalRightsManagement.Infrastructure.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

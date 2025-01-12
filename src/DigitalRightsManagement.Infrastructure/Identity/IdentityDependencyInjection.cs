@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DigitalRightsManagement.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace DigitalRightsManagement.Infrastructure.Persistence.Identity;
+namespace DigitalRightsManagement.Infrastructure.Identity;
 
 public static class IdentityDependencyInjection
 {
@@ -14,6 +15,8 @@ public static class IdentityDependencyInjection
             .AddRoles<IdentityRole>()
             .AddSignInManager()
             .AddEntityFrameworkStores<AuthDbContext>();
+
+        builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
         return builder;
     }

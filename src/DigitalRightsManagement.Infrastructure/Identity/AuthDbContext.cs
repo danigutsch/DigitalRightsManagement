@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace DigitalRightsManagement.Infrastructure.Persistence.Identity;
+namespace DigitalRightsManagement.Infrastructure.Identity;
 
 internal sealed class AuthDbContext(DbContextOptions<AuthDbContext> options) : IdentityDbContext<AuthUser>(options)
 {

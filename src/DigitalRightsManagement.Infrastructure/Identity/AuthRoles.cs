@@ -1,4 +1,4 @@
-﻿namespace DigitalRightsManagement.Infrastructure.Persistence.Identity;
+﻿namespace DigitalRightsManagement.Infrastructure.Identity;
 
 internal static class AuthRoles
 {

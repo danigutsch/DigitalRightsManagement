@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace DigitalRightsManagement.Infrastructure.Persistence.Identity;
+namespace DigitalRightsManagement.Infrastructure.Identity;
 
 public sealed class AuthUser : IdentityUser
 {

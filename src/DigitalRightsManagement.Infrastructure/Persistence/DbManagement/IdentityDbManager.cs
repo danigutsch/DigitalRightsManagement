@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using DigitalRightsManagement.Domain.UserAggregate;
-using DigitalRightsManagement.Infrastructure.Persistence.Identity;
+using DigitalRightsManagement.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using System.Transactions;
 
