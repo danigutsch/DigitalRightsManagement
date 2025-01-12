@@ -23,7 +23,7 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddProblemDetails();
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options => options.AddBasic());
 
 var app = builder.Build();
 

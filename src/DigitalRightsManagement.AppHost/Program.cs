@@ -14,7 +14,6 @@ var dbInitializer = builder.AddProject<Projects.DigitalRightsManagement_Migratio
 builder.AddProject<Projects.DigitalRightsManagement_Api>(ResourceNames.Api)
     .WithReference(database)
     .WaitFor(database)
-    .WithReference(dbInitializer)
     .WaitForCompletion(dbInitializer);
 
 await builder.Build().RunAsync();
