@@ -1,11 +1,19 @@
 ﻿using Bogus;
 using DigitalRightsManagement.Domain.ProductAggregate;
 
-namespace DigitalRightsManagement.MigrationService.Factories;
+namespace DigitalRightsManagement.Tests.Shared.Factories;
 
 public static class ProductFactory
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker<Product> Faker = new Faker<Product>()
+        .CustomInstantiator(f => Product.Create(
+            f.Commerce.ProductName(),
+            f.Commerce.ProductDescription(),
+            Price.Create(
+                f.Random.Decimal(0, 100),
+                f.PickRandom<Currency>()), 
+            Guid.NewGuid(),
+            Guid.NewGuid()));
 
     public static Product InDevelopment(
         string? name = null,
@@ -14,11 +22,13 @@ public static class ProductFactory
         Guid? manager = null,
         Guid? id = null)
     {
+        var product = Faker.Generate();
+
         return Product.Create(
-            name ?? Faker.Commerce.ProductName(),
-            description ?? Faker.Commerce.ProductDescription(),
-            price ?? Price.Create(Faker.Random.Decimal(1.00m, 100.00m), Faker.PickRandom<Currency>()).Value,
-            manager ?? Faker.Random.Guid(),
+            name ?? product.Name,
+            description ?? product.Description,
+            price ?? product.Price,
+            manager ?? product.Manager,
             id
         ).Value;
     }

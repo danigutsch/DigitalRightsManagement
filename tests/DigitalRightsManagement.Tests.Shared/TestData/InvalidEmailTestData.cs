@@ -1,6 +1,8 @@
-﻿namespace DigitalRightsManagement.UnitTests.Common.TestData;
+﻿using Xunit;
 
-internal sealed class InvalidEmailTestData : TheoryData<string>
+namespace DigitalRightsManagement.Tests.Shared.TestData;
+
+public sealed class InvalidEmailTestData : TheoryData<string>
 {
     public InvalidEmailTestData()
     {

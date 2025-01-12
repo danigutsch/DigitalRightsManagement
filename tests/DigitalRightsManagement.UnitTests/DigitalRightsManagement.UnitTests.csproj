@@ -3,13 +3,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Bogus" />
     <PackageReference Include="coverlet.collector">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="FluentAssertions.Analyzers">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -21,8 +15,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DigitalRightsManagement.Domain\DigitalRightsManagement.Domain.csproj" />
-    <ProjectReference Include="..\..\src\DigitalRightsManagement.MigrationService\DigitalRightsManagement.MigrationService.csproj" />
+    <ProjectReference Include="..\DigitalRightsManagement.Tests.Shared\DigitalRightsManagement.Tests.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Xunit" />

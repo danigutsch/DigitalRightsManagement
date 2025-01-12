@@ -1,5 +1,6 @@
 using Aspire.Hosting;
 using DigitalRightsManagement.AppHost;
+using DigitalRightsManagement.Infrastructure.Persistence;
 using FluentAssertions;
 
 namespace DigitalRightsManagement.IntegrationTests;
@@ -58,6 +59,6 @@ public class AspireInfrastructureTests
 
         // Assert
         envVars.Should().HaveCount(resourceNames.Length);
-        envVars.Should().AllSatisfy(ev => ev.ContainsKey($"ConnectionString__{ResourceNames.Database}"));
+        envVars.Should().Contain(ev => ev.ContainsKey($"ConnectionStrings__{PersistenceDefaults.ConnectionStringName}"));
     }
 }

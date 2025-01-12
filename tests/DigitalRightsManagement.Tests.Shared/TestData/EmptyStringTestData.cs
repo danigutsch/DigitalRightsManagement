@@ -1,6 +1,8 @@
-﻿namespace DigitalRightsManagement.UnitTests.Common.TestData;
+﻿using Xunit;
 
-internal sealed class EmptyStringTestData : TheoryData<string>
+namespace DigitalRightsManagement.Tests.Shared.TestData;
+
+public sealed class EmptyStringTestData : TheoryData<string>
 {
     public EmptyStringTestData()
     {

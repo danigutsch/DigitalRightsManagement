@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<PackageReference Include="Bogus" />
+		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="FluentAssertions.Analyzers">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="xunit.extensibility.core" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\DigitalRightsManagement.Domain\DigitalRightsManagement.Domain.csproj" />
+	  <ProjectReference Include="..\..\src\DigitalRightsManagement.MigrationService\DigitalRightsManagement.MigrationService.csproj" />
+	</ItemGroup>
+
+</Project>
