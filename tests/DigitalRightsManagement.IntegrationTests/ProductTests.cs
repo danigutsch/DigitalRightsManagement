@@ -1,4 +1,5 @@
 ﻿using DigitalRightsManagement.Api.Endpoints;
+using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Tests.Shared.Factories;
@@ -11,6 +12,22 @@ namespace DigitalRightsManagement.IntegrationTests;
 public sealed class ProductTests(ITestOutputHelper outputHelper) : IntegrationTestsBase(outputHelper)
 {
     [Fact]
+    public async Task Get_Products_Returns_Success()
+    {
+        // Arrange
+        var managerWithProducts = UserFactory.Seeded(user => user.Products.Count > 0);
+
+        // Act
+        HttpClient.AddBasicAuth(managerWithProducts);
+        var response = await HttpClient.GetAsync("products");
+
+        // Assert
+        response.Should().BeSuccessful();
+        var products = await response.Content.ReadFromJsonAsync<ProductDto[]>();
+        products.Should().HaveCount(managerWithProducts.Products.Count);
+    }
+
+    [Fact]
     public async Task Add_Product_Returns_Success()
     {
         // Arrange
@@ -19,11 +36,12 @@ public sealed class ProductTests(ITestOutputHelper outputHelper) : IntegrationTe
         var productPrice = Faker.Random.Decimal(1, 100);
         var productCurrency = Faker.PickRandom<Currency>();
 
-        var managerId = UserFactory.Seeded(UserRoles.Manager).Id;
+        var manager = UserFactory.Seeded(UserRoles.Manager);
 
-        var createProductDto = new CreateProductDto(managerId, productName, productDescription, productPrice, productCurrency);
+        var createProductDto = new CreateProductDto(productName, productDescription, productPrice, productCurrency);
 
         // Act
+        HttpClient.AddBasicAuth(manager);
         var response = await HttpClient.PostAsJsonAsync("/products/create", createProductDto);
 
         // Assert

@@ -31,7 +31,7 @@ public abstract class IntegrationTestsBase(ITestOutputHelper outputHelper) : IAs
 
         await _app.StartAsync();
 
-        HttpClient = _app.CreateHttpClient(ResourceNames.Api);
+        HttpClient = _app.CreateHttpClient(ResourceNames.Api, "https");
 
         _dbContext = await CreateApplicationDbContext();
 

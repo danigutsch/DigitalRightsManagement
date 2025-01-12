@@ -4,14 +4,15 @@ using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
 using DigitalRightsManagement.Domain.ProductAggregate;
+using DigitalRightsManagement.Infrastructure.Identity;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-public sealed class CreateProductCommandHandler(IUserRepository userRepository, IProductRepository productRepository, IUnitOfWork unitOfWork) : ICommandHandler<CreateProductCommand, Guid>
+public sealed class CreateProductCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository, IUnitOfWork unitOfWork) : ICommandHandler<CreateProductCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        var userResult = await userRepository.GetById(command.UserId, cancellationToken);
+        var userResult = await currentUserProvider.Get(cancellationToken);
         if (!userResult.IsSuccess)
         {
             return userResult.Map();
@@ -28,4 +29,4 @@ public sealed class CreateProductCommandHandler(IUserRepository userRepository, 
     }
 }
 
-public sealed record CreateProductCommand(Guid UserId, string Name, string Description, decimal Price, Currency Currency) : ICommand<Guid>;
+public sealed record CreateProductCommand(string Name, string Description, decimal Price, Currency Currency) : ICommand<Guid>;

@@ -1,5 +1,4 @@
 ﻿using DigitalRightsManagement.Api.Endpoints;
-using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using FluentAssertions;
@@ -11,21 +10,6 @@ namespace DigitalRightsManagement.IntegrationTests;
 public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTestsBase(outputHelper)
 {
     [Fact]
-    public async Task Get_Products_Returns_Success()
-    {
-        // Arrange
-        var managerWithProducts = UserFactory.Seeded(user => user.Products.Count > 0);
-
-        // Act
-        var response = await HttpClient.GetAsync($"/users/{managerWithProducts.Id}/projects");
-
-        // Assert
-        response.Should().BeSuccessful();
-        var products = await response.Content.ReadFromJsonAsync<ProductDto[]>();
-        products.Should().HaveCount(managerWithProducts.Products.Count);
-    }
-
-    [Fact]
     public async Task Change_Role_Returns_Success()
     {
         // Arrange
@@ -36,7 +20,8 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
         var changeRoleDto = new ChangeUserDto(target.Id, desiredRole);
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync($"/users/{admin.Id}/change-role", changeRoleDto);
+        HttpClient.AddBasicAuth(admin);
+        var response = await HttpClient.PostAsJsonAsync("users/change-role", changeRoleDto);
 
         // Assert
         response.Should().BeSuccessful();
@@ -56,7 +41,8 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
         var changeEmailDto = new ChangeEmailDto(newEmail);
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync($"/users/{user.Id}/change-email", changeEmailDto);
+        HttpClient.AddBasicAuth(user);
+        var response = await HttpClient.PostAsJsonAsync("/users/change-email", changeEmailDto);
 
         // Assert
         response.Should().BeSuccessful();
