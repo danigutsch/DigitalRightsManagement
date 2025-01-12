@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<DataCollectionRunSettings>
+		<DataCollectors>
+			<DataCollector friendlyName="XPlat Code Coverage">
+				<Configuration>
+					<CodeCoverage>
+						<ModulePaths>
+							<Include>
+								<ModulePath>.*\DigitalRightsManagement.Domain.dll$</ModulePath>
+								<ModulePath>.*\DigitalRightsManagement.Application.dll$</ModulePath>
+							</Include>
+						</ModulePaths>
+						<Exclude>
+							<ModulePath>.*Test.*</ModulePath>
+						</Exclude>
+						<UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
+						<AllowLowIntegrityProcesses>True</AllowLowIntegrityProcesses>
+						<CollectFromChildProcesses>True</CollectFromChildProcesses>
+					</CodeCoverage>
+				</Configuration>
+			</DataCollector>
+		</DataCollectors>
+	</DataCollectionRunSettings>
+</RunSettings>

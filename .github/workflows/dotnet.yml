@@ -1,19 +1,12 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
 name: .NET
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: true
       DOTNET_NOLOGO: true
@@ -24,13 +17,29 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --no-restore
+
     - name: Test
-      run: dotnet test --no-build --verbosity normal --filter FullyQualifiedName\!~IntegrationTests
+      run: dotnet test --no-build --collect:"XPlat Code Coverage" --settings CodeCoverage.runsettings --verbosity normal --filter FullyQualifiedName\!~IntegrationTests
+
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+    - name: Generate Code Coverage Report
+      run: reportgenerator -reports:**/TestResults/**/coverage.cobertura.xml -targetdir:coverage-report -reporttypes:Html
+
+    - name: Upload Code Coverage Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: code-coverage-report
+        path: coverage-report
