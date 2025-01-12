@@ -58,3 +58,9 @@ jobs:
       with:
         name: code-coverage-report
         path: coverage-report
+
+    - name: Upload to Coveralls
+      run: |
+        curl -L https://coveralls.io/api/v1/jobs \
+        -F json_file=@coverage-report/coverage.cobertura.xml \
+        -F repo_token=${{ secrets.COVERALLS_REPO_TOKEN }}
