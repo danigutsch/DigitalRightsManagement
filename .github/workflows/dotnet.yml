@@ -59,7 +59,7 @@ jobs:
         path: code-coverage-results.md
 
     - name: Upload code coverage results artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
         name: code-coverage-results
