@@ -72,7 +72,7 @@ jobs:
         --no-build --verbosity normal
         --collect:"XPlat Code Coverage" --settings CodeCoverage.runsettings
         --logger console --logger trx --logger html
-        --results-directory coverage --filter FullyQualifiedName\!~IntegrationTests
+        --results-directory coverage
         --blame
         --
         RunConfiguration.CollectSourceInformation=true
