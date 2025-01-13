@@ -7,14 +7,14 @@
 					<CodeCoverage>
 						<ModulePaths>
 							<Include>
-								<ModulePath>.*\DigitalRightsManagement.Domain.dll$</ModulePath>
-								<ModulePath>.*\DigitalRightsManagement.Application.dll$</ModulePath>
+								<ModulePath>.*\\DigitalRightsManagement.Domain.dll$</ModulePath>
+								<ModulePath>.*\\DigitalRightsManagement.Application.dll$</ModulePath>
 							</Include>
 							<Exclude>
-								<ModulePath>.*\DigitalRightsManagement.AppHost.dll$</ModulePath>
-								<ModulePath>.*\DigitalRightsManagement.Infrastructure.dll$</ModulePath>
-								<ModulePath>.*\DigitalRightsManagement.MigrationService.dll$</ModulePath>
-								<ModulePath>.*\DigitalRightsManagement.ServiceDefaults.dll$</ModulePath>
+								<ModulePath>.*\\DigitalRightsManagement.AppHost.dll$</ModulePath>
+								<ModulePath>.*\\DigitalRightsManagement.Infrastructure.dll$</ModulePath>
+								<ModulePath>.*\\DigitalRightsManagement.MigrationService.dll$</ModulePath>
+								<ModulePath>.*\\DigitalRightsManagement.ServiceDefaults.dll$</ModulePath>
 							</Exclude>
 						</ModulePaths>
 						<UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
