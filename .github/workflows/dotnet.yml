@@ -2,7 +2,6 @@ name: .NET
 
 on:
   push:
-    branches: [main]
     paths-ignore:
       - "**/*.md"
       - "**/*.gitignore"
@@ -42,6 +41,14 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
+
+    - name: Print .NET info
+      run: dotnet --info
+
+    - name: Install & trust dev-certs
+      id: install-dev-certs
+      if: matrix.os == 'ubuntu-latest'
+      run: dotnet dev-certs https --trust
 
     - name: Cache dependencies
       uses: actions/cache@v4
