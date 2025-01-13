@@ -83,7 +83,7 @@ jobs:
     - name: Merge coverage files
       if: matrix.os == 'ubuntu-latest'
       run: |
-        reportgenerator \
+        dotnet reportgenerator \
           -reports:"coverage/**/*.cobertura.xml" \
           -targetdir:"coverage/merged" \
           -reporttypes:"Html;Cobertura"
