@@ -65,7 +65,17 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --settings CodeCoverage.runsettings --logger trx --results-directory coverage --filter FullyQualifiedName\!~IntegrationTests
+      id: test
+      if: matrix.os == 'ubuntu-latest'
+      run: >
+        dotnet test
+        --no-build --verbosity normal
+        --collect:"XPlat Code Coverage" --settings CodeCoverage.runsettings
+        --logger console --logger trx --logger html --logger GitHubActions
+        --results-directory coverage --filter FullyQualifiedName\!~IntegrationTests
+        --blame
+        --
+        RunConfiguration.CollectSourceInformation=true
 
     - name: Copy Coverage To Predictable Location
       if: matrix.os == 'ubuntu-latest'
