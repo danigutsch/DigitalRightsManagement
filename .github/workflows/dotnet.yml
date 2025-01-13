@@ -66,8 +66,5 @@ jobs:
         path: code-coverage-results.md
         retention-days: 1
 
-    - name: Upload to Coveralls
-      uses: coverallsapp/github-action@v2
-
     - name: Write to Job Summary
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
