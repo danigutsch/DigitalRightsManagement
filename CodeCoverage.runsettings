@@ -11,9 +11,6 @@
 								<ModulePath>.*\DigitalRightsManagement.Application.dll$</ModulePath>
 							</Include>
 						</ModulePaths>
-						<Exclude>
-							<ModulePath>.*Test.*</ModulePath>
-						</Exclude>
 						<UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
 						<AllowLowIntegrityProcesses>True</AllowLowIntegrityProcesses>
 						<CollectFromChildProcesses>True</CollectFromChildProcesses>
