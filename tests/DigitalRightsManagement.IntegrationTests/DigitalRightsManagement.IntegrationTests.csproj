@@ -1,18 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
 
 	<PropertyGroup>
+		<IsPublishable>false</IsPublishable>
 		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
-		<NoWarn>CA1051;CA2234;CA5394</NoWarn>
+		<IsAspireHost>true</IsAspireHost>
+		<NoWarn>CA1012;CA1051;CA2234;CA5394;S3442</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Aspire.Hosting.Testing" />
+		<PackageReference Include="Aspire.Hosting.AppHost" />
+		<PackageReference Include="Aspire.Hosting.PostgreSQL" />
 		<PackageReference Include="coverlet.collector">
-		  <PrivateAssets>all</PrivateAssets>
+			<PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="MartinCostello.Logging.XUnit" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />
 		<PackageReference Include="xunit" />
 		<PackageReference Include="xunit.runner.visualstudio">
@@ -22,16 +27,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\DigitalRightsManagement.Api\DigitalRightsManagement.Api.csproj" />
-		<ProjectReference Include="..\..\src\DigitalRightsManagement.AppHost\DigitalRightsManagement.AppHost.csproj" />
-		<ProjectReference Include="..\DigitalRightsManagement.Tests.Shared\DigitalRightsManagement.Tests.Shared.csproj" />
+		<ProjectReference Include="..\..\src\DigitalRightsManagement.MigrationService\DigitalRightsManagement.MigrationService.csproj" />
+
+		<ProjectReference Include="..\..\src\DigitalRightsManagement.Api\DigitalRightsManagement.Api.csproj" IsAspireProjectResource="false" />
+		<ProjectReference Include="..\DigitalRightsManagement.Tests.Shared\DigitalRightsManagement.Tests.Shared.csproj" IsAspireProjectResource="false" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Using Include="System.Net" />
 		<Using Include="Microsoft.Extensions.DependencyInjection" />
 		<Using Include="Aspire.Hosting.ApplicationModel" />
-		<Using Include="Aspire.Hosting.Testing" />
 		<Using Include="Xunit" />
 	</ItemGroup>
 
