@@ -1,6 +1,7 @@
 ﻿using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common;
 using DigitalRightsManagement.Infrastructure.Identity;
+using DigitalRightsManagement.Infrastructure.Messaging;
 using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +20,8 @@ public static class InfrastructureDependencyInjection
             .AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>())
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IProductRepository, ProductRepository>();
+
+        builder.Services.AddMessaging();
 
         return builder;
     }

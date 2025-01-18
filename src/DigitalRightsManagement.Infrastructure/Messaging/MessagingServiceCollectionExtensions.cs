@@ -1,7 +1,7 @@
 ﻿using DigitalRightsManagement.Application.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DigitalRightsManagement.Application.Messaging;
+namespace DigitalRightsManagement.Infrastructure.Messaging;
 
 internal static class MessagingServiceCollectionExtensions
 {

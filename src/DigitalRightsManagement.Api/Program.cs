@@ -1,6 +1,5 @@
 using DigitalRightsManagement.Api;
 using DigitalRightsManagement.Api.Endpoints;
-using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Infrastructure;
 using DigitalRightsManagement.Infrastructure.Authentication;
 using DigitalRightsManagement.Infrastructure.Identity;
@@ -11,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 builder
-    .AddApplication()
     .AddInfrastructure()
     .AddIdentityInfrastructure();
 
