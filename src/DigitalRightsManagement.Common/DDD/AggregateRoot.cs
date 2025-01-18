@@ -10,5 +10,12 @@ public class AggregateRoot : Entity
 
     public IReadOnlyList<DomainEvent> DomainEvents => _domainEvents;
 
-    public void QueueDomainEvent(DomainEvent domainEvent) => _domainEvents.Add(domainEvent);
+    protected void QueueDomainEvent(DomainEvent domainEvent) => _domainEvents.Add(domainEvent);
+
+    public DomainEvent[] PopDomainEvents()
+    {
+        var domainEvents = _domainEvents.ToArray();
+        _domainEvents.Clear();
+        return domainEvents;
+    }
 }
