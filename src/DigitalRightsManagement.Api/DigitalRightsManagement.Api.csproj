@@ -12,4 +12,8 @@
 		<ProjectReference Include="..\DigitalRightsManagement.ServiceDefaults\DigitalRightsManagement.ServiceDefaults.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="DigitalRightsManagement.IntegrationTests" />
+	</ItemGroup>
+
 </Project>

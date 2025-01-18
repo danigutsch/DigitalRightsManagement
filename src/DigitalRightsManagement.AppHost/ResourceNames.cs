@@ -4,8 +4,8 @@ namespace DigitalRightsManagement.AppHost;
 
 public static class ResourceNames
 {
-    public static string DatabaseServer => "database-server";
-    public static string Database => PersistenceDefaults.ConnectionStringName;
-    public static string Api => "digitalrightsmanagement-api";
-    public static string MigrationService => "digitalrightsmanagement-migrationservice";
+    public const string DatabaseServer = "database-server";
+    public const string Database = PersistenceDefaults.ConnectionStringName;
+    public const string Api = "digitalrightsmanagement-api";
+    public const string MigrationService = "digitalrightsmanagement-migrationservice";
 }
