@@ -35,6 +35,9 @@ public static class InfrastructureDependencyInjection
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AuthDbContext>();
 
+        // We only need the services for the ApplicationDbContext
+        builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(ResourceNames).Assembly));
+
         return builder;
     }
 
