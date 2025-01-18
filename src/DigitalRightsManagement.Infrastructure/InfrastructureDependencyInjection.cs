@@ -1,5 +1,4 @@
-﻿using DigitalRightsManagement.Application.Persistence;
-using DigitalRightsManagement.Common;
+﻿using DigitalRightsManagement.Common;
 using DigitalRightsManagement.Infrastructure.Identity;
 using DigitalRightsManagement.Infrastructure.Messaging;
 using DigitalRightsManagement.Infrastructure.Persistence;
@@ -14,12 +13,7 @@ public static class InfrastructureDependencyInjection
 {
     public static THostBuilder AddInfrastructure<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
-        builder.AddNpgsqlDbContext<ApplicationDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
-
-        builder.Services
-            .AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>())
-            .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IProductRepository, ProductRepository>();
+        builder.AddPersistence();
 
         builder.Services.AddMessaging();
 
