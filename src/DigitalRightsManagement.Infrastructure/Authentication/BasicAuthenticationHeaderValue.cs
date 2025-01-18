@@ -11,14 +11,12 @@ public sealed class BasicAuthenticationHeaderValue : AuthenticationHeaderValue
     {
         Guard.IsNotNullOrEmpty(username);
         Guard.IsNotNullOrEmpty(password);
-        Username = username;
-        Password = password;
+        Credentials = new BasicAuthenticationCredentials(username, password);
     }
 
-    public string Username { get; }
-    public string Password { get; }
+    public BasicAuthenticationCredentials Credentials { get; }
 
-    public new static BasicAuthenticationHeaderValue Parse(string input)
+    private new static BasicAuthenticationHeaderValue Parse(string input)
     {
         var authHeader = AuthenticationHeaderValue.Parse(input);
         if (authHeader.Scheme != BasicAuthenticationDefaults.AuthenticationScheme)
