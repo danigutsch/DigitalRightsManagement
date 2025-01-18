@@ -29,13 +29,13 @@ internal sealed class BasicAuthenticationHandler(
             return AuthenticateResult.Fail("Invalid Authorization Scheme");
         }
 
-        var user = await userManager.FindByNameAsync(authHeader.Username);
+        var user = await userManager.FindByNameAsync(authHeader.Credentials.Username);
         if (user is null)
         {
             return AuthenticateResult.Fail("Invalid Username or Password");
         }
 
-        var signInResult = await signInManager.CheckPasswordSignInAsync(user, authHeader.Password, false);
+        var signInResult = await signInManager.CheckPasswordSignInAsync(user, authHeader.Credentials.Password, false);
         if (!signInResult.Succeeded)
         {
             return AuthenticateResult.Fail("Invalid Username or Password");
