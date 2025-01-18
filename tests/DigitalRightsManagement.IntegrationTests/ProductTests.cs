@@ -4,12 +4,12 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Json;
-using Xunit.Abstractions;
 
 namespace DigitalRightsManagement.IntegrationTests;
 
-public sealed class ProductTests(ITestOutputHelper outputHelper) : IntegrationTestsBase(outputHelper)
+public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(fixture)
 {
     [Fact]
     public async Task Get_Products_Returns_Success()
@@ -18,13 +18,19 @@ public sealed class ProductTests(ITestOutputHelper outputHelper) : IntegrationTe
         var managerWithProducts = UserFactory.Seeded(user => user.Products.Count > 0);
 
         // Act
-        HttpClient.AddBasicAuth(managerWithProducts);
-        var response = await HttpClient.GetAsync("products");
+        var response = await GetHttpClient(managerWithProducts).GetAsync("products");
 
         // Assert
-        response.Should().BeSuccessful();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
         var products = await response.Content.ReadFromJsonAsync<ProductDto[]>();
-        products.Should().HaveCount(managerWithProducts.Products.Count);
+
+        var productNames = await DbContext.Products
+            .Where(p => p.Manager == managerWithProducts.Id)
+            .Select(p => p.Name)
+            .ToArrayAsync();
+
+        products.Should().NotBeNullOrEmpty();
+        products.Select(p => p.Name).Should().BeEquivalentTo(productNames);
     }
 
     [Fact]
@@ -41,17 +47,16 @@ public sealed class ProductTests(ITestOutputHelper outputHelper) : IntegrationTe
         var createProductDto = new CreateProductDto(productName, productDescription, productPrice, productCurrency);
 
         // Act
-        HttpClient.AddBasicAuth(manager);
-        var response = await HttpClient.PostAsJsonAsync("/products/create", createProductDto);
+        var response = await GetHttpClient(manager).PostAsJsonAsync("/products/create", createProductDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var id = await response.Content.ReadFromJsonAsync<Guid>();
         id.Should().NotBeEmpty();
 
-        var product = await Products.FindAsync(id);
+        var product = await DbContext.Products.FindAsync(id);
         product.Should().NotBeNull();
-        product!.Name.Should().Be(productName);
+        product.Name.Should().Be(productName);
         product.Description.Should().Be(productDescription);
         product.Price.Amount.Should().Be(productPrice);
         product.Price.Currency.Should().Be(productCurrency);

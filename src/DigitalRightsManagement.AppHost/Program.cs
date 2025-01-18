@@ -1,4 +1,4 @@
-using DigitalRightsManagement.AppHost;
+using DigitalRightsManagement.Common;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
