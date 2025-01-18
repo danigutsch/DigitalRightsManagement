@@ -1,6 +1,8 @@
-﻿namespace DigitalRightsManagement.Common.DDD;
+﻿using MediatR;
 
-public abstract record DomainEvent()
+namespace DigitalRightsManagement.Common.DDD;
+
+public abstract record DomainEvent : INotification
 {
     public DateTimeOffset OccurredOn { get; } = DateTimeOffset.UtcNow;
 }
