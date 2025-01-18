@@ -51,14 +51,18 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var id = await response.Content.ReadFromJsonAsync<Guid>();
-        id.Should().NotBeEmpty();
+        var createdProductId = await response.Content.ReadFromJsonAsync<Guid>();
+        createdProductId.Should().NotBeEmpty();
 
-        var product = await DbContext.Products.FindAsync(id);
+        var product = await DbContext.Products.FindAsync(createdProductId);
         product.Should().NotBeNull();
         product.Name.Should().Be(productName);
         product.Description.Should().Be(productDescription);
         product.Price.Amount.Should().Be(productPrice);
         product.Price.Currency.Should().Be(productCurrency);
+
+        manager = await DbContext.Users.FindAsync([manager.Id]);
+        manager.Should().NotBeNull();
+        manager.Products.Should().Contain(productId => productId == createdProductId);
     }
 }
