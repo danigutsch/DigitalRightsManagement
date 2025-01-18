@@ -3,11 +3,10 @@ using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using FluentAssertions;
 using System.Net.Http.Json;
-using Xunit.Abstractions;
 
 namespace DigitalRightsManagement.IntegrationTests;
 
-public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTestsBase(outputHelper)
+public sealed class UserTests(ApiFixture fixture) : ApiIntegrationTestsBase(fixture)
 {
     [Fact]
     public async Task Change_Role_Returns_Success()
@@ -20,15 +19,14 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
         var changeRoleDto = new ChangeUserDto(target.Id, desiredRole);
 
         // Act
-        HttpClient.AddBasicAuth(admin);
-        var response = await HttpClient.PostAsJsonAsync("users/change-role", changeRoleDto);
+        var response = await GetHttpClient(admin).PostAsJsonAsync("users/change-role", changeRoleDto);
 
         // Assert
-        response.Should().BeSuccessful();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        target = await Users.FindAsync(target.Id);
+        target = await DbContext.Users.FindAsync(target.Id);
         target.Should().NotBeNull();
-        target!.Role.Should().Be(desiredRole);
+        target.Role.Should().Be(desiredRole);
     }
 
     [Fact]
@@ -41,14 +39,13 @@ public sealed class UserTests(ITestOutputHelper outputHelper) : IntegrationTests
         var changeEmailDto = new ChangeEmailDto(newEmail);
 
         // Act
-        HttpClient.AddBasicAuth(user);
-        var response = await HttpClient.PostAsJsonAsync("/users/change-email", changeEmailDto);
+        var response = await GetHttpClient(user).PostAsJsonAsync("/users/change-email", changeEmailDto);
 
         // Assert
-        response.Should().BeSuccessful();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        user = await Users.FindAsync(user.Id);
+        user = await DbContext.Users.FindAsync(user.Id);
         user.Should().NotBeNull();
-        user!.Email.Should().Be(newEmail);
+        user.Email.Should().Be(newEmail);
     }
 }
