@@ -1,4 +1,5 @@
 ﻿using DigitalRightsManagement.Common;
+using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Infrastructure.Identity;
 using DigitalRightsManagement.Infrastructure.Messaging;
 using DigitalRightsManagement.Infrastructure.Persistence;
@@ -33,7 +34,7 @@ public static class InfrastructureDependencyInjection
             .AddEntityFrameworkStores<AuthDbContext>();
 
         // We only need the services for the ApplicationDbContext
-        builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(ResourceNames).Assembly));
+        builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<AggregateRoot>());
 
         return builder;
     }
