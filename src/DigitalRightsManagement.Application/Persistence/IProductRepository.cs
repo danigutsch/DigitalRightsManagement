@@ -6,5 +6,6 @@ namespace DigitalRightsManagement.Application.Persistence;
 public interface IProductRepository
 {
     void Add(Product product);
+    Task<Result<Product>> GetById(Guid id, CancellationToken ct);
     Task<Result<IReadOnlyList<Product>>> GetById(IEnumerable<Guid> ids, CancellationToken ct);
 }
