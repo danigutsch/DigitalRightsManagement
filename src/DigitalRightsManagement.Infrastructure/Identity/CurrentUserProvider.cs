@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using CommunityToolkit.Diagnostics;
+using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Domain.UserAggregate;
 using Microsoft.AspNetCore.Http;

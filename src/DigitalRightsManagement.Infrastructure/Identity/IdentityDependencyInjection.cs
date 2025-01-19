@@ -1,4 +1,5 @@
-﻿using DigitalRightsManagement.Common;
+﻿using DigitalRightsManagement.Application;
+using DigitalRightsManagement.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

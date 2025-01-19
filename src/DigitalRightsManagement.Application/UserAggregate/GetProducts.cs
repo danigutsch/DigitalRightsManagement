@@ -4,7 +4,6 @@ using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Common.Messaging;
 using DigitalRightsManagement.Domain.ProductAggregate;
-using DigitalRightsManagement.Infrastructure.Identity;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
