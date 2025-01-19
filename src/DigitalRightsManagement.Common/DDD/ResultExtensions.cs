@@ -1,5 +1,4 @@
 ﻿using Ardalis.Result;
-using DigitalRightsManagement.Common.DDD;
 
 namespace DigitalRightsManagement.Common.DDD;
 
@@ -56,6 +55,23 @@ public static class ResultExtensions
         if (result.IsSuccess)
         {
             await task();
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Asynchronously executes a function if the result is successful.
+    /// </summary>
+    /// <param name="resultTask">The task representing the result.</param>
+    /// <param name="action">The function to execute if the result is successful.</param>
+    /// <returns>A task representing the original result.</returns>
+    public static async Task<Result<T>> Tap<T>(this Task<Result<T>> resultTask, Action<T> action)
+    {
+        var result = await resultTask;
+        if (result.IsSuccess)
+        {
+            action(result.Value);
         }
 
         return result;
