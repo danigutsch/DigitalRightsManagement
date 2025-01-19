@@ -79,34 +79,33 @@ public sealed class User : AggregateRoot
         return Result.Success();
     }
 
-    public Result AddProduct(Product product)
+    public Result AddProduct(Guid productId)
     {
         if (Role != UserRoles.Manager)
         {
             return Errors.User.UnauthorizedToOwnProduct(Id);
         }
 
-        if (Products.Contains(product.Id))
+        if (Products.Contains(productId))
         {
-            return Errors.Product.AlreadyOwned(Id, product.Id);
+            return Errors.Product.AlreadyOwned(Id, productId);
         }
 
-        _products.Add(product.Id);
+        _products.Add(productId);
 
-        QueueDomainEvent(new ProductAdded(Id, product.Id));
+        QueueDomainEvent(new ProductAdded(Id, productId));
 
         return Result.Success();
     }
 
-    public Result AddProducts(IEnumerable<Product> products)
+    public Result AddProducts(IEnumerable<Guid> productsIds)
     {
         if (Role != UserRoles.Manager)
         {
             return Errors.User.UnauthorizedToOwnProduct(Id);
         }
 
-        Guid[] newProductIds = [..products
-            .Select(p => p.Id)
+        Guid[] newProductIds = [..productsIds
             .Except(Products)];
 
         if (newProductIds.Length == 0)
