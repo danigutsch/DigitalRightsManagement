@@ -1,12 +1,14 @@
-﻿using Ardalis.Result;
+﻿#pragma warning disable CA1034
+
+using Ardalis.Result;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Domain;
 
-internal static class Errors
+public static class Errors
 {
-    internal static class Product
+    public static class Product
     {
         public static Result InvalidName()
         {
@@ -84,9 +86,16 @@ internal static class Errors
             var message = $"The user [{userId}] already owns all products.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
+
+        public static Result NotFound(Guid productId)
+        {
+            const string code = "product.not-found";
+            var message = $"The product [{productId}] was not found.";
+            return Result.NotFound(code, message);
+        }
     }
 
-    internal static class User
+    public static class User
     {
         public static Result EmptyId()
         {
