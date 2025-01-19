@@ -21,7 +21,6 @@ public sealed class CreateProductCommandHandler(ICurrentUserProvider currentUser
 
         return await Price.Create(command.Price, command.Currency)
             .Bind(price => Product.Create(command.Name, command.Description, price, user.Id))
-            .Tap(product => user.AddProduct(product.Id))
             .Tap(productRepository.Add)
             .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
             .MapAsync(product => product.Id);
