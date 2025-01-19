@@ -39,6 +39,23 @@ public static class ResultExtensions
     }
 
     /// <summary>
+    /// Asynchronously executes a function if the result is successful.
+    /// </summary>
+    /// <param name="resultTask">The task representing the result.</param>
+    /// <param name="action">The function to execute if the result is successful.</param>
+    /// <returns>A task representing the original result.</returns>
+    public static async Task<Result<T>> Tap<T>(this Task<Result<T>> resultTask, Func<T, Task> action)
+    {
+        var result = await resultTask;
+        if (result.IsSuccess)
+        {
+            await action(result.Value);
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Executes an action if the result is successful.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
@@ -104,23 +121,23 @@ public static class ResultExtensions
         return result.Status switch
         {
             ResultStatus.NotFound => result.Errors.Any()
-                ? Result.NotFound(result.Errors.ToArray())
+                ? Result.NotFound([.. result.Errors])
                 : Result.NotFound(),
             ResultStatus.Unauthorized => result.Errors.Any()
-                ? Result.Unauthorized(result.Errors.ToArray())
+                ? Result.Unauthorized([.. result.Errors])
                 : Result.Unauthorized(),
             ResultStatus.Forbidden => result.Errors.Any()
-                ? Result.Forbidden(result.Errors.ToArray())
+                ? Result.Forbidden([.. result.Errors])
                 : Result.Forbidden(),
             ResultStatus.Invalid => Result.Invalid(result.ValidationErrors),
             ResultStatus.Error => Result.Error(
-                new ErrorList(result.Errors.ToArray(), result.CorrelationId)
+                new ErrorList([.. result.Errors], result.CorrelationId)
             ),
             ResultStatus.Conflict => result.Errors.Any()
-                ? Result.Conflict(result.Errors.ToArray())
+                ? Result.Conflict([.. result.Errors])
                 : Result.Conflict(),
-            ResultStatus.CriticalError => Result.CriticalError(result.Errors.ToArray()),
-            ResultStatus.Unavailable => Result.Unavailable(result.Errors.ToArray()),
+            ResultStatus.CriticalError => Result.CriticalError([.. result.Errors]),
+            ResultStatus.Unavailable => Result.Unavailable([.. result.Errors]),
             ResultStatus.NoContent => Result.NoContent(),
             _ => throw new NotSupportedException(
                 $"Result {result.Status} conversion is not supported."
