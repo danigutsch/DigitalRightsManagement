@@ -6,6 +6,8 @@ namespace DigitalRightsManagement.Infrastructure.Persistence;
 
 internal sealed class UserRepository(ApplicationDbContext context) : IUserRepository
 {
+    public IUnitOfWork UnitOfWork => context;
+
     public void Add(User user) => context.Users.Add(user);
 
     public async Task<Result<User>> GetById(Guid id, CancellationToken cancellationToken)

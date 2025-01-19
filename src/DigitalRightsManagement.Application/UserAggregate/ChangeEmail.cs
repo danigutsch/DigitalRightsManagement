@@ -7,13 +7,13 @@ using DigitalRightsManagement.Infrastructure.Identity;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
-public class ChangeEmailCommandHandler(ICurrentUserProvider currentUserProvider, IUnitOfWork unitOfWork) : ICommandHandler<ChangeEmailCommand>
+public class ChangeEmailCommandHandler(ICurrentUserProvider currentUserProvider, IUserRepository userRepository) : ICommandHandler<ChangeEmailCommand>
 {
     public async Task<Result> Handle(ChangeEmailCommand command, CancellationToken cancellationToken)
     {
         return await currentUserProvider.Get(cancellationToken)
             .BindAsync(user => user.ChangeEmail(command.NewEmail))
-            .Tap(() => unitOfWork.SaveChanges(cancellationToken));
+            .Tap(() => userRepository.UnitOfWork.SaveChanges(cancellationToken));
     }
 }
 

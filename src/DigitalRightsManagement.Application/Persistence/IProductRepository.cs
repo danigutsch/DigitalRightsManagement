@@ -3,7 +3,7 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.Persistence;
 
-public interface IProductRepository
+public interface IProductRepository : IRepository<Product>
 {
     void Add(Product product);
     Task<Result<Product>> GetById(Guid id, CancellationToken ct);
