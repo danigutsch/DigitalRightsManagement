@@ -14,7 +14,7 @@ public sealed class ChangeUserRoleCommandHandler(ICurrentUserProvider currentUse
         return await currentUserProvider.Get(cancellationToken)
             .DoubleBind(_ => userRepository.GetById(command.TargetId, cancellationToken))
             .BindAsync(t => t.Next.ChangeRole(t.Prev, command.DesiredRole))
-            .Tap(() => userRepository.UnitOfWork.SaveChanges(cancellationToken));
+            .Tap(() => userRepository.UnitOfWork.SaveEntities(cancellationToken));
     }
 }
 

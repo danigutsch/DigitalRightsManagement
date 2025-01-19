@@ -12,7 +12,7 @@ public class ChangeEmailCommandHandler(ICurrentUserProvider currentUserProvider,
     {
         return await currentUserProvider.Get(cancellationToken)
             .BindAsync(user => user.ChangeEmail(command.NewEmail))
-            .Tap(() => userRepository.UnitOfWork.SaveChanges(cancellationToken));
+            .Tap(() => userRepository.UnitOfWork.SaveEntities(cancellationToken));
     }
 }
 
