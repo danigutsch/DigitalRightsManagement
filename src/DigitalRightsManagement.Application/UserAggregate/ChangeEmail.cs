@@ -3,7 +3,6 @@ using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
-using DigitalRightsManagement.Infrastructure.Identity;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 

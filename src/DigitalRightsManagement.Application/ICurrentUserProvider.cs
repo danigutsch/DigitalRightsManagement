@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.UserAggregate;
 
-namespace DigitalRightsManagement.Infrastructure.Identity;
+namespace DigitalRightsManagement.Application;
 
 public interface ICurrentUserProvider
 {
