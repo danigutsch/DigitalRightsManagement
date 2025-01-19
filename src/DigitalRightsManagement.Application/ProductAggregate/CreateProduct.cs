@@ -8,7 +8,7 @@ using DigitalRightsManagement.Infrastructure.Identity;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-public sealed class CreateProductCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository, IUnitOfWork unitOfWork) : ICommandHandler<CreateProductCommand, Guid>
+public sealed class CreateProductCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<CreateProductCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
@@ -24,7 +24,7 @@ public sealed class CreateProductCommandHandler(ICurrentUserProvider currentUser
             .Bind(price => Product.Create(command.Name, command.Description, price, user.Id))
             .Tap(product => user.AddProduct(product))
             .Tap(productRepository.Add)
-            .Tap(_ => unitOfWork.SaveChanges(cancellationToken))
+            .Tap(_ => productRepository.UnitOfWork.SaveChanges(cancellationToken))
             .MapAsync(product => product.Id);
     }
 }
