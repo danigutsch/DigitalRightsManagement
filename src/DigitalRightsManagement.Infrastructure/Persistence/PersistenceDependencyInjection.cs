@@ -1,5 +1,7 @@
 ﻿using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -9,7 +11,8 @@ internal static class PersistenceDependencyInjection
 {
     public static THostBuilder AddPersistence<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
-        builder.AddNpgsqlDbContext<ApplicationDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
+        // BUG: AddNpgsqlDbContext registers the DbContext as singleton, creating problems injecting domain event handler dependencies
+        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString(ResourceNames.Database)));
 
         builder.Services
             .AddScoped<IUserRepository, UserRepository>()
