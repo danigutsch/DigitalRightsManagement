@@ -4,13 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DigitalRightsManagement.Infrastructure.Messaging;
 
-internal static class MessagingServiceCollectionExtensions
+internal static class MessagingDependencyInjection
 {
-    public static IServiceCollection AddMessaging(this IServiceCollection services) =>
-        services.AddMediatR(configuration =>
+    public static IServiceCollection AddMessaging(this IServiceCollection services)
+    {
+        return services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssemblyContaining<IUnitOfWork>();
 
             configuration.AddOpenBehavior(typeof(TransactionBehavior<,>));
         });
+    }
 }
