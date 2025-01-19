@@ -11,9 +11,16 @@ public sealed class ChangeUserRoleCommandHandler(ICurrentUserProvider currentUse
 {
     public async Task<Result> Handle(ChangeUserRoleCommand command, CancellationToken cancellationToken)
     {
-        return await currentUserProvider.Get(cancellationToken)
-            .DoubleBind(_ => userRepository.GetById(command.TargetId, cancellationToken))
-            .BindAsync(t => t.Next.ChangeRole(t.Prev, command.DesiredRole))
+        var currentUserResult = await currentUserProvider.Get(cancellationToken);
+        if (!currentUserResult.IsSuccess)
+        {
+            return currentUserResult.Map();
+        }
+
+        var currentUser = currentUserResult.Value;
+
+        return await userRepository.GetById(command.TargetId, cancellationToken)
+            .BindAsync(user => user.ChangeRole(currentUser, command.DesiredRole))
             .Tap(() => userRepository.UnitOfWork.SaveEntities(cancellationToken));
     }
 }
