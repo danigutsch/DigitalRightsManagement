@@ -19,7 +19,7 @@ internal sealed class ApplicationDbContext(IPublisher publisher, DbContextOption
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
     }
 
-    public async Task SaveChanges(CancellationToken cancellationToken)
+    public async Task SaveEntities(CancellationToken cancellationToken)
     {
         await publisher.PublishDomainEvents(this, cancellationToken);
 

@@ -23,7 +23,7 @@ public sealed class CreateProductCommandHandler(ICurrentUserProvider currentUser
             .Bind(price => Product.Create(command.Name, command.Description, price, user.Id))
             .Tap(product => user.AddProduct(product.Id))
             .Tap(productRepository.Add)
-            .Tap(_ => productRepository.UnitOfWork.SaveChanges(cancellationToken))
+            .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
             .MapAsync(product => product.Id);
     }
 }
