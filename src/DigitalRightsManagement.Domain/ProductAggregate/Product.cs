@@ -19,7 +19,7 @@ public sealed class Product : AggregateRoot
         Price = price;
         Manager = createdBy;
 
-        QueueDomainEvent(new ProductCreated(name, description, price));
+        QueueDomainEvent(new ProductCreated(Id, createdBy, name, description, price));
     }
 
 #pragma warning disable CS8618, CS9264
@@ -136,7 +136,7 @@ public sealed class Product : AggregateRoot
     }
 
     private Result ValidateOwner(Guid userId)
-    {   
+    {
         if (userId == Guid.Empty)
         {
             return Errors.User.EmptyId();
