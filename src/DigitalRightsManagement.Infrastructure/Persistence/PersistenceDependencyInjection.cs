@@ -12,7 +12,6 @@ internal static class PersistenceDependencyInjection
         builder.AddNpgsqlDbContext<ApplicationDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
 
         builder.Services
-            .AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>())
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IProductRepository, ProductRepository>();
 
