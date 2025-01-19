@@ -8,14 +8,14 @@ using DigitalRightsManagement.Infrastructure.Identity;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
-public sealed class ChangeUserRoleCommandHandler(ICurrentUserProvider currentUserProvider, IUserRepository userRepository, IUnitOfWork unitOfWork) : ICommandHandler<ChangeUserRoleCommand>
+public sealed class ChangeUserRoleCommandHandler(ICurrentUserProvider currentUserProvider, IUserRepository userRepository) : ICommandHandler<ChangeUserRoleCommand>
 {
     public async Task<Result> Handle(ChangeUserRoleCommand command, CancellationToken cancellationToken)
     {
         return await currentUserProvider.Get(cancellationToken)
             .DoubleBind(_ => userRepository.GetById(command.TargetId, cancellationToken))
             .BindAsync(t => t.Next.ChangeRole(t.Prev, command.DesiredRole))
-            .Tap(() => unitOfWork.SaveChanges(cancellationToken));
+            .Tap(() => userRepository.UnitOfWork.SaveChanges(cancellationToken));
     }
 }
 

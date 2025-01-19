@@ -8,6 +8,8 @@ namespace DigitalRightsManagement.Infrastructure.Persistence;
 
 internal sealed class ProductRepository(ApplicationDbContext context) : IProductRepository
 {
+    public IUnitOfWork UnitOfWork => context;
+
     public void Add(Product product) => context.Products.Add(product);
     public async Task<Result<Product>> GetById(Guid id, CancellationToken ct)
     {
