@@ -4,7 +4,6 @@ using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
 using DigitalRightsManagement.Domain.ProductAggregate;
-using DigitalRightsManagement.Infrastructure.Identity;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
@@ -22,7 +21,7 @@ public sealed class CreateProductCommandHandler(ICurrentUserProvider currentUser
 
         return await Price.Create(command.Price, command.Currency)
             .Bind(price => Product.Create(command.Name, command.Description, price, user.Id))
-            .Tap(product => user.AddProduct(product))
+            .Tap(product => user.AddProduct(product.Id))
             .Tap(productRepository.Add)
             .Tap(_ => productRepository.UnitOfWork.SaveChanges(cancellationToken))
             .MapAsync(product => product.Id);

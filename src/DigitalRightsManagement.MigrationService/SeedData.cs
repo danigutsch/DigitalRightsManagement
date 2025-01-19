@@ -14,7 +14,8 @@ public static class SeedData
 
             var productsToAdd = Products
                 .Where(product => product.Manager == user.Id)
-                .ExceptBy(user.Products, product => product.Id);
+                .ExceptBy(user.Products, product => product.Id)
+                .Select(product => product.Id);
 
             user.AddProducts(productsToAdd);
 

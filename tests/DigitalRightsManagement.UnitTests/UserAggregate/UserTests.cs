@@ -240,7 +240,7 @@ public sealed class UserTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = user.AddProduct(product);
+        var result = user.AddProduct(product.Id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -255,7 +255,7 @@ public sealed class UserTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = user.AddProduct(product);
+        var result = user.AddProduct(product.Id);
 
         // Assert
         result.IsUnauthorized().Should().BeTrue();
@@ -269,13 +269,13 @@ public sealed class UserTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = user.AddProduct(product);
+        var result = user.AddProduct(product.Id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
 
         // Act
-        result = user.AddProduct(product);
+        result = user.AddProduct(product.Id);
 
         // Assert
         result.IsInvalid().Should().BeTrue();
