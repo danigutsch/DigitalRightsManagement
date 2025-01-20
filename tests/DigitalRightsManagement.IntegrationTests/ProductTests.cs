@@ -12,7 +12,7 @@ namespace DigitalRightsManagement.IntegrationTests;
 public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(fixture)
 {
     [Fact]
-    public async Task Get_Products_Returns_Success()
+    public async Task Get_Products_Happy_Path()
     {
         // Arrange
         var managerWithProducts = UserFactory.Seeded(user => user.Products.Count > 0);
@@ -34,7 +34,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     }
 
     [Fact]
-    public async Task Add_Product_Returns_Success()
+    public async Task Add_Product_Happy_Path()
     {
         // Arrange
         var productName = Faker.Commerce.ProductName();
