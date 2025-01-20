@@ -28,6 +28,13 @@ internal static class ProductEndpoints
             .WithDescription("Allows a manager or higher to create a new product.")
             .ProducesDefault()
             .RequireAuthorization(Policies.IsManager);
+
+        group.MapPut("/{id:guid}/price", UpdatePrice)
+            .WithName("Update Product Price")
+            .WithSummary("Update a product's price")
+            .WithDescription("Allows a manager to update the price of their product.")
+            .ProducesDefault()
+            .RequireAuthorization(Policies.IsManager);
     }
 
     private static async Task<IResult> GetProducts([FromServices] IMediator mediator, CancellationToken ct)
@@ -45,6 +52,15 @@ internal static class ProductEndpoints
 
         return result.ToMinimalApiResult();
     }
+    private static async Task<IResult> UpdatePrice(Guid id, [FromBody] UpdatePriceDto dto, [FromServices] IMediator mediator, CancellationToken ct)
+    {
+        var command = new UpdatePriceCommand(id, dto.Price, dto.Currency, dto.Reason);
+        var result = await mediator.Send(command, ct);
+
+        return result.ToMinimalApiResult();
+    }
 }
 
 public sealed record CreateProductDto(string ProductName, string ProductDescription, decimal Price, Currency Currency);
+
+internal sealed record UpdatePriceDto(decimal Price, Currency Currency, string Reason);

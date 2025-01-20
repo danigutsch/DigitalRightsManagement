@@ -65,4 +65,29 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         manager.Should().NotBeNull();
         manager.Products.Should().Contain(productId => productId == createdProductId);
     }
+
+    [Fact]
+    public async Task Update_Price_Happy_Path()
+    {
+        // Arrange
+        var manager = UserFactory.Seeded(user => user.Products.Count > 0);
+        var productId = manager.Products[0];
+
+        var newPrice = Faker.Random.Decimal(1, 100);
+        var newCurrency = Faker.PickRandom<Currency>();
+        var reason = Faker.Lorem.Sentence();
+
+        var updatePriceDto = new UpdatePriceDto(newPrice, newCurrency, reason);
+
+        // Act
+        var response = await GetHttpClient(manager).PutAsJsonAsync($"/products/{productId}/price", updatePriceDto);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var updatedProduct = await DbContext.Products.FindAsync(productId);
+        updatedProduct.Should().NotBeNull();
+        updatedProduct.Price.Amount.Should().Be(newPrice);
+        updatedProduct.Price.Currency.Should().Be(newCurrency);
+    }
 }

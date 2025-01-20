@@ -59,12 +59,12 @@ public static class SeedData
 
     public static IReadOnlyList<Product> Products { get; } =
     [
-        Product.Create("Product1", "Description1", Price.Create(10, Currency.Dollar).Value, Guid.Parse("08c7acee-0f8c-4e70-9f72-c59db53ae0be")).Value,
-        Product.Create("Product2", "Description2", Price.Create(20, Currency.Dollar).Value, Guid.Parse("3d792f3d-8764-49c1-ae2b-40444ffbb2f9")).Value,
-        Product.Create("Product3", "Description3", Price.Create(30, Currency.Dollar).Value, Guid.Parse("58bf001c-bb9a-41fd-8917-c6eaf110af90")).Value,
-        Product.Create("Product4", "Description4", Price.Create(40, Currency.Dollar).Value, Guid.Parse("58bf001c-bb9a-41fd-8917-c6eaf110af90")).Value,
-        Product.Create("Product5", "Description5", Price.Create(50, Currency.Dollar).Value, Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30")).Value,
-        Product.Create("Product6", "Description6", Price.Create(60, Currency.Dollar).Value, Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30")).Value,
-        Product.Create("Product7", "Description7", Price.Create(70, Currency.Dollar).Value, Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30")).Value
+        Product.Create("Product1", "Description1", Price.Create(10, Currency.Dollar).Value, Guid.Parse("08c7acee-0f8c-4e70-9f72-c59db53ae0be"), Guid.Parse("2a1b2bc7-339a-47aa-9ba3-a2cf2e6aaf2c")).Value,
+        Product.Create("Product2", "Description2", Price.Create(20, Currency.Dollar).Value, Guid.Parse("3d792f3d-8764-49c1-ae2b-40444ffbb2f9"), Guid.Parse("474c01ab-eeff-48ff-8199-9eb4b6595033")).Value,
+        Product.Create("Product3", "Description3", Price.Create(30, Currency.Dollar).Value, Guid.Parse("58bf001c-bb9a-41fd-8917-c6eaf110af90"), Guid.Parse("6517c639-7083-46e8-a0a7-65308f0c0f6a")).Value,
+        Product.Create("Product4", "Description4", Price.Create(40, Currency.Dollar).Value, Guid.Parse("58bf001c-bb9a-41fd-8917-c6eaf110af90"), Guid.Parse("7b6b5c25-99f2-497e-bde1-c06d8ebfd542")).Value,
+        Product.Create("Product5", "Description5", Price.Create(50, Currency.Dollar).Value, Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"), Guid.Parse("2683e1c1-c872-497a-adfd-29d6d07c3efa")).Value,
+        Product.Create("Product6", "Description6", Price.Create(60, Currency.Dollar).Value, Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"), Guid.Parse("1ad91ef7-1d94-4b24-a8b2-e6337c601e4d")).Value,
+        Product.Create("Product7", "Description7", Price.Create(70, Currency.Dollar).Value, Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"), Guid.Parse("86cb3f82-23e3-4154-8a55-ed01213383d5")).Value
     ];
 }
