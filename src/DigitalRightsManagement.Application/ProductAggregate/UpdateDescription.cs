@@ -6,7 +6,7 @@ using DigitalRightsManagement.Common.Messaging;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-internal sealed class UpdateDescription(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<UpdateDescriptionCommand>
+internal sealed class UpdateDescriptionCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<UpdateDescriptionCommand>
 {
     public async Task<Result> Handle(UpdateDescriptionCommand command, CancellationToken cancellationToken)
     {

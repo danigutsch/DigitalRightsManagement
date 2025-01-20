@@ -7,7 +7,7 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-public sealed class UpdatePrice(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<UpdatePriceCommand>
+public sealed class UpdatePriceCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<UpdatePriceCommand>
 {
     public async Task<Result> Handle(UpdatePriceCommand command, CancellationToken cancellationToken)
     {

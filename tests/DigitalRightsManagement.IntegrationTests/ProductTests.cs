@@ -112,4 +112,40 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         updatedProduct.Should().NotBeNull();
         updatedProduct.Description.Should().Be(newDescription);
     }
+
+    [Fact]
+    public async Task Publish_Product_Happy_Path()
+    {
+        // Arrange
+        var manager = UserFactory.Seeded(UserRoles.Manager);
+        var product = await DbContext.Products.FirstAsync(p => p.Manager == manager.Id && p.Status == ProductStatus.Development);
+
+        // Act
+        var response = await GetHttpClient(manager).PostAsync($"/products/{product.Id}/publish", null);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        await DbContext.Entry(product).ReloadAsync();
+        product.Should().NotBeNull();
+        product.Status.Should().Be(ProductStatus.Published);
+    }
+
+    [Fact]
+    public async Task Obsolete_Product_Happy_Path()
+    {
+        // Arrange
+        var manager = UserFactory.Seeded(UserRoles.Manager);
+        var product = await DbContext.Products.FirstAsync(p => p.Manager == manager.Id);
+
+        // Act
+        var response = await GetHttpClient(manager).PostAsync($"/products/{product.Id}/obsolete", null);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        await DbContext.Entry(product).ReloadAsync();
+        product.Should().NotBeNull();
+        product.Status.Should().Be(ProductStatus.Obsolete);
+    }
 }
