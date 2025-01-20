@@ -1,0 +1,21 @@
+﻿using Ardalis.Result;
+using DigitalRightsManagement.Application.Messaging;
+using DigitalRightsManagement.Common.Messaging;
+
+namespace DigitalRightsManagement.Application.UserAggregate;
+
+internal sealed class GetCurrentUserQueryHandler(ICurrentUserProvider currentUserProvider) : IQueryHandler<GetCurrentUserInformationQuery, UserDto>
+{
+    public async Task<Result<UserDto>> Handle(GetCurrentUserInformationQuery request, CancellationToken cancellationToken)
+    {
+        return await currentUserProvider.Get(cancellationToken)
+            .MapAsync(user => new UserDto(
+                user.Id,
+                user.Username,
+                user.Email,
+                user.Role,
+                [.. user.Products]));
+    }
+}
+
+public sealed record GetCurrentUserInformationQuery : IQuery<UserDto>;

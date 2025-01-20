@@ -14,6 +14,13 @@ internal static class UserEndpoints
         var group = app.MapGroup("/users/")
             .WithTags("Users");
 
+        group.MapGet("/me", GetCurrentUserInformation)
+            .WithName("GetCurrentUser")
+            .WithSummary("Get current user information")
+            .WithDescription("Returns the information of the currently authenticated user.")
+            .Produces<UserDto>()
+            .RequireAuthorization();
+
         group.MapPost("/change-role", ChangeRole)
             .WithName("ChangeUserRole")
             .WithSummary("Change the role of another user")
@@ -27,6 +34,14 @@ internal static class UserEndpoints
             .WithDescription("Allows an user to change his/her e-mail address.")
             .ProducesDefault()
             .RequireAuthorization();
+    }
+
+    private static async Task<IResult> GetCurrentUserInformation([FromServices] IMediator mediator, CancellationToken ct)
+    {
+        var query = new GetCurrentUserInformationQuery();
+        var result = await mediator.Send(query, ct);
+
+        return result.ToMinimalApiResult();
     }
 
     private static async Task<IResult> ChangeRole([FromBody] ChangeUserDto dto, [FromServices] IMediator mediator, CancellationToken ct)
