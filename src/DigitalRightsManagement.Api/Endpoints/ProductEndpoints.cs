@@ -42,6 +42,20 @@ internal static class ProductEndpoints
             .WithDescription("Allows a manager to update the description of their product.")
             .ProducesDefault()
             .RequireAuthorization(Policies.IsManager);
+
+        group.MapPost("/{id:guid}/publish", PublishProduct)
+            .WithName("Publish Product")
+            .WithSummary("Publish a product")
+            .WithDescription("Allows a manager to publish their product.")
+            .ProducesDefault()
+            .RequireAuthorization(Policies.IsManager);
+
+        group.MapPost("/{id:guid}/obsolete", MakeProductObsolete)
+            .WithName("Obsolete Product")
+            .WithSummary("Mark a product as obsolete")
+            .WithDescription("Allows a manager to mark their product as obsolete.")
+            .ProducesDefault()
+            .RequireAuthorization(Policies.IsManager);
     }
 
     private static async Task<IResult> GetProducts([FromServices] IMediator mediator, CancellationToken ct)
@@ -70,6 +84,22 @@ internal static class ProductEndpoints
     private static async Task<IResult> UpdateDescription(Guid id, [FromBody] UpdateDescriptionDto dto, [FromServices] IMediator mediator, CancellationToken ct)
     {
         var command = new UpdateDescriptionCommand(id, dto.Description);
+        var result = await mediator.Send(command, ct);
+
+        return result.ToMinimalApiResult();
+    }
+
+    private static async Task<IResult> PublishProduct(Guid id, [FromServices] IMediator mediator, CancellationToken ct)
+    {
+        var command = new PublishProductCommand(id);
+        var result = await mediator.Send(command, ct);
+
+        return result.ToMinimalApiResult();
+    }
+
+    private static async Task<IResult> MakeProductObsolete(Guid id, [FromServices] IMediator mediator, CancellationToken ct)
+    {
+        var command = new MakeProductObsoleteCommand(id);
         var result = await mediator.Send(command, ct);
 
         return result.ToMinimalApiResult();
