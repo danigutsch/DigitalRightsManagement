@@ -1,6 +1,5 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Common.DDD;
-using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate.Events;
 
 namespace DigitalRightsManagement.Domain.UserAggregate;
