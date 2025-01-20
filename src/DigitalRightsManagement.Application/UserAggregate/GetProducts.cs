@@ -7,7 +7,7 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
-public sealed class GetProductsQueryHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : IQueryHandler<GetProductsQuery, Result<ProductDto[]>>
+public sealed class GetProductsQueryHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : IQueryHandler<GetProductsQuery, ProductDto[]>
 {
     public async Task<Result<ProductDto[]>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
@@ -26,4 +26,4 @@ public sealed class GetProductsQueryHandler(ICurrentUserProvider currentUserProv
         )];
 }
 
-public sealed record GetProductsQuery : IQuery<Result<ProductDto[]>>;
+public sealed record GetProductsQuery : IQuery<ProductDto[]>;
