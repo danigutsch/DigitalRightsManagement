@@ -1,4 +1,5 @@
 ﻿using DigitalRightsManagement.Api.Endpoints;
+using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using FluentAssertions;
@@ -8,6 +9,25 @@ namespace DigitalRightsManagement.IntegrationTests;
 
 public sealed class UserTests(ApiFixture fixture) : ApiIntegrationTestsBase(fixture)
 {
+    [Fact]
+    public async Task Get_Current_User_Returns_Success()
+    {
+        // Arrange
+        var user = UserFactory.Seeded();
+
+        // Act
+        var response = await GetHttpClient(user).GetAsync("/users/me");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var userDto = await response.Content.ReadFromJsonAsync<UserDto>();
+        userDto.Should().NotBeNull();
+        userDto.Id.Should().Be(user.Id);
+        userDto.Username.Should().Be(user.Username);
+        userDto.Email.Should().Be(user.Email);
+        userDto.Role.Should().Be(user.Role);
+    }
+
     [Fact]
     public async Task Change_Role_Returns_Success()
     {
