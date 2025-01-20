@@ -1,19 +1,20 @@
 ﻿using Ardalis.Result.AspNetCore;
 using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Infrastructure.Endpoints;
 using DigitalRightsManagement.Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalRightsManagement.Api.Endpoints;
 
-internal static class UserEndpoints
+internal class UserEndpoints : EndpointGroupBase
 {
-    public static void MapUserEndpoints(this WebApplication app)
-    {
-        var group = app.MapGroup("/users/")
-            .WithTags("Users");
+    protected override string GroupName => "Users";
+    protected override string BaseRoute => "/users";
 
+    protected override RouteGroupBuilder ConfigureEndpoints(RouteGroupBuilder group)
+    {
         group.MapGet("/me", GetCurrentUserInformation)
             .WithName("GetCurrentUser")
             .WithSummary("Get current user information")
@@ -34,6 +35,8 @@ internal static class UserEndpoints
             .WithDescription("Allows an user to change his/her e-mail address.")
             .ProducesDefault()
             .RequireAuthorization();
+
+        return group;
     }
 
     private static async Task<IResult> GetCurrentUserInformation([FromServices] IMediator mediator, CancellationToken ct)

@@ -2,19 +2,20 @@
 using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
+using DigitalRightsManagement.Infrastructure.Endpoints;
 using DigitalRightsManagement.Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalRightsManagement.Api.Endpoints;
 
-internal static class ProductEndpoints
+internal class ProductEndpoints : EndpointGroupBase
 {
-    public static void MapProductEndpoints(this WebApplication app)
-    {
-        var group = app.MapGroup("/products")
-            .WithTags("Products");
+    protected override string GroupName => "Products";
+    protected override string BaseRoute => "/products";
 
+    protected override RouteGroupBuilder ConfigureEndpoints(RouteGroupBuilder group)
+    {
         group.MapGet("/", GetProducts)
             .WithName("Get Products")
             .WithSummary("Get the projects of a user")
@@ -56,6 +57,8 @@ internal static class ProductEndpoints
             .WithDescription("Allows a manager to mark their product as obsolete.")
             .ProducesDefault()
             .RequireAuthorization(Policies.IsManager);
+
+        return group;
     }
 
     private static async Task<IResult> GetProducts([FromServices] IMediator mediator, CancellationToken ct)
