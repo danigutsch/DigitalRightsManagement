@@ -11,11 +11,12 @@ public interface IDatabaseManager
     Task RunMigration(CancellationToken ct);
     Task SeedDatabase(CancellationToken ct);
     Task ResetState(CancellationToken ct);
-
 }
 
 public abstract class DatabaseManager<TDbContext>(TDbContext context) : IDatabaseManager where TDbContext : DbContext
 {
+    private const string MigrationsHistoryTable = "__EFMigrationsHistory";
+
     protected TDbContext Context { get; } = context;
 
     public async Task EnsureDatabase(CancellationToken ct)
@@ -56,6 +57,7 @@ public abstract class DatabaseManager<TDbContext>(TDbContext context) : IDatabas
                 // Get all tables with their schemas
                 var tables = Context.Model.GetEntityTypes()
                     .Select(t => (Schema: t.GetSchema() ?? "public", Table: t.GetTableName()))
+                    .Where(t => t.Table != null && t.Table != MigrationsHistoryTable)
                     .Where(t => t.Table != null)
                     .ToList();
 
