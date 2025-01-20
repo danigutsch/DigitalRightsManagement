@@ -6,7 +6,7 @@ using DigitalRightsManagement.Common.Messaging;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-public sealed class MakeProductObsoleteCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<MakeProductObsoleteCommand>
+internal sealed class MakeProductObsoleteCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<MakeProductObsoleteCommand>
 {
     public async Task<Result> Handle(MakeProductObsoleteCommand command, CancellationToken cancellationToken)
     {

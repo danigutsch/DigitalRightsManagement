@@ -7,7 +7,7 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-public sealed class CreateProductCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<CreateProductCommand, Guid>
+internal sealed class CreateProductCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<CreateProductCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
