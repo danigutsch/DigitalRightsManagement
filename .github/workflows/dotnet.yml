@@ -106,7 +106,7 @@ jobs:
 
     - name: Upload code coverage results artifact
       uses: actions/upload-artifact@v4
-      if: success() || failure() && matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest'
       with:
         name: code-coverage-results
         path: code-coverage-results.md
