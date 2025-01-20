@@ -90,4 +90,26 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         updatedProduct.Price.Amount.Should().Be(newPrice);
         updatedProduct.Price.Currency.Should().Be(newCurrency);
     }
+
+    [Fact]
+    public async Task Update_Description_Happy_Path()
+    {
+        // Arrange
+        var manager = UserFactory.Seeded(user => user.Products.Count > 0);
+        var productId = manager.Products[0];
+
+        var newDescription = Faker.Commerce.ProductDescription();
+
+        var updatePriceDto = new UpdateDescriptionDto(newDescription);
+
+        // Act
+        var response = await GetHttpClient(manager).PutAsJsonAsync($"/products/{productId}/description", updatePriceDto);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var updatedProduct = await DbContext.Products.FindAsync(productId);
+        updatedProduct.Should().NotBeNull();
+        updatedProduct.Description.Should().Be(newDescription);
+    }
 }
