@@ -117,7 +117,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Publish_Product_Happy_Path()
     {
         // Arrange
-        var manager = UserFactory.Seeded(UserRoles.Manager);
+        var manager = UserFactory.Seeded(user => user.Products.Count > 0);
         var product = await DbContext.Products.FirstAsync(p => p.Manager == manager.Id && p.Status == ProductStatus.Development);
 
         // Act
@@ -135,7 +135,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Obsolete_Product_Happy_Path()
     {
         // Arrange
-        var manager = UserFactory.Seeded(UserRoles.Manager);
+        var manager = UserFactory.Seeded(user => user.Products.Count > 0);
         var product = await DbContext.Products.FirstAsync(p => p.Manager == manager.Id);
 
         // Act
