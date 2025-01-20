@@ -1,7 +1,7 @@
 using DigitalRightsManagement.Api;
-using DigitalRightsManagement.Api.Endpoints;
 using DigitalRightsManagement.Infrastructure;
 using DigitalRightsManagement.Infrastructure.Authentication;
+using DigitalRightsManagement.Infrastructure.Endpoints;
 using DigitalRightsManagement.Infrastructure.Identity;
 using DigitalRightsManagement.ServiceDefaults;
 
@@ -37,7 +37,6 @@ app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapUserEndpoints();
-app.MapProductEndpoints();
+app.MapEndpointModules(typeof(Program).Assembly);
 
 await app.RunAsync();
