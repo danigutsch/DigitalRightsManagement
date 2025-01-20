@@ -1,11 +1,12 @@
 ﻿using Bogus;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Infrastructure.Persistence;
+using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
 using DigitalRightsManagement.MigrationService;
 
 namespace DigitalRightsManagement.IntegrationTests;
 
-public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IDisposable
+public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IAsyncLifetime, IDisposable
 {
     private readonly IServiceScope _scope;
 
@@ -19,6 +20,7 @@ public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IDisp
     {
         Fixture = fixture;
         _scope = Fixture.Services.CreateScope();
+
         DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     }
 
@@ -28,6 +30,22 @@ public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IDisp
         var client = Fixture.CreateDefaultClient(handler);
         return client;
     }
+    public async Task InitializeAsync()
+    {
+        using var scope = Fixture.Services.CreateScope();
+
+        var applicationDbManager = scope.ServiceProvider.GetRequiredService<IApplicationDbManager>();
+        var identityDbManager = scope.ServiceProvider.GetRequiredService<IIdentityDbManager>();
+
+        applicationDbManager.SetSeedData(SeedData.Users, SeedData.Products);
+        identityDbManager.SetSeedData(SeedData.UsersAndPasswords);
+
+        await applicationDbManager.ResetState(CancellationToken.None);
+        await identityDbManager.ResetState(CancellationToken.None)
+            .ConfigureAwait(false);
+    }
+
+    public Task DisposeAsync() => Task.CompletedTask;
 
     public void Dispose()
     {
