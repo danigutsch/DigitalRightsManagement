@@ -6,22 +6,24 @@ using DigitalRightsManagement.Common.Messaging;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-internal sealed class PublishProductCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<PublishProductCommand>
+public sealed record PublishProductCommand(Guid ProductId) : ICommand
 {
-    public async Task<Result> Handle(PublishProductCommand command, CancellationToken cancellationToken)
+    internal sealed class PublishProductCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<PublishProductCommand>
     {
-        var userResult = await currentUserProvider.Get(cancellationToken);
-        if (!userResult.IsSuccess)
+        public async Task<Result> Handle(PublishProductCommand command, CancellationToken cancellationToken)
         {
-            return userResult.Map();
+            var userResult = await currentUserProvider.Get(cancellationToken);
+            if (!userResult.IsSuccess)
+            {
+                return userResult.Map();
+            }
+
+            var user = userResult.Value;
+
+            return await productRepository.GetById(command.ProductId, cancellationToken)
+                .BindAsync(product => product.Publish(user.Id))
+                .Tap(() => productRepository.UnitOfWork.SaveEntities(cancellationToken));
         }
-
-        var user = userResult.Value;
-
-        return await productRepository.GetById(command.ProductId, cancellationToken)
-            .BindAsync(product => product.Publish(user.Id))
-            .Tap(() => productRepository.UnitOfWork.SaveEntities(cancellationToken));
     }
-}
 
-public sealed record PublishProductCommand(Guid ProductId) : ICommand;
+}

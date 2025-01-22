@@ -6,14 +6,15 @@ using DigitalRightsManagement.Common.Messaging;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
-internal sealed class ChangeEmailCommandHandler(ICurrentUserProvider currentUserProvider, IUserRepository userRepository) : ICommandHandler<ChangeEmailCommand>
+public sealed record ChangeEmailCommand(string NewEmail) : ICommand
 {
-    public async Task<Result> Handle(ChangeEmailCommand command, CancellationToken cancellationToken)
+    internal sealed class ChangeEmailCommandHandler(ICurrentUserProvider currentUserProvider, IUserRepository userRepository) : ICommandHandler<ChangeEmailCommand>
     {
-        return await currentUserProvider.Get(cancellationToken)
-            .BindAsync(user => user.ChangeEmail(command.NewEmail))
-            .Tap(() => userRepository.UnitOfWork.SaveEntities(cancellationToken));
+        public async Task<Result> Handle(ChangeEmailCommand command, CancellationToken cancellationToken)
+        {
+            return await currentUserProvider.Get(cancellationToken)
+                .BindAsync(user => user.ChangeEmail(command.NewEmail))
+                .Tap(() => userRepository.UnitOfWork.SaveEntities(cancellationToken));
+        }
     }
 }
-
-public sealed record ChangeEmailCommand(string NewEmail) : ICommand;
