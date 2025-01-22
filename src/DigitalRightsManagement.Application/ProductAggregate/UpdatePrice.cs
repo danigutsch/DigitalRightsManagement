@@ -7,31 +7,32 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-internal sealed class UpdatePriceCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<UpdatePriceCommand>
+public sealed record UpdatePriceCommand(Guid ProductId, decimal NewPrice, Currency Currency, string Reason) : ICommand
 {
-    public async Task<Result> Handle(UpdatePriceCommand command, CancellationToken cancellationToken)
+    internal sealed class UpdatePriceCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<UpdatePriceCommand>
     {
-        var userResult = await currentUserProvider.Get(cancellationToken);
-        if (!userResult.IsSuccess)
+        public async Task<Result> Handle(UpdatePriceCommand command, CancellationToken cancellationToken)
         {
-            return userResult.Map();
+            var userResult = await currentUserProvider.Get(cancellationToken);
+            if (!userResult.IsSuccess)
+            {
+                return userResult.Map();
+            }
+
+            var user = userResult.Value;
+
+            var productResult = await productRepository.GetById(command.ProductId, cancellationToken);
+            if (!productResult.IsSuccess)
+            {
+                return productResult.Map();
+            }
+
+            var product = productResult.Value;
+
+            return await Price.Create(command.NewPrice, command.Currency)
+                .Tap(price => product.UpdatePrice(user.Id, price, command.Reason))
+                .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
+                .MapAsync(_ => Result.Success());
         }
-
-        var user = userResult.Value;
-
-        var productResult = await productRepository.GetById(command.ProductId, cancellationToken);
-        if (!productResult.IsSuccess)
-        {
-            return productResult.Map();
-        }
-
-        var product = productResult.Value;
-
-        return await Price.Create(command.NewPrice, command.Currency)
-            .Tap(price => product.UpdatePrice(user.Id, price, command.Reason))
-            .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
-            .MapAsync(_ => Result.Success());
     }
 }
-
-public sealed record UpdatePriceCommand(Guid ProductId, decimal NewPrice, Currency Currency, string Reason) : ICommand;

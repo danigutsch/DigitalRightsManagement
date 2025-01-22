@@ -7,16 +7,18 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
-public sealed class GetProductsQueryHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : IQueryHandler<GetProductsQuery, ProductDto[]>
+public sealed record GetProductsQuery : IQuery<ProductDto[]>
 {
-    public async Task<Result<ProductDto[]>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+    internal sealed class GetProductsQueryHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : IQueryHandler<GetProductsQuery, ProductDto[]>
     {
-        return await currentUserProvider.Get(cancellationToken)
-            .BindAsync(user => productRepository.GetById(user.Products, cancellationToken))
-            .MapAsync(MapToDto);
-    }
+        public async Task<Result<ProductDto[]>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+        {
+            return await currentUserProvider.Get(cancellationToken)
+                .BindAsync(user => productRepository.GetById(user.Products, cancellationToken))
+                .MapAsync(MapToDto);
+        }
 
-    private static ProductDto[] MapToDto(IReadOnlyList<Product> products) =>
+        private static ProductDto[] MapToDto(IReadOnlyList<Product> products) =>
         [.. products.Select(product =>
             new ProductDto(
                 product.Name,
@@ -24,6 +26,5 @@ public sealed class GetProductsQueryHandler(ICurrentUserProvider currentUserProv
                 product.Price.Amount,
                 product.Price.Currency)
         )];
+    }
 }
-
-public sealed record GetProductsQuery : IQuery<ProductDto[]>;

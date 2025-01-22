@@ -7,22 +7,23 @@ using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
-internal sealed class ChangeUserRoleCommandHandler(ICurrentUserProvider currentUserProvider, IUserRepository userRepository) : ICommandHandler<ChangeUserRoleCommand>
+public sealed record ChangeUserRoleCommand(Guid TargetId, UserRoles DesiredRole) : ICommand
 {
-    public async Task<Result> Handle(ChangeUserRoleCommand command, CancellationToken cancellationToken)
+    internal sealed class ChangeUserRoleCommandHandler(ICurrentUserProvider currentUserProvider, IUserRepository userRepository) : ICommandHandler<ChangeUserRoleCommand>
     {
-        var currentUserResult = await currentUserProvider.Get(cancellationToken);
-        if (!currentUserResult.IsSuccess)
+        public async Task<Result> Handle(ChangeUserRoleCommand command, CancellationToken cancellationToken)
         {
-            return currentUserResult.Map();
+            var currentUserResult = await currentUserProvider.Get(cancellationToken);
+            if (!currentUserResult.IsSuccess)
+            {
+                return currentUserResult.Map();
+            }
+
+            var currentUser = currentUserResult.Value;
+
+            return await userRepository.GetById(command.TargetId, cancellationToken)
+                .BindAsync(user => user.ChangeRole(currentUser, command.DesiredRole))
+                .Tap(() => userRepository.UnitOfWork.SaveEntities(cancellationToken));
         }
-
-        var currentUser = currentUserResult.Value;
-
-        return await userRepository.GetById(command.TargetId, cancellationToken)
-            .BindAsync(user => user.ChangeRole(currentUser, command.DesiredRole))
-            .Tap(() => userRepository.UnitOfWork.SaveEntities(cancellationToken));
     }
 }
-
-public sealed record ChangeUserRoleCommand(Guid TargetId, UserRoles DesiredRole) : ICommand;

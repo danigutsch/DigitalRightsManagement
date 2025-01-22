@@ -4,18 +4,19 @@ using DigitalRightsManagement.Common.Messaging;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
-internal sealed class GetCurrentUserQueryHandler(ICurrentUserProvider currentUserProvider) : IQueryHandler<GetCurrentUserInformationQuery, UserDto>
+public sealed record GetCurrentUserInformationQuery : IQuery<UserDto>
 {
-    public async Task<Result<UserDto>> Handle(GetCurrentUserInformationQuery request, CancellationToken cancellationToken)
+    internal sealed class GetCurrentUserQueryHandler(ICurrentUserProvider currentUserProvider) : IQueryHandler<GetCurrentUserInformationQuery, UserDto>
     {
-        return await currentUserProvider.Get(cancellationToken)
-            .MapAsync(user => new UserDto(
-                user.Id,
-                user.Username,
-                user.Email,
-                user.Role,
-                [.. user.Products]));
+        public async Task<Result<UserDto>> Handle(GetCurrentUserInformationQuery request, CancellationToken cancellationToken)
+        {
+            return await currentUserProvider.Get(cancellationToken)
+                .MapAsync(user => new UserDto(
+                    user.Id,
+                    user.Username,
+                    user.Email,
+                    user.Role,
+                    [.. user.Products]));
+        }
     }
 }
-
-public sealed record GetCurrentUserInformationQuery : IQuery<UserDto>;
