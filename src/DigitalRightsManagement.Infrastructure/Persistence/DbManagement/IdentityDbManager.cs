@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Infrastructure.Authorization;
 using DigitalRightsManagement.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using System.Transactions;
@@ -48,9 +49,9 @@ internal sealed class IdentityDbManager(AuthDbContext context, UserManager<AuthU
 
             var role = user.Role switch
             {
-                UserRoles.Admin => AuthRoles.Admin,
-                UserRoles.Manager => AuthRoles.Manager,
-                UserRoles.Viewer => AuthRoles.Viewer,
+                UserRoles.Admin => AuthorizationRoles.Admin,
+                UserRoles.Manager => AuthorizationRoles.Manager,
+                UserRoles.Viewer => AuthorizationRoles.Viewer,
                 _ => throw new InvalidOperationException($"Invalid role {user.Role}")
             };
 
@@ -60,7 +61,7 @@ internal sealed class IdentityDbManager(AuthDbContext context, UserManager<AuthU
 
     private async Task AddRoles()
     {
-        var roles = new[] { AuthRoles.Viewer, AuthRoles.Manager, AuthRoles.Admin }
+        var roles = new[] { AuthorizationRoles.Viewer, AuthorizationRoles.Manager, AuthorizationRoles.Admin }
             .Select(r => new IdentityRole(r));
 
         foreach (var role in roles)
