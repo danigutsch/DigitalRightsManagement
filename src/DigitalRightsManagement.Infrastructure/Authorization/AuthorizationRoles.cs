@@ -1,6 +1,6 @@
-﻿namespace DigitalRightsManagement.Infrastructure.Identity;
+﻿namespace DigitalRightsManagement.Infrastructure.Authorization;
 
-internal static class AuthRoles
+internal static class AuthorizationRoles
 {
     public const string Admin = "Admin";
     public const string Manager = "Manager";

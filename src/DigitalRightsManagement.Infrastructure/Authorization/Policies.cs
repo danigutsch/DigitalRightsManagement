@@ -1,5 +1,4 @@
-﻿using DigitalRightsManagement.Infrastructure.Identity;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 
 namespace DigitalRightsManagement.Infrastructure.Authorization;
 
@@ -10,8 +9,8 @@ public static class Policies
 
     public static AuthorizationBuilder AddDefaultPolicies(this AuthorizationBuilder builder)
     {
-        builder.AddPolicy(IsAdmin, policy => policy.RequireRole(AuthRoles.Admin));
-        builder.AddPolicy(IsManager, policy => policy.RequireRole(AuthRoles.Manager));
+        builder.AddPolicy(IsAdmin, policy => policy.RequireRole(AuthorizationRoles.Admin));
+        builder.AddPolicy(IsManager, policy => policy.RequireRole(AuthorizationRoles.Manager));
         return builder;
     }
 }
