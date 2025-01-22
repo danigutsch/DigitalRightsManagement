@@ -1,8 +1,8 @@
 using DigitalRightsManagement.Api;
 using DigitalRightsManagement.Infrastructure;
 using DigitalRightsManagement.Infrastructure.Authentication;
+using DigitalRightsManagement.Infrastructure.Authorization;
 using DigitalRightsManagement.Infrastructure.Endpoints;
-using DigitalRightsManagement.Infrastructure.Identity;
 using DigitalRightsManagement.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
