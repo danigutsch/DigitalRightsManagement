@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DigitalRightsManagement.Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
 
-namespace DigitalRightsManagement.Infrastructure.Identity;
+namespace DigitalRightsManagement.Infrastructure.Authorization;
 
 public static class Policies
 {
