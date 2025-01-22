@@ -18,4 +18,8 @@
 		<ProjectReference Include="..\DigitalRightsManagement.Application\DigitalRightsManagement.Application.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<InternalVisibleTo Include="DigitalRightsManagement.IntegrationTests" />
+	</ItemGroup>
+
 </Project>
