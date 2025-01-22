@@ -17,7 +17,7 @@ builder.Services.AddAuthentication(BasicAuthenticationDefaults.AuthenticationSch
     .AddBasic();
 
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicies();
+    .AddDefaultPolicies();
 
 builder.Services.AddProblemDetails();
 
