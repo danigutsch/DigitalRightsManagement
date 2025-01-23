@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Application;
+using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Domain;
 using DigitalRightsManagement.Domain.UserAggregate;
-using DigitalRightsManagement.Infrastructure.Authorization;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
