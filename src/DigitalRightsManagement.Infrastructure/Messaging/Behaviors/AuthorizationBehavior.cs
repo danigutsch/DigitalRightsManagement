@@ -22,7 +22,6 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
         CancellationToken cancellationToken)
     {
         var authorizeAttribute = request.GetType().GetCustomAttribute<AuthorizeAttribute>();
-
         if (authorizeAttribute is null)
         {
             return await next();
@@ -40,11 +39,12 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
         }
 
         var user = userResult.Value;
+        var requiredRole = authorizeAttribute.RequiredRole.Value;
 
-        if (user.Role < authorizeAttribute.RequiredRole)
+        if (user.Role > requiredRole)
         {
-            logger.AuthorizationFailed(typeof(TRequest).Name, authorizeAttribute.RequiredRole.Value);
-            return (TResponse)(IResult)Errors.User.Unauthorized(authorizeAttribute.RequiredRole.Value);
+            logger.AuthorizationFailed(typeof(TRequest).Name, requiredRole);
+            return (TResponse)(IResult)Errors.User.Unauthorized(requiredRole);
         }
 
         return await next();
