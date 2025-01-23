@@ -28,7 +28,7 @@ public static class ProductFactory
             name ?? product.Name,
             description ?? product.Description,
             price ?? product.Price,
-            manager ?? product.Manager,
+            manager ?? product.UserId,
             id
         ).Value;
     }
@@ -41,7 +41,7 @@ public static class ProductFactory
         Guid? id = null)
     {
         var product = InDevelopment(name, description, price, manager, id);
-        product.Publish(product.Manager);
+        product.Publish(product.UserId);
         return product;
     }
 
@@ -53,7 +53,7 @@ public static class ProductFactory
         Guid? id = null)
     {
         var product = Published(name, description, price, manager, id);
-        product.Obsolete(product.Manager);
+        product.Obsolete(product.UserId);
         return product;
     }
 }

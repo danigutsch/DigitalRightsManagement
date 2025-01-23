@@ -9,7 +9,7 @@ public sealed class Product : AggregateRoot
     public string Name { get; private set; }
     public string Description { get; private set; }
     public Price Price { get; private set; }
-    public Guid Manager { get; private init; }
+    public Guid UserId { get; private init; }
     public ProductStatus Status { get; private set; } = ProductStatus.Development;
 
     private Product(string name, string description, Price price, Guid createdBy, Guid? id = null) : base(id ?? Guid.CreateVersion7())
@@ -17,7 +17,7 @@ public sealed class Product : AggregateRoot
         Name = name.Trim();
         Description = description.Trim();
         Price = price;
-        Manager = createdBy;
+        UserId = createdBy;
 
         QueueDomainEvent(new ProductCreated(Id, createdBy, name, description, price));
     }
@@ -142,9 +142,9 @@ public sealed class Product : AggregateRoot
             return Errors.User.EmptyId();
         }
 
-        if (userId != Manager)
+        if (userId != UserId)
         {
-            return Errors.Product.InvalidManager(userId, Manager);
+            return Errors.Product.InvalidManager(userId, UserId);
         }
 
         return Result.Success();

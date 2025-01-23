@@ -108,7 +108,7 @@ public sealed class ProductTests : UnitTestBase
         priceResult.Value.Currency.Should().Be(_validProduct.Price.Currency);
 
         // Act
-        var productResult = Product.Create(_validProduct.Name, _validProduct.Description, priceResult.Value, _validProduct.Manager);
+        var productResult = Product.Create(_validProduct.Name, _validProduct.Description, priceResult.Value, _validProduct.UserId);
 
         // Assert
         productResult.IsSuccess.Should().BeTrue();
@@ -123,7 +123,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         // Act
-        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.Manager);
+        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.UserId);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -137,7 +137,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         // Act
-        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.Manager);
+        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.UserId);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -208,7 +208,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         // Act
-        var product = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.Manager).Value;
+        var product = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.UserId).Value;
 
         // Assert
         product.Status.Should().Be(ProductStatus.Development);
@@ -221,7 +221,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = product.Publish(product.Manager);
+        var result = product.Publish(product.UserId);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -235,7 +235,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Published();
 
         // Act
-        var result = product.Publish(product.Manager);
+        var result = product.Publish(product.UserId);
 
         // Assert
         result.IsInvalid().Should().BeTrue();
@@ -248,7 +248,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Obsolete();
 
         // Act
-        var result = product.Publish(product.Manager);
+        var result = product.Publish(product.UserId);
 
         // Assert
         result.IsInvalid().Should().BeTrue();
@@ -274,7 +274,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        product.Publish(product.Manager);
+        product.Publish(product.UserId);
 
         // Assert
         product.DomainEvents.OfType<ProductPublished>().Should().ContainSingle();
@@ -287,7 +287,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = product.Obsolete(product.Manager);
+        var result = product.Obsolete(product.UserId);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -301,7 +301,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Published();
 
         // Act
-        var result = product.Obsolete(product.Manager);
+        var result = product.Obsolete(product.UserId);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -315,7 +315,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Obsolete();
 
         // Act
-        var result = product.Obsolete(product.Manager);
+        var result = product.Obsolete(product.UserId);
 
         // Assert
         result.IsInvalid().Should().BeTrue();
@@ -341,7 +341,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Published();
 
         // Act
-        product.Obsolete(product.Manager);
+        product.Obsolete(product.UserId);
 
         // Assert
         product.DomainEvents.OfType<ProductObsoleted>().Should().ContainSingle();
@@ -355,7 +355,7 @@ public sealed class ProductTests : UnitTestBase
         const string newDescription = "new description";
 
         // Act
-        var result = product.UpdateDescription(product.Manager, newDescription);
+        var result = product.UpdateDescription(product.UserId, newDescription);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -399,7 +399,7 @@ public sealed class ProductTests : UnitTestBase
         const string newDescription = "new description";
 
         // Act
-        product.UpdateDescription(product.Manager, newDescription);
+        product.UpdateDescription(product.UserId, newDescription);
 
         // Assert
         product.DomainEvents.OfType<DescriptionUpdated>().Should().ContainSingle();
@@ -412,7 +412,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = product.UpdateDescription(product.Manager, newDescription);
+        var result = product.UpdateDescription(product.UserId, newDescription);
 
         // Assert
         result.IsInvalid().Should().BeTrue();
