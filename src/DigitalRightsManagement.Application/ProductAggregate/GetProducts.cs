@@ -1,11 +1,10 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
-using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Common.Messaging;
 using DigitalRightsManagement.Domain.ProductAggregate;
 
-namespace DigitalRightsManagement.Application.UserAggregate;
+namespace DigitalRightsManagement.Application.ProductAggregate;
 
 public sealed record GetProductsQuery : IQuery<ProductDto[]>
 {
