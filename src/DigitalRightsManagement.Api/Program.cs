@@ -1,7 +1,6 @@
 using DigitalRightsManagement.Api;
 using DigitalRightsManagement.Infrastructure;
 using DigitalRightsManagement.Infrastructure.Authentication;
-using DigitalRightsManagement.Infrastructure.Authorization;
 using DigitalRightsManagement.Infrastructure.Endpoints;
 using DigitalRightsManagement.ServiceDefaults;
 
@@ -16,8 +15,7 @@ builder
 builder.Services.AddAuthentication(BasicAuthenticationDefaults.AuthenticationScheme)
     .AddBasic();
 
-builder.Services.AddAuthorizationBuilder()
-    .AddDefaultPolicies();
+builder.Services.AddAuthorizationBuilder();
 
 builder.Services.AddProblemDetails();
 
