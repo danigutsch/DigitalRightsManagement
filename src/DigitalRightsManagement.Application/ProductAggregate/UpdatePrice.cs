@@ -1,12 +1,15 @@
 ﻿using Ardalis.Result;
+using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
 using DigitalRightsManagement.Domain.ProductAggregate;
+using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
+[Authorize(UserRoles.Manager)]
 public sealed record UpdatePriceCommand(Guid ProductId, decimal NewPrice, Currency Currency, string Reason) : ICommand
 {
     internal sealed class UpdatePriceCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<UpdatePriceCommand>

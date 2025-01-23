@@ -18,43 +18,37 @@ internal class ProductEndpoints : EndpointGroupBase
             .WithName("Get Products")
             .WithSummary("Get the projects of a user")
             .WithDescription("Allows a user to get the products he/she manages.")
-            .Produces<ProductDto[]>()
-            .RequireAuthorization(Policies.IsManager);
+            .Produces<ProductDto[]>();
 
         group.MapPost("/create", Create)
             .WithName("Create Product")
             .WithSummary("Create a new product")
             .WithDescription("Allows a manager or higher to create a new product.")
-            .ProducesDefault()
-            .RequireAuthorization(Policies.IsManager);
+            .ProducesDefault();
 
         group.MapPut("/{id:guid}/price", UpdatePrice)
             .WithName("Update Product Price")
             .WithSummary("Update a product's price")
             .WithDescription("Allows a manager to update the price of their product.")
-            .ProducesDefault()
-            .RequireAuthorization(Policies.IsManager);
+            .ProducesDefault();
 
         group.MapPut("/{id:guid}/description", UpdateDescription)
             .WithName("Update Product Description")
             .WithSummary("Update a product's description")
             .WithDescription("Allows a manager to update the description of their product.")
-            .ProducesDefault()
-            .RequireAuthorization(Policies.IsManager);
+            .ProducesDefault();
 
         group.MapPost("/{id:guid}/publish", PublishProduct)
             .WithName("Publish Product")
             .WithSummary("Publish a product")
             .WithDescription("Allows a manager to publish their product.")
-            .ProducesDefault()
-            .RequireAuthorization(Policies.IsManager);
+            .ProducesDefault();
 
         group.MapPost("/{id:guid}/obsolete", MakeProductObsolete)
             .WithName("Obsolete Product")
             .WithSummary("Mark a product as obsolete")
             .WithDescription("Allows a manager to mark their product as obsolete.")
-            .ProducesDefault()
-            .RequireAuthorization(Policies.IsManager);
+            .ProducesDefault();
 
         return group;
     }
