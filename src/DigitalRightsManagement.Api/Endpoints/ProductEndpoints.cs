@@ -1,6 +1,5 @@
 ﻿using Ardalis.Result.AspNetCore;
 using DigitalRightsManagement.Application.ProductAggregate;
-using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Infrastructure.Endpoints;
 using MediatR;
