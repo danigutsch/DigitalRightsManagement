@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
@@ -7,6 +8,7 @@ using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
+[Authorize(UserRoles.Manager)]
 public sealed record ChangeUserRoleCommand(Guid TargetId, UserRoles DesiredRole) : ICommand
 {
     internal sealed class ChangeUserRoleCommandHandler(ICurrentUserProvider currentUserProvider, IUserRepository userRepository) : ICommandHandler<ChangeUserRoleCommand>

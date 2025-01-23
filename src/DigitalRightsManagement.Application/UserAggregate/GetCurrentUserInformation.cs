@@ -1,9 +1,11 @@
 ﻿using Ardalis.Result;
+using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Common.Messaging;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
+[Authorize]
 public sealed record GetCurrentUserInformationQuery : IQuery<UserDto>
 {
     internal sealed class GetCurrentUserQueryHandler(ICurrentUserProvider currentUserProvider) : IQueryHandler<GetCurrentUserInformationQuery, UserDto>
