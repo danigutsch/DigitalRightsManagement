@@ -145,5 +145,19 @@ public static class Errors
             var message = $"The can not [{id}] own a product.";
             return Result.Unauthorized(code, message);
         }
+
+        public static Result NotFound()
+        {
+            const string code = "user.not-found";
+            const string message = "The user was not found.";
+            return Result.NotFound(code, message);
+        }
+
+        public static Result Unauthorized(UserRoles requiredRole)
+        {
+            const string code = "user.unauthorized";
+            var message = $"The user is not authorized to perform this action. Required role: {requiredRole}.";
+            return Result.Unauthorized(code, message);
+        }
     }
 }
