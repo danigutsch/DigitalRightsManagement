@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
@@ -6,6 +7,7 @@ using DigitalRightsManagement.Common.Messaging;
 
 namespace DigitalRightsManagement.Application.UserAggregate;
 
+[Authorize]
 public sealed record ChangeEmailCommand(string NewEmail) : ICommand
 {
     internal sealed class ChangeEmailCommandHandler(ICurrentUserProvider currentUserProvider, IUserRepository userRepository) : ICommandHandler<ChangeEmailCommand>

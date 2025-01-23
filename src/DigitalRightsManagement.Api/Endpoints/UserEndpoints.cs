@@ -1,7 +1,6 @@
 ﻿using Ardalis.Result.AspNetCore;
 using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
-using DigitalRightsManagement.Infrastructure.Authorization;
 using DigitalRightsManagement.Infrastructure.Endpoints;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,22 +18,19 @@ internal class UserEndpoints : EndpointGroupBase
             .WithName("GetCurrentUser")
             .WithSummary("Get current user information")
             .WithDescription("Returns the information of the currently authenticated user.")
-            .Produces<UserDto>()
-            .RequireAuthorization();
+            .Produces<UserDto>();
 
         group.MapPost("/change-role", ChangeRole)
             .WithName("ChangeUserRole")
             .WithSummary("Change the role of another user")
             .WithDescription("Allows an admin to change the role of a target user to a desired role.")
-            .ProducesDefault()
-            .RequireAuthorization(Policies.IsAdmin);
+            .ProducesDefault();
 
         group.MapPost("/change-email", ChangeEmail)
             .WithName("ChangeEmail")
             .WithSummary("Change the role of a user")
             .WithDescription("Allows an user to change his/her e-mail address.")
-            .ProducesDefault()
-            .RequireAuthorization();
+            .ProducesDefault();
 
         return group;
     }

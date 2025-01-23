@@ -31,15 +31,20 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
         var userResult = await currentUserProvider.Get(cancellationToken);
         if (!userResult.IsSuccess)
         {
-            return (TResponse)(IResult)Errors.User.NotFound();
+            return (TResponse)(IResult)userResult;
+        }
+
+        if (authorizeAttribute.RequiredRole is null)
+        {
+            return await next();
         }
 
         var user = userResult.Value;
 
         if (user.Role < authorizeAttribute.RequiredRole)
         {
-            logger.AuthorizationFailed(typeof(TRequest).Name, authorizeAttribute.RequiredRole);
-            return (TResponse)(IResult)Errors.User.Unauthorized(authorizeAttribute.RequiredRole);
+            logger.AuthorizationFailed(typeof(TRequest).Name, authorizeAttribute.RequiredRole.Value);
+            return (TResponse)(IResult)Errors.User.Unauthorized(authorizeAttribute.RequiredRole.Value);
         }
 
         return await next();
