@@ -25,7 +25,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         var products = await response.Content.ReadFromJsonAsync<ProductDto[]>();
 
         var productNames = await DbContext.Products
-            .Where(p => p.Manager == managerWithProducts.Id)
+            .Where(p => p.UserId == managerWithProducts.Id)
             .Select(p => p.Name)
             .ToArrayAsync();
 
@@ -118,7 +118,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     {
         // Arrange
         var manager = UserFactory.Seeded(user => user.Products.Count > 0);
-        var product = await DbContext.Products.FirstAsync(p => p.Manager == manager.Id && p.Status == ProductStatus.Development);
+        var product = await DbContext.Products.FirstAsync(p => p.UserId == manager.Id && p.Status == ProductStatus.Development);
 
         // Act
         var response = await GetHttpClient(manager).PostAsync($"/products/{product.Id}/publish", null);
@@ -136,7 +136,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     {
         // Arrange
         var manager = UserFactory.Seeded(user => user.Products.Count > 0);
-        var product = await DbContext.Products.FirstAsync(p => p.Manager == manager.Id);
+        var product = await DbContext.Products.FirstAsync(p => p.UserId == manager.Id);
 
         // Act
         var response = await GetHttpClient(manager).PostAsync($"/products/{product.Id}/obsolete", null);

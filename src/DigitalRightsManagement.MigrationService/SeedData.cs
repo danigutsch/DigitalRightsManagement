@@ -13,7 +13,7 @@ public static class SeedData
             var (user, _) = x;
 
             var productsToAdd = Products
-                .Where(product => product.Manager == user.Id)
+                .Where(product => product.UserId == user.Id)
                 .ExceptBy(user.Products, product => product.Id)
                 .Select(product => product.Id);
 
