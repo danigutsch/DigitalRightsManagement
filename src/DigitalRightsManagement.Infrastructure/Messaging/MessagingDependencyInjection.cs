@@ -12,7 +12,9 @@ internal static class MessagingDependencyInjection
         {
             configuration.RegisterServicesFromAssemblyContaining<IUnitOfWork>();
 
-            configuration.AddOpenBehavior(typeof(TransactionBehavior<,>));
+            configuration
+                .AddOpenBehavior(typeof(TransactionBehavior<,>))
+                .AddOpenBehavior(typeof(AuthorizationBehavior<,>));
         });
     }
 }

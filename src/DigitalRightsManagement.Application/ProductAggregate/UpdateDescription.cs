@@ -1,11 +1,14 @@
 ﻿using Ardalis.Result;
+using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
+using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
+[Authorize(UserRoles.Manager)]
 public sealed record UpdateDescriptionCommand(Guid ProductId, string NewDescription) : ICommand
 {
     internal sealed class UpdateDescriptionCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<UpdateDescriptionCommand>
