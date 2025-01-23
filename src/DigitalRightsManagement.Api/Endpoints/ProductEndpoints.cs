@@ -2,7 +2,6 @@
 using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
-using DigitalRightsManagement.Infrastructure.Authorization;
 using DigitalRightsManagement.Infrastructure.Endpoints;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
