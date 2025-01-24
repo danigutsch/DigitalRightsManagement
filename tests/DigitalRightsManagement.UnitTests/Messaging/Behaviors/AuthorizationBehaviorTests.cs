@@ -1,10 +1,9 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Application;
-using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
+using DigitalRightsManagement.UnitTests.Common.TestDoubles;
 using FluentAssertions;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -117,12 +116,4 @@ public class AuthorizationBehaviorTests
         public Task<Result<User>> Get(CancellationToken ct) =>
             Task.FromResult(NextResult ?? Result.NotFound());
     }
-
-    private class TestRequest : IRequest<Result> { }
-
-    [Authorize]
-    private sealed class AuthorizedRequestWithoutRole : TestRequest;
-
-    [Authorize(UserRoles.Manager)]
-    private sealed class AuthorizedRequest : TestRequest;
 }
