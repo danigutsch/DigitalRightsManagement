@@ -4,7 +4,7 @@ using DigitalRightsManagement.Domain;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using Microsoft.EntityFrameworkCore;
 
-namespace DigitalRightsManagement.Infrastructure.Persistence;
+namespace DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 
 internal sealed class ProductRepository(ApplicationDbContext context) : IProductRepository
 {

@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using DigitalRightsManagement.Domain.UserAggregate;
-using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
+using DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 using DigitalRightsManagement.MigrationService;
 
 namespace DigitalRightsManagement.IntegrationTests;

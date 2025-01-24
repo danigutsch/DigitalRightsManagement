@@ -2,7 +2,7 @@
 using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Common.DDD;
-using DigitalRightsManagement.Infrastructure.Persistence;
+using DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

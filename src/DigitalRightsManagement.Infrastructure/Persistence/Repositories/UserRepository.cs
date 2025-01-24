@@ -2,7 +2,7 @@
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Domain.UserAggregate;
 
-namespace DigitalRightsManagement.Infrastructure.Persistence;
+namespace DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 
 internal sealed class UserRepository(ApplicationDbContext context) : IUserRepository
 {

@@ -1,4 +1,4 @@
-﻿using DigitalRightsManagement.Infrastructure.Persistence;
+﻿using DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

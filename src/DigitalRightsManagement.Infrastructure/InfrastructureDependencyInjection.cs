@@ -4,6 +4,7 @@ using DigitalRightsManagement.Infrastructure.Identity;
 using DigitalRightsManagement.Infrastructure.Messaging;
 using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
+using DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
