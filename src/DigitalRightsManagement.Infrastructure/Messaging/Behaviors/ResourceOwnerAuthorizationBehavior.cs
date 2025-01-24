@@ -23,21 +23,13 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        var attribute = request.GetType()
-            .GetCustomAttributes()
-            .FirstOrDefault(a => a.GetType().IsGenericType &&
-                               a.GetType().GetGenericTypeDefinition() == typeof(AuthorizeResourceOwnerAttribute<>));
-
+        var attribute = GetAuthorizeResourceOwnerAttribute(request);
         if (attribute is null)
         {
             return await next();
         }
 
-        var attributeType = attribute.GetType();
-        var idPropertyPath = attributeType.GetProperty(nameof(AuthorizeResourceOwnerAttribute<AggregateRoot>.IdPropertyPath))!
-            .GetValue(attribute) as string
-            ?? throw new InvalidOperationException("IdPropertyPath cannot be null");
-
+        var idPropertyPath = GetIdPropertyPath(attribute);
         var userResult = await currentUserProvider.Get(cancellationToken);
         if (!userResult.IsSuccess)
         {
@@ -45,7 +37,6 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
         }
 
         var user = userResult.Value;
-
         var resourceIds = GetResourceIds(request, idPropertyPath);
         if (resourceIds.Length == 0)
         {
@@ -53,8 +44,7 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
             throw new InvalidOperationException($"Invalid resource ID for request {typeof(TRequest).Name}");
         }
 
-        var resourceType = attributeType.GetGenericArguments()[0];
-
+        var resourceType = attribute.GetType().GetGenericArguments()[0];
         var isOwner = await resourceRepository.IsResourceOwner(user.Id, resourceType, resourceIds, cancellationToken);
 
         if (!isOwner)
@@ -66,11 +56,27 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
         return await next();
     }
 
+    private static AuthorizeResourceOwnerAttribute<AggregateRoot>? GetAuthorizeResourceOwnerAttribute(TRequest request)
+    {
+        return request.GetType()
+            .GetCustomAttributes()
+            .FirstOrDefault(a => a.GetType().IsGenericType &&
+                                 a.GetType().GetGenericTypeDefinition() == typeof(AuthorizeResourceOwnerAttribute<>))
+            as AuthorizeResourceOwnerAttribute<AggregateRoot>;
+    }
+
+    private static string GetIdPropertyPath(AuthorizeResourceOwnerAttribute<AggregateRoot> attribute)
+    {
+        return attribute.GetType()
+            .GetProperty(nameof(AuthorizeResourceOwnerAttribute<AggregateRoot>.IdPropertyPath))!
+            .GetValue(attribute) as string
+            ?? throw new InvalidOperationException("IdPropertyPath cannot be null");
+    }
+
     private static Guid[] GetResourceIds(TRequest request, string propertyPath)
     {
-        var type = request.GetType();
-        var property = type.GetProperty(propertyPath)
-            ?? throw new InvalidOperationException($"Property {propertyPath} not found on type {type.Name}");
+        var property = request.GetType().GetProperty(propertyPath)
+            ?? throw new InvalidOperationException($"Property {propertyPath} not found on type {request.GetType().Name}");
 
         var value = property.GetValue(request);
         if (value is null)
