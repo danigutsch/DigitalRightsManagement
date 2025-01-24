@@ -6,7 +6,7 @@ using DigitalRightsManagement.Infrastructure.Persistence.EntityTypeConfiguration
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DigitalRightsManagement.Infrastructure.Persistence.Repositories;
+namespace DigitalRightsManagement.Infrastructure.Persistence;
 
 internal sealed class ApplicationDbContext(IPublisher publisher, DbContextOptions<ApplicationDbContext> options) : DbContext(options), IUnitOfWork
 {

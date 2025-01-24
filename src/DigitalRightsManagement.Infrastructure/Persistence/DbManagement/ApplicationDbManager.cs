@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
-using DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
