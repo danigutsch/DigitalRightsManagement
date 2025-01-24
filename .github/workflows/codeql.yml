@@ -22,6 +22,8 @@ on:
 jobs:
   create-matrix:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       matrix: ${{ steps.set-matrix.outputs.languages }}
     steps:
