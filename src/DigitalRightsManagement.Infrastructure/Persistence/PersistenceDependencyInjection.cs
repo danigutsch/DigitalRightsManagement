@@ -22,7 +22,8 @@ internal static class PersistenceDependencyInjection
 
         builder.Services
             .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IProductRepository, ProductRepository>();
+            .AddScoped<IProductRepository, ProductRepository>()
+            .AddScoped<IResourceRepository, ResourceRepository>();
 
         return builder;
     }
