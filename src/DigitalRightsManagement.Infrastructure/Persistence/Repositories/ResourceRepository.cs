@@ -1,12 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DigitalRightsManagement.Application.Persistence;
+using Microsoft.EntityFrameworkCore;
 
-namespace DigitalRightsManagement.Infrastructure.Persistence.Repositories
+namespace DigitalRightsManagement.Infrastructure.Persistence.Repositories;
+
+internal class ResourceRepository(ApplicationDbContext dbContext) : IResourceRepository
 {
-    class ResourceRepository
+    public async Task<bool> IsResourceOwner(Guid userId, Type resourceType, Guid[] resourceIds, CancellationToken ct)
     {
+        var entityType = dbContext.Model.FindEntityType(resourceType)
+                         ?? throw new InvalidOperationException($"Type {resourceType.Name} is not an entity type");
+
+        _ = entityType.FindProperty("UserId")
+            ?? throw new InvalidOperationException($"Entity type {entityType.Name} does not have a UserId property");
+
+        var table = dbContext.GetType().GetProperty(entityType.ClrType.Name + "s")?.GetValue(dbContext)
+                    ?? throw new InvalidOperationException($"DbSet for {entityType.Name} not found in DbContext");
+
+        var query = (table as IQueryable<object>)
+                    ?? throw new InvalidOperationException($"Could not get IQueryable for {entityType.Name}");
+
+        var unauthorized = await query
+            .Where(e => resourceIds.Contains(EF.Property<Guid>(e, "Id")))
+            .AnyAsync(e => EF.Property<Guid>(e, "UserId") != userId, ct);
+
+        return !unauthorized;
     }
 }
