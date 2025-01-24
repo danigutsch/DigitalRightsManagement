@@ -14,7 +14,8 @@ internal static class MessagingDependencyInjection
 
             configuration
                 .AddOpenBehavior(typeof(TransactionBehavior<,>))
-                .AddOpenBehavior(typeof(AuthorizationBehavior<,>));
+                .AddOpenBehavior(typeof(AuthorizationBehavior<,>))
+                .AddOpenBehavior(typeof(ResourceOwnerAuthorizationBehavior<,>));
         });
     }
 }
