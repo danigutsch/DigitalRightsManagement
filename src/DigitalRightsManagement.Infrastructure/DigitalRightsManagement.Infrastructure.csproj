@@ -20,6 +20,7 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="DigitalRightsManagement.IntegrationTests" />
+		<InternalsVisibleTo Include="DigitalRightsManagement.UnitTests" />
 	</ItemGroup>
 
 </Project>
