@@ -1,5 +1,5 @@
 ﻿using DigitalRightsManagement.Common.DDD;
-using DigitalRightsManagement.Infrastructure.Persistence.Repositories;
+using DigitalRightsManagement.Infrastructure.Persistence;
 using MediatR;
 
 namespace DigitalRightsManagement.Infrastructure.Messaging;
