@@ -30,7 +30,7 @@ internal sealed class AuthorizationBehavior<TRequest, TResponse>(
         var userResult = await currentUserProvider.Get(cancellationToken);
         if (!userResult.IsSuccess)
         {
-            return (TResponse)(IResult)userResult;
+            return (TResponse)(IResult)userResult.Map();
         }
 
         if (authorizeAttribute.RequiredRole is null)
