@@ -1,10 +1,9 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Application.Authorization;
+using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
-using DigitalRightsManagement.Infrastructure.Persistence;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections;
 using System.Reflection;
@@ -13,7 +12,7 @@ namespace DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 
 internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
     ICurrentUserProvider currentUserProvider,
-    ApplicationDbContext dbContext,
+    IResourceRepository resourceRepository,
     ILogger<ResourceOwnerAuthorizationBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
@@ -35,7 +34,6 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
         }
 
         var attributeType = attribute.GetType();
-        var resourceType = attributeType.GetGenericArguments()[0];
         var idPropertyPath = attributeType.GetProperty(nameof(AuthorizeResourceOwnerAttribute<AggregateRoot>.IdPropertyPath))!
             .GetValue(attribute) as string
             ?? throw new InvalidOperationException("IdPropertyPath cannot be null");
@@ -55,23 +53,11 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
             throw new InvalidOperationException($"Invalid resource ID for request {typeof(TRequest).Name}");
         }
 
-        var entityType = dbContext.Model.FindEntityType(resourceType)
-            ?? throw new InvalidOperationException($"Type {resourceType.Name} is not an entity type");
+        var resourceType = attributeType.GetGenericArguments()[0];
 
-        _ = entityType.FindProperty("UserId")
-            ?? throw new InvalidOperationException($"Entity type {entityType.Name} does not have a UserId property");
+        var isOwner = await resourceRepository.IsResourceOwner(user.Id, resourceType, resourceIds, cancellationToken);
 
-        var table = dbContext.GetType().GetProperty(entityType.ClrType.Name + "s")?.GetValue(dbContext)
-            ?? throw new InvalidOperationException($"DbSet for {entityType.Name} not found in DbContext");
-
-        var query = (table as IQueryable<object>)
-            ?? throw new InvalidOperationException($"Could not get IQueryable for {entityType.Name}");
-
-        var unauthorized = await query
-            .Where(e => resourceIds.Contains(EF.Property<Guid>(e, "Id")))
-            .AnyAsync(e => EF.Property<Guid>(e, "UserId") != user.Id, cancellationToken);
-
-        if (unauthorized)
+        if (!isOwner)
         {
             logger.UnauthorizedResourceAccess(typeof(TRequest).Name, user.Id);
             return (TResponse)(IResult)Result.Unauthorized();
