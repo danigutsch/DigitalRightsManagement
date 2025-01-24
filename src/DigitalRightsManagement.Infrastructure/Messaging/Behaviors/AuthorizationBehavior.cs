@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 
-public sealed class AuthorizationBehavior<TRequest, TResponse>(
+internal sealed class AuthorizationBehavior<TRequest, TResponse>(
     ICurrentUserProvider currentUserProvider,
     ILogger<AuthorizationBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
