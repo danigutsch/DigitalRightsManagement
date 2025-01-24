@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
-using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
+using DigitalRightsManagement.UnitTests.Common.Mocks;
 using DigitalRightsManagement.UnitTests.Common.TestDoubles;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -107,13 +107,5 @@ public class AuthorizationBehaviorTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-    }
-
-    private sealed class TestCurrentUserProvider : ICurrentUserProvider
-    {
-        public Result<User>? NextResult { get; set; }
-
-        public Task<Result<User>> Get(CancellationToken ct) =>
-            Task.FromResult(NextResult ?? Result.NotFound());
     }
 }
