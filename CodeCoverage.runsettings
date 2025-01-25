@@ -7,16 +7,16 @@
 					<CodeCoverage>
 						<ModulePaths>
 							<Include>
-								<ModulePath>.*Common\.dll</ModulePath>
-								<ModulePath>.*Domain\.dll</ModulePath>
-								<ModulePath>.*Application\.dll</ModulePath>
+								<ModulePath>.*[\\/]Common\.dll$</ModulePath>
+								<ModulePath>.*[\\/]Domain\.dll$</ModulePath>
+								<ModulePath>.*[\\/]Application\.dll$</ModulePath>
 							</Include>
 							<Exclude>
-								<ModulePath>.*AppHost\.dll</ModulePath>
-								<ModulePath>.*Api\.dll</ModulePath>
-								<ModulePath>.*Infrastructure\.dll</ModulePath>
-								<ModulePath>.*MigrationService\.dll</ModulePath>
-								<ModulePath>.*ServiceDefaults\.dll</ModulePath>
+								<ModulePath>.*[\\/]AppHost\.dll$</ModulePath>
+								<ModulePath>.*[\\/]Api\.dll$</ModulePath>
+								<ModulePath>.*[\\/]Infrastructure\.dll$</ModulePath>
+								<ModulePath>.*[\\/]MigrationService\.dll$</ModulePath>
+								<ModulePath>.*[\\/]ServiceDefaults\.dll$</ModulePath>
 							</Exclude>
 						</ModulePaths>
 						<UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
