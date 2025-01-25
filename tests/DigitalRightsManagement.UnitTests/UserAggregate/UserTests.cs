@@ -3,7 +3,7 @@ using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate.Events;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using DigitalRightsManagement.Tests.Shared.TestData;
-using DigitalRightsManagement.UnitTests.Common.Abstractions;
+using DigitalRightsManagement.UnitTests.Helpers.Abstractions;
 using Shouldly;
 
 namespace DigitalRightsManagement.UnitTests.UserAggregate;
