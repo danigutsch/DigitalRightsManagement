@@ -2,7 +2,7 @@
 using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Domain.UserAggregate;
 
-namespace DigitalRightsManagement.UnitTests.Common.Mocks;
+namespace DigitalRightsManagement.UnitTests.Helpers.Mocks;
 
 internal sealed class TestCurrentUserProvider : ICurrentUserProvider
 {

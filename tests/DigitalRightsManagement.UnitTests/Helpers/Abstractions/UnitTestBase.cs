@@ -1,6 +1,6 @@
 ﻿using Bogus;
 
-namespace DigitalRightsManagement.UnitTests.Common.Abstractions;
+namespace DigitalRightsManagement.UnitTests.Helpers.Abstractions;
 
 public abstract class UnitTestBase
 {

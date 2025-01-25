@@ -1,3 +1,3 @@
-﻿namespace DigitalRightsManagement.UnitTests.Common.TestDoubles;
+﻿namespace DigitalRightsManagement.UnitTests.Helpers.TestDoubles;
 
 internal sealed record RequestWithoutAuthorizeAttribute : BaseRequest;

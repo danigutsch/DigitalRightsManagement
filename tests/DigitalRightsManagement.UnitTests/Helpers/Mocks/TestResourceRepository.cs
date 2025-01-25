@@ -1,6 +1,6 @@
 ﻿using DigitalRightsManagement.Application.Persistence;
 
-namespace DigitalRightsManagement.UnitTests.Common.Mocks;
+namespace DigitalRightsManagement.UnitTests.Helpers.Mocks;
 
 internal sealed class TestResourceRepository : IResourceRepository
 {
