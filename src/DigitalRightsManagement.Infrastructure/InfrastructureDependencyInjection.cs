@@ -1,5 +1,6 @@
 ﻿using DigitalRightsManagement.Common;
 using DigitalRightsManagement.Common.DDD;
+using DigitalRightsManagement.Infrastructure.Caching;
 using DigitalRightsManagement.Infrastructure.Identity;
 using DigitalRightsManagement.Infrastructure.Messaging;
 using DigitalRightsManagement.Infrastructure.Persistence;
@@ -15,6 +16,8 @@ public static class InfrastructureDependencyInjection
     public static THostBuilder AddInfrastructure<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
         builder.AddPersistence();
+
+        builder.AddCaching();
 
         builder.Services.AddMessaging();
 
