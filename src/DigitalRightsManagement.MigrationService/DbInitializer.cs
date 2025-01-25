@@ -37,16 +37,12 @@ internal sealed class DbInitializer(
 
     private static async Task CreateDatabases(CancellationToken stoppingToken, params IDatabaseManager[] databaseManagers)
     {
-        var tasks = databaseManagers.Select(async databaseManager =>
+        foreach (var databaseManager in databaseManagers)
         {
             await databaseManager.EnsureDatabase(stoppingToken);
             await databaseManager.RunMigration(stoppingToken);
-            await databaseManager.SeedDatabase(stoppingToken)
-                .ConfigureAwait(false);
-        });
-
-        await Task.WhenAll(tasks)
-            .ConfigureAwait(false);
+            await databaseManager.SeedDatabase(stoppingToken);
+        }
     }
 
     public override void Dispose()
