@@ -13,11 +13,11 @@ public interface IDatabaseManager
     Task ResetState(CancellationToken ct);
 }
 
-public abstract class DatabaseManager<TDbContext>(TDbContext context) : IDatabaseManager where TDbContext : DbContext
+public abstract class DatabaseManager<TDbContext>(TDbContext dbContext) : IDatabaseManager where TDbContext : DbContext
 {
     private const string MigrationsHistoryTable = "__EFMigrationsHistory";
 
-    protected TDbContext Context { get; } = context;
+    protected TDbContext Context { get; } = dbContext;
 
     public async Task EnsureDatabase(CancellationToken ct)
     {
