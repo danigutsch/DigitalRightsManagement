@@ -3,4 +3,4 @@ using MediatR;
 
 namespace DigitalRightsManagement.UnitTests.Common.TestDoubles;
 
-internal class TestRequest : IRequest<Result> { }
+internal abstract record BaseRequest : IRequest<Result> { }

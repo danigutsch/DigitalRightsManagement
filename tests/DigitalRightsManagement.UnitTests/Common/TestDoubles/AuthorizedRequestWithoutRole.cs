@@ -3,4 +3,4 @@
 namespace DigitalRightsManagement.UnitTests.Common.TestDoubles;
 
 [Authorize]
-internal sealed class AuthorizedRequestWithoutRole : TestRequest;
+internal sealed record AuthorizedRequestWithoutRole : BaseRequest;
