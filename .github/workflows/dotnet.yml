@@ -75,7 +75,7 @@ jobs:
       run: >
         dotnet test
         --no-build --verbosity normal
-        --collect:"XPlat Code Coverage" --settings CodeCoverage.runsettings
+        --collect:"XPlat Code Coverage" --settings .runsettings
         --logger console --logger trx --logger html
         --results-directory coverage
         --blame
