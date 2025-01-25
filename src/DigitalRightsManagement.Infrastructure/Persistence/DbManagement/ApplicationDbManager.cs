@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Diagnostics;
-using DigitalRightsManagement.Domain.ProductAggregate;
+﻿using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +16,8 @@ internal sealed class ApplicationDbManager(ApplicationDbContext dbContext) : Dat
 
     public override async Task SeedDatabase(CancellationToken ct)
     {
-        Guard.IsNotEmpty(_users);
-        Guard.IsNotEmpty(_products);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_users.Length);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_products.Length);
 
         var strategy = Context.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>

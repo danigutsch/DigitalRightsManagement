@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Diagnostics;
-using DigitalRightsManagement.Domain.UserAggregate;
+﻿using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Infrastructure.Authorization;
 using DigitalRightsManagement.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -18,7 +17,7 @@ internal sealed class IdentityDbManager(AuthDbContext dbContext, UserManager<Aut
 
     public override async Task SeedDatabase(CancellationToken ct)
     {
-        Guard.IsNotEmpty(_users);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_users.Count);
 
         using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 

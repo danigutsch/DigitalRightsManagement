@@ -1,5 +1,4 @@
 ﻿using Ardalis.Result;
-using CommunityToolkit.Diagnostics;
 using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Domain.UserAggregate;
@@ -12,7 +11,7 @@ internal sealed class CurrentUserProvider(IHttpContextAccessor httpContextAccess
 {
     public async Task<Result<User>> Get(CancellationToken ct)
     {
-        Guard.IsNotNull(httpContextAccessor.HttpContext);
+        ArgumentNullException.ThrowIfNull(httpContextAccessor.HttpContext);
 
         var userIdString = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrWhiteSpace(userIdString))
