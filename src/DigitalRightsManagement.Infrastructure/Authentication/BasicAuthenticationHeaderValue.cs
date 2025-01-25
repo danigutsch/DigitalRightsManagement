@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -9,8 +8,8 @@ public sealed class BasicAuthenticationHeaderValue : AuthenticationHeaderValue
 {
     private BasicAuthenticationHeaderValue(string username, string password) : base(BasicAuthenticationDefaults.AuthenticationScheme, GetParameter(username, password))
     {
-        Guard.IsNotNullOrEmpty(username);
-        Guard.IsNotNullOrEmpty(password);
+        ArgumentException.ThrowIfNullOrWhiteSpace(username);
+        ArgumentException.ThrowIfNullOrWhiteSpace(password);
         Credentials = new BasicAuthenticationCredentials(username, password);
     }
 
