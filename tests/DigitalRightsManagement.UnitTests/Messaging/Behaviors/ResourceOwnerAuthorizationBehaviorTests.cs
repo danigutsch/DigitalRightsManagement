@@ -3,9 +3,9 @@ using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 using DigitalRightsManagement.UnitTests.Helpers.Mocks;
 using DigitalRightsManagement.UnitTests.Helpers.TestDoubles;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Shouldly;
 
 namespace DigitalRightsManagement.UnitTests.Messaging.Behaviors;
 
@@ -37,7 +37,7 @@ public sealed class ResourceOwnerAuthorizationBehaviorTests
             CancellationToken.None);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
+        result.IsSuccess.ShouldBeTrue();
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public sealed class ResourceOwnerAuthorizationBehaviorTests
             CancellationToken.None);
 
         // Assert
-        result.IsNotFound().Should().BeTrue();
+        result.IsNotFound().ShouldBeTrue();
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public sealed class ResourceOwnerAuthorizationBehaviorTests
             CancellationToken.None);
 
         // Assert
-        result.IsUnauthorized().Should().BeTrue();
+        result.IsUnauthorized().ShouldBeTrue();
     }
 
     [Fact]
@@ -94,6 +94,6 @@ public sealed class ResourceOwnerAuthorizationBehaviorTests
             CancellationToken.None);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
+        result.IsSuccess.ShouldBeTrue();
     }
 }

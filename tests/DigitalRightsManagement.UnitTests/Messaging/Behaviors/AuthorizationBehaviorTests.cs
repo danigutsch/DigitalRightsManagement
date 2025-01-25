@@ -3,23 +3,22 @@ using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 using DigitalRightsManagement.UnitTests.Helpers.Mocks;
 using DigitalRightsManagement.UnitTests.Helpers.TestDoubles;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Shouldly;
 
 namespace DigitalRightsManagement.UnitTests.Messaging.Behaviors;
 
 public class AuthorizationBehaviorTests
 {
     private readonly TestCurrentUserProvider _userProvider;
-    private readonly ILogger<AuthorizationBehavior<BaseRequest, Result>> _logger;
     private readonly AuthorizationBehavior<BaseRequest, Result> _behavior;
 
     public AuthorizationBehaviorTests()
     {
+        var logger = NullLogger<AuthorizationBehavior<BaseRequest, Result>>.Instance;
+
         _userProvider = new TestCurrentUserProvider();
-        _logger = NullLogger<AuthorizationBehavior<BaseRequest, Result>>.Instance;
-        _behavior = new AuthorizationBehavior<BaseRequest, Result>(_userProvider, _logger);
+        _behavior = new AuthorizationBehavior<BaseRequest, Result>(_userProvider, logger);
     }
 
     [Fact]
@@ -35,7 +34,7 @@ public class AuthorizationBehaviorTests
             CancellationToken.None);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
+        result.IsSuccess.ShouldBeTrue();
     }
 
     [Fact]
@@ -53,7 +52,7 @@ public class AuthorizationBehaviorTests
             CancellationToken.None);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
+        result.IsSuccess.ShouldBeTrue();
     }
 
     [Fact]
@@ -70,7 +69,7 @@ public class AuthorizationBehaviorTests
             CancellationToken.None);
 
         // Assert
-        result.IsNotFound().Should().BeTrue();
+        result.IsNotFound().ShouldBeTrue();
     }
 
     [Fact]
@@ -88,7 +87,7 @@ public class AuthorizationBehaviorTests
             CancellationToken.None);
 
         // Assert
-        result.IsUnauthorized().Should().BeTrue();
+        result.IsUnauthorized().ShouldBeTrue();
     }
 
     [Fact]
@@ -106,6 +105,6 @@ public class AuthorizationBehaviorTests
             CancellationToken.None);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
+        result.IsSuccess.ShouldBeTrue();
     }
 }
