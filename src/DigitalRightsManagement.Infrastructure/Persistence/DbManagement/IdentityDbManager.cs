@@ -12,7 +12,7 @@ public interface IIdentityDbManager : IDatabaseManager
     public void SetSeedData(IEnumerable<(User user, string password)> users);
 }
 
-internal sealed class IdentityDbManager(AuthDbContext context, UserManager<AuthUser> userManager, RoleManager<IdentityRole> roleManager) : DatabaseManager<AuthDbContext>(context), IIdentityDbManager
+internal sealed class IdentityDbManager(AuthDbContext dbContext, UserManager<AuthUser> userManager, RoleManager<IdentityRole> roleManager) : DatabaseManager<AuthDbContext>(dbContext), IIdentityDbManager
 {
     private List<(User user, string password)> _users = [];
 
