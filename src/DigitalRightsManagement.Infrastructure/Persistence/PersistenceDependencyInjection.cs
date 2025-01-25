@@ -1,6 +1,4 @@
-﻿using DigitalRightsManagement.Application.Persistence;
-using DigitalRightsManagement.Common;
-using DigitalRightsManagement.Infrastructure.Persistence.Repositories;
+﻿using DigitalRightsManagement.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,11 +17,6 @@ internal static class PersistenceDependencyInjection
             options.EnableDetailedErrors();
             options.EnableSensitiveDataLogging();
         });
-
-        builder.Services
-            .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IProductRepository, ProductRepository>()
-            .AddScoped<IResourceRepository, ResourceRepository>();
 
         return builder;
     }

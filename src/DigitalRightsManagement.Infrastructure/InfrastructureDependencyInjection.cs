@@ -1,10 +1,15 @@
-﻿using DigitalRightsManagement.Common;
+﻿using DigitalRightsManagement.Application.Persistence;
+using DigitalRightsManagement.Common;
 using DigitalRightsManagement.Common.DDD;
+using DigitalRightsManagement.Infrastructure.Caching;
+using DigitalRightsManagement.Infrastructure.Caching.Repositories;
 using DigitalRightsManagement.Infrastructure.Identity;
 using DigitalRightsManagement.Infrastructure.Messaging;
 using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
+using DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -16,9 +21,29 @@ public static class InfrastructureDependencyInjection
     {
         builder.AddPersistence();
 
+        builder.AddCaching();
+
+        builder.Services.AddRepositories();
+
         builder.Services.AddMessaging();
 
         return builder;
+    }
+
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        // TODO: Add option to use cache or not
+        return services
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IProductRepository, ProductRepository>()
+            .AddScoped<ResourceRepository>()
+            .AddScoped<IResourceRepository>(provider =>
+            {
+                var resourceRepository = provider.GetRequiredService<ResourceRepository>();
+                var cache = provider.GetRequiredService<IDistributedCache>();
+
+                return new CachedResourceRepository(resourceRepository, cache);
+            });
     }
 
     public static THostBuilder AddMigrationInfrastructure<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder

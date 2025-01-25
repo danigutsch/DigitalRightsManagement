@@ -4,11 +4,11 @@ using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
-using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-[Authorize(UserRoles.Manager)]
+[AuthorizeResourceOwner<Product>]
 public sealed record PublishProductCommand(Guid ProductId) : ICommand
 {
     internal sealed class PublishProductCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<PublishProductCommand>

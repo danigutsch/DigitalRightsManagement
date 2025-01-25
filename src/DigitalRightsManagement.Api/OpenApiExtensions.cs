@@ -9,7 +9,11 @@ internal static class OpenApiExtensions
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
-            app.MapScalarApiReference(options => options.Title = ApiConstants.Name);
+            app.MapScalarApiReference(options =>
+            {
+                options.Title = ApiConstants.Name;
+                options.Servers = [];
+            });
         }
 
         return app;

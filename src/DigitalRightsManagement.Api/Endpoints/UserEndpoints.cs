@@ -28,7 +28,7 @@ internal class UserEndpoints : EndpointGroupBase
 
         group.MapPost("/change-email", ChangeEmail)
             .WithName("ChangeEmail")
-            .WithSummary("Change the role of a user")
+            .WithSummary("Change the e-mail of an user")
             .WithDescription("Allows an user to change his/her e-mail address.")
             .ProducesDefault();
 

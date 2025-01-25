@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace DigitalRightsManagement.Infrastructure.Identity;
 
-public static class IdentityDependencyInjection
+internal static class IdentityDependencyInjection
 {
     public static TApplicationBuilder AddIdentity<TApplicationBuilder>(this TApplicationBuilder builder) where TApplicationBuilder : IHostApplicationBuilder
     {

@@ -2,7 +2,6 @@
 
 namespace DigitalRightsManagement.Application.Authorization;
 
-[AttributeUsage(AttributeTargets.Class)]
 public abstract class AuthorizeResourceOwnerAttribute(string idPropertyPath) : Attribute
 {
     public string IdPropertyPath { get; } = idPropertyPath;
