@@ -2,12 +2,13 @@
 using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.IntegrationTests.Helpers.Abstractions;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 using System.Net.Http.Json;
 
-namespace DigitalRightsManagement.IntegrationTests;
+namespace DigitalRightsManagement.IntegrationTests.ProductAggregate;
 
 public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(fixture)
 {

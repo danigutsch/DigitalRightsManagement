@@ -2,9 +2,10 @@
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
+using DigitalRightsManagement.IntegrationTests.Helpers.HttpAuthHandlers;
 using DigitalRightsManagement.MigrationService;
 
-namespace DigitalRightsManagement.IntegrationTests;
+namespace DigitalRightsManagement.IntegrationTests.Helpers.Abstractions;
 
 public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IAsyncLifetime, IDisposable
 {

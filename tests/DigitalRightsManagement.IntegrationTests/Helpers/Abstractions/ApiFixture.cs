@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 
-namespace DigitalRightsManagement.IntegrationTests;
+namespace DigitalRightsManagement.IntegrationTests.Helpers.Abstractions;
 
 public sealed class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
