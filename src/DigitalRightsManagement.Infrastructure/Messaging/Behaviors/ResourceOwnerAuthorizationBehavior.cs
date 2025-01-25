@@ -2,7 +2,6 @@
 using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Application.Persistence;
-using DigitalRightsManagement.Common.DDD;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Collections;
@@ -30,7 +29,6 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
                 .ConfigureAwait(false);
         }
 
-        var idPropertyPath = GetIdPropertyPath(attribute);
         var userResult = await currentUserProvider.Get(cancellationToken);
         if (!userResult.IsSuccess)
         {
@@ -38,7 +36,7 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
         }
 
         var user = userResult.Value;
-        var resourceIds = GetResourceIds(request, idPropertyPath);
+        var resourceIds = GetResourceIds(request, attribute.IdPropertyPath);
         if (resourceIds.Length == 0)
         {
             logger.InvalidResourceId(typeof(TRequest).Name);
@@ -66,14 +64,6 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
                         a.GetType().GetGenericTypeDefinition() == typeof(AuthorizeResourceOwnerAttribute<>))
             .Cast<AuthorizeResourceOwnerAttribute>()
             .FirstOrDefault();
-    }
-
-    private static string GetIdPropertyPath(AuthorizeResourceOwnerAttribute attribute)
-    {
-        return attribute.GetType()
-            .GetProperty(nameof(AuthorizeResourceOwnerAttribute<AggregateRoot>.IdPropertyPath))!
-            .GetValue(attribute) as string
-            ?? throw new InvalidOperationException("IdPropertyPath cannot be null");
     }
 
     private static Guid[] GetResourceIds(TRequest request, string propertyPath)

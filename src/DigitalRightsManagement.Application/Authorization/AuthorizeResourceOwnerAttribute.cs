@@ -6,8 +6,6 @@ namespace DigitalRightsManagement.Application.Authorization;
 public abstract class AuthorizeResourceOwnerAttribute(string idPropertyPath) : Attribute
 {
     public string IdPropertyPath { get; } = idPropertyPath;
-
-    public abstract Type ResourceType { get; }
 }
 
 
@@ -16,6 +14,4 @@ public sealed class AuthorizeResourceOwnerAttribute<TResource>(string idProperty
     where TResource : AggregateRoot
 {
     public AuthorizeResourceOwnerAttribute() : this($"{typeof(TResource).Name}Id") { }
-
-    public override Type ResourceType { get; } = typeof(TResource);
 }
