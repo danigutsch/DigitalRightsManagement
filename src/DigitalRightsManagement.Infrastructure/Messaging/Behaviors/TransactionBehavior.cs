@@ -1,6 +1,7 @@
 ﻿using DigitalRightsManagement.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 
@@ -38,6 +39,8 @@ internal sealed class TransactionBehavior<TRequest, TResponse>(
         }
         catch (Exception ex)
         {
+            Activity.Current?.AddException(ex);
+
             logger.TransactionError(ex, typeName, request);
 
             throw;
