@@ -26,14 +26,15 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
         var attribute = GetAuthorizeResourceOwnerAttribute(request);
         if (attribute is null)
         {
-            return await next();
+            return await next()
+                .ConfigureAwait(false);
         }
 
         var idPropertyPath = GetIdPropertyPath(attribute);
         var userResult = await currentUserProvider.Get(cancellationToken);
         if (!userResult.IsSuccess)
         {
-            return (TResponse)(IResult)userResult;
+            return (TResponse)(IResult)userResult.Map();
         }
 
         var user = userResult.Value;
@@ -53,19 +54,21 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
             return (TResponse)(IResult)Result.Unauthorized();
         }
 
-        return await next();
+        return await next()
+            .ConfigureAwait(false);
     }
 
-    private static AuthorizeResourceOwnerAttribute<AggregateRoot>? GetAuthorizeResourceOwnerAttribute(TRequest request)
+    private static AuthorizeResourceOwnerAttribute? GetAuthorizeResourceOwnerAttribute(TRequest request)
     {
         return request.GetType()
             .GetCustomAttributes()
-            .FirstOrDefault(a => a.GetType().IsGenericType &&
-                                 a.GetType().GetGenericTypeDefinition() == typeof(AuthorizeResourceOwnerAttribute<>))
-            as AuthorizeResourceOwnerAttribute<AggregateRoot>;
+            .Where(a => a.GetType().IsGenericType &&
+                        a.GetType().GetGenericTypeDefinition() == typeof(AuthorizeResourceOwnerAttribute<>))
+            .Cast<AuthorizeResourceOwnerAttribute>()
+            .FirstOrDefault();
     }
 
-    private static string GetIdPropertyPath(AuthorizeResourceOwnerAttribute<AggregateRoot> attribute)
+    private static string GetIdPropertyPath(AuthorizeResourceOwnerAttribute attribute)
     {
         return attribute.GetType()
             .GetProperty(nameof(AuthorizeResourceOwnerAttribute<AggregateRoot>.IdPropertyPath))!
