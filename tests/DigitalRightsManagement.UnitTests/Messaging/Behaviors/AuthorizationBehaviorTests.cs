@@ -12,21 +12,21 @@ namespace DigitalRightsManagement.UnitTests.Messaging.Behaviors;
 public class AuthorizationBehaviorTests
 {
     private readonly TestCurrentUserProvider _userProvider;
-    private readonly ILogger<AuthorizationBehavior<TestRequest, Result>> _logger;
-    private readonly AuthorizationBehavior<TestRequest, Result> _behavior;
+    private readonly ILogger<AuthorizationBehavior<BaseRequest, Result>> _logger;
+    private readonly AuthorizationBehavior<BaseRequest, Result> _behavior;
 
     public AuthorizationBehaviorTests()
     {
         _userProvider = new TestCurrentUserProvider();
-        _logger = NullLogger<AuthorizationBehavior<TestRequest, Result>>.Instance;
-        _behavior = new AuthorizationBehavior<TestRequest, Result>(_userProvider, _logger);
+        _logger = NullLogger<AuthorizationBehavior<BaseRequest, Result>>.Instance;
+        _behavior = new AuthorizationBehavior<BaseRequest, Result>(_userProvider, _logger);
     }
 
     [Fact]
     public async Task Handle_RequestWithoutAttribute_ReturnsSuccess()
     {
         // Arrange
-        var request = new TestRequest();
+        var request = new RequestWithoutAuthorizeAttribute();
 
         // Act
         var result = await _behavior.Handle(
@@ -60,7 +60,7 @@ public class AuthorizationBehaviorTests
     public async Task Handle_UserNotFound_ReturnsNotFound()
     {
         // Arrange
-        var request = new AuthorizedRequest();
+        var request = new RequestWithAuthorizeAttribute();
         _userProvider.NextResult = Result.NotFound();
 
         // Act
@@ -77,7 +77,7 @@ public class AuthorizationBehaviorTests
     public async Task Handle_InsufficientRole_ReturnsUnauthorized()
     {
         // Arrange
-        var request = new AuthorizedRequest();
+        var request = new RequestWithAuthorizeAttribute();
         var user = User.Create("test", "test@test.com", UserRoles.Viewer).Value;
         _userProvider.NextResult = Result.Success(user);
 
@@ -95,7 +95,7 @@ public class AuthorizationBehaviorTests
     public async Task Handle_SufficientRole_ReturnsSuccess()
     {
         // Arrange
-        var request = new AuthorizedRequest();
+        var request = new RequestWithAuthorizeAttribute();
         var user = User.Create("test", "test@test.com", UserRoles.Manager).Value;
         _userProvider.NextResult = Result.Success(user);
 
