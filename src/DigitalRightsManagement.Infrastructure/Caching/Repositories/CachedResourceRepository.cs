@@ -34,7 +34,7 @@ internal sealed class CachedResourceRepository(
         return isOwner;
     }
 
-    private static string GetCacheKey(Guid userId, Type resourceType, Guid[] resourceIds)
+    public static string GetCacheKey(Guid userId, Type resourceType, Guid[] resourceIds)
     {
         byte[] idsBytes = [.. resourceIds.SelectMany(id => id.ToByteArray())];
         var idsHash = Convert.ToBase64String(SHA256.HashData(idsBytes));
