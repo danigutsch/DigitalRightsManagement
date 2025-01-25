@@ -5,11 +5,10 @@ using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
 using DigitalRightsManagement.Domain.ProductAggregate;
-using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-[Authorize(UserRoles.Manager), AuthorizeResourceOwner<Product>()]
+[AuthorizeResourceOwner<Product>]
 public sealed record MakeProductObsoleteCommand(Guid ProductId) : ICommand
 {
     internal sealed class MakeProductObsoleteCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<MakeProductObsoleteCommand>

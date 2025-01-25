@@ -4,11 +4,11 @@ using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
-using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-[Authorize(UserRoles.Manager)]
+[AuthorizeResourceOwner<Product>]
 public sealed record UpdateDescriptionCommand(Guid ProductId, string NewDescription) : ICommand
 {
     internal sealed class UpdateDescriptionCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<UpdateDescriptionCommand>
