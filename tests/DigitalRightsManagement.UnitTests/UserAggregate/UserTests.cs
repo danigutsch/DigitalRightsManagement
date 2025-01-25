@@ -4,7 +4,7 @@ using DigitalRightsManagement.Domain.UserAggregate.Events;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using DigitalRightsManagement.Tests.Shared.TestData;
 using DigitalRightsManagement.UnitTests.Common.Abstractions;
-using FluentAssertions;
+using Shouldly;
 
 namespace DigitalRightsManagement.UnitTests.UserAggregate;
 
@@ -22,8 +22,9 @@ public sealed class UserTests : UnitTestBase
         var result = User.Create(_user.Username, _user.Email, _user.Role, emptyId);
 
         // Assert
-        result.IsInvalid().Should().BeTrue();
-        result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("id");
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("id");
     }
 
     [Theory, ClassData(typeof(EmptyStringTestData))]
@@ -34,8 +35,9 @@ public sealed class UserTests : UnitTestBase
         var result = User.Create(emptyUsername, _user.Email, _user.Role);
 
         // Assert
-        result.IsInvalid().Should().BeTrue();
-        result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("username");
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("username");
     }
 
     [Theory, ClassData(typeof(InvalidEmailTestData))]
@@ -47,8 +49,9 @@ public sealed class UserTests : UnitTestBase
         var result = User.Create(_user.Username, invalidEmail, _user.Role);
 
         // Assert
-        result.IsInvalid().Should().BeTrue();
-        result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("email");
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("email");
     }
 
     [Fact]
@@ -61,8 +64,9 @@ public sealed class UserTests : UnitTestBase
         var result = User.Create(_user.Username, _user.Email, invalidRole);
 
         // Assert
-        result.IsInvalid().Should().BeTrue();
-        result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("role");
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("role");
     }
 
     [Fact]
@@ -73,10 +77,10 @@ public sealed class UserTests : UnitTestBase
         var result = User.Create(_user.Username, _user.Email, _user.Role);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
-        result.Value.Username.Should().Be(_user.Username);
-        result.Value.Email.Should().Be(_user.Email);
-        result.Value.Role.Should().Be(_user.Role);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Username.ShouldBe(_user.Username);
+        result.Value.Email.ShouldBe(_user.Email);
+        result.Value.Role.ShouldBe(_user.Role);
     }
 
     [Fact]
@@ -87,9 +91,9 @@ public sealed class UserTests : UnitTestBase
         var result = User.Create(_user.Username, _user.Email, _user.Role);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
-        result.Value.DomainEvents.Should().ContainSingle()
-            .Which.Should().BeOfType<UserCreated>();
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.DomainEvents.ShouldHaveSingleItem()
+            .ShouldBeOfType<UserCreated>();
     }
 
     [Theory, ClassData(typeof(InvalidEmailTestData))]
@@ -102,8 +106,9 @@ public sealed class UserTests : UnitTestBase
         var result = user.ChangeEmail(invalidEmail);
 
         // Assert
-        result.IsInvalid().Should().BeTrue();
-        result.ValidationErrors.Should().ContainSingle().Which.ErrorCode.Should().Contain("email");
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("email");
     }
 
     [Fact]
@@ -116,8 +121,8 @@ public sealed class UserTests : UnitTestBase
         var result = user.ChangeEmail(_user.Email);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
-        user.Email.Should().Be(_user.Email);
+        result.IsSuccess.ShouldBeTrue();
+        user.Email.ShouldBe(_user.Email);
     }
 
     [Fact]
@@ -130,8 +135,8 @@ public sealed class UserTests : UnitTestBase
         var result = user.ChangeEmail(_user.Email);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
-        user.DomainEvents.OfType<EmailUpdated>().Should().ContainSingle();
+        result.IsSuccess.ShouldBeTrue();
+        user.DomainEvents.OfType<EmailUpdated>().ShouldHaveSingleItem();
     }
 
     [Fact]
@@ -147,8 +152,8 @@ public sealed class UserTests : UnitTestBase
         var result = user.ChangeRole(admin, targetRole);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
-        user.Role.Should().Be(targetRole);
+        result.IsSuccess.ShouldBeTrue();
+        user.Role.ShouldBe(targetRole);
     }
 
     [Fact]
@@ -164,8 +169,8 @@ public sealed class UserTests : UnitTestBase
         var result = user.ChangeRole(admin, targetRole);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
-        user.Role.Should().Be(targetRole);
+        result.IsSuccess.ShouldBeTrue();
+        user.Role.ShouldBe(targetRole);
     }
 
     [Fact]
@@ -179,8 +184,8 @@ public sealed class UserTests : UnitTestBase
         var result = user.ChangeRole(admin, UserRoles.Manager);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
-        user.DomainEvents.OfType<UserPromoted>().Should().ContainSingle();
+        result.IsSuccess.ShouldBeTrue();
+        user.DomainEvents.OfType<UserPromoted>().ShouldHaveSingleItem();
     }
 
     [Fact]
@@ -201,7 +206,7 @@ public sealed class UserTests : UnitTestBase
             .Select(tuple => tuple.Promotee.ChangeRole(tuple.Promoter, UserRoles.Manager));
 
         // Assert
-        results.Should().AllSatisfy(r => r.IsUnauthorized());
+        results.ShouldAllBe(r => r.IsUnauthorized());
     }
 
     [Fact]
@@ -215,7 +220,7 @@ public sealed class UserTests : UnitTestBase
         var result = user.ChangeRole(admin, UserRoles.Manager);
 
         // Assert
-        result.IsInvalid().Should().BeTrue();
+        result.IsInvalid().ShouldBeTrue();
     }
 
     [Fact]
@@ -229,7 +234,7 @@ public sealed class UserTests : UnitTestBase
         var result = user.ChangeRole(admin, (UserRoles)999);
 
         // Assert
-        result.IsInvalid().Should().BeTrue();
+        result.IsInvalid().ShouldBeTrue();
     }
 
     [Fact]
@@ -243,8 +248,9 @@ public sealed class UserTests : UnitTestBase
         var result = user.AddProduct(product.Id);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
-        user.Products.Should().ContainSingle().Which.Should().Be(product.Id);
+        result.IsSuccess.ShouldBeTrue();
+        user.Products.ShouldHaveSingleItem()
+            .ShouldBe(product.Id);
     }
 
     [Fact]
@@ -258,7 +264,7 @@ public sealed class UserTests : UnitTestBase
         var result = user.AddProduct(product.Id);
 
         // Assert
-        result.IsUnauthorized().Should().BeTrue();
+        result.IsUnauthorized().ShouldBeTrue();
     }
 
     [Fact]
@@ -272,12 +278,12 @@ public sealed class UserTests : UnitTestBase
         var result = user.AddProduct(product.Id);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
+        result.IsSuccess.ShouldBeTrue();
 
         // Act
         result = user.AddProduct(product.Id);
 
         // Assert
-        result.IsInvalid().Should().BeTrue();
+        result.IsInvalid().ShouldBeTrue();
     }
 }

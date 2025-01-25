@@ -3,8 +3,8 @@ using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Tests.Shared.Factories;
-using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Shouldly;
 using System.Net.Http.Json;
 
 namespace DigitalRightsManagement.IntegrationTests;
@@ -21,7 +21,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         var response = await GetHttpClient(managerWithProducts).GetAsync("products");
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var products = await response.Content.ReadFromJsonAsync<ProductDto[]>();
 
         var productNames = await DbContext.Products
@@ -29,8 +29,8 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
             .Select(p => p.Name)
             .ToArrayAsync();
 
-        products.Should().NotBeNullOrEmpty();
-        products.Select(p => p.Name).Should().BeEquivalentTo(productNames);
+        products.ShouldNotBeEmpty();
+        products.Select(p => p.Name).ToArray().ShouldBeEquivalentTo(productNames);
     }
 
     [Fact]
@@ -50,20 +50,20 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         var response = await GetHttpClient(manager).PostAsJsonAsync("/products/create", createProductDto);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var createdProductId = await response.Content.ReadFromJsonAsync<Guid>();
-        createdProductId.Should().NotBeEmpty();
+        createdProductId.ShouldNotBe(Guid.Empty);
 
         var product = await DbContext.Products.FindAsync(createdProductId);
-        product.Should().NotBeNull();
-        product.Name.Should().Be(productName);
-        product.Description.Should().Be(productDescription);
-        product.Price.Amount.Should().Be(productPrice);
-        product.Price.Currency.Should().Be(productCurrency);
+        product.ShouldNotBeNull();
+        product.Name.ShouldBe(productName);
+        product.Description.ShouldBe(productDescription);
+        product.Price.Amount.ShouldBe(productPrice);
+        product.Price.Currency.ShouldBe(productCurrency);
 
-        manager = await DbContext.Users.FindAsync([manager.Id]);
-        manager.Should().NotBeNull();
-        manager.Products.Should().Contain(productId => productId == createdProductId);
+        manager = await DbContext.Users.FindAsync(manager.Id);
+        manager.ShouldNotBeNull();
+        manager.Products.ShouldContain(productId => productId == createdProductId);
     }
 
     [Fact]
@@ -83,12 +83,12 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         var response = await GetHttpClient(manager).PutAsJsonAsync($"/products/{productId}/price", updatePriceDto);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         var updatedProduct = await DbContext.Products.FindAsync(productId);
-        updatedProduct.Should().NotBeNull();
-        updatedProduct.Price.Amount.Should().Be(newPrice);
-        updatedProduct.Price.Currency.Should().Be(newCurrency);
+        updatedProduct.ShouldNotBeNull();
+        updatedProduct.Price.Amount.ShouldBe(newPrice);
+        updatedProduct.Price.Currency.ShouldBe(newCurrency);
     }
 
     [Fact]
@@ -106,11 +106,11 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         var response = await GetHttpClient(manager).PutAsJsonAsync($"/products/{productId}/description", updatePriceDto);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         var updatedProduct = await DbContext.Products.FindAsync(productId);
-        updatedProduct.Should().NotBeNull();
-        updatedProduct.Description.Should().Be(newDescription);
+        updatedProduct.ShouldNotBeNull();
+        updatedProduct.Description.ShouldBe(newDescription);
     }
 
     [Fact]
@@ -124,11 +124,11 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         var response = await GetHttpClient(manager).PostAsync($"/products/{product.Id}/publish", null);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         await DbContext.Entry(product).ReloadAsync();
-        product.Should().NotBeNull();
-        product.Status.Should().Be(ProductStatus.Published);
+        product.ShouldNotBeNull();
+        product.Status.ShouldBe(ProductStatus.Published);
     }
 
     [Fact]
@@ -142,10 +142,10 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         var response = await GetHttpClient(manager).PostAsync($"/products/{product.Id}/obsolete", null);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         await DbContext.Entry(product).ReloadAsync();
-        product.Should().NotBeNull();
-        product.Status.Should().Be(ProductStatus.Obsolete);
+        product.ShouldNotBeNull();
+        product.Status.ShouldBe(ProductStatus.Obsolete);
     }
 }
