@@ -1,7 +1,7 @@
 ﻿using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Domain.UserAggregate;
 
-namespace DigitalRightsManagement.UnitTests.Common.TestDoubles;
+namespace DigitalRightsManagement.UnitTests.Helpers.TestDoubles;
 
 [Authorize(UserRoles.Manager)]
 internal sealed record RequestWithAuthorizeAttribute : BaseRequest;

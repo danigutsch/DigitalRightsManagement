@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
-using DigitalRightsManagement.UnitTests.Common.Mocks;
-using DigitalRightsManagement.UnitTests.Common.TestDoubles;
+using DigitalRightsManagement.UnitTests.Helpers.Mocks;
+using DigitalRightsManagement.UnitTests.Helpers.TestDoubles;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

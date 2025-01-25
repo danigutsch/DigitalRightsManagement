@@ -1,6 +1,6 @@
 ﻿using DigitalRightsManagement.Application.Authorization;
 
-namespace DigitalRightsManagement.UnitTests.Common.TestDoubles;
+namespace DigitalRightsManagement.UnitTests.Helpers.TestDoubles;
 
 [AuthorizeResourceOwner<TestResource>]
 #pragma warning disable CS9113
