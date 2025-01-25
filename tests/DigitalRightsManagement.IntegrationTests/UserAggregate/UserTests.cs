@@ -1,11 +1,12 @@
 ﻿using DigitalRightsManagement.Api.Endpoints;
 using DigitalRightsManagement.Application.UserAggregate;
 using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.IntegrationTests.Helpers.Abstractions;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using System.Net.Http.Json;
 using Shouldly;
 
-namespace DigitalRightsManagement.IntegrationTests;
+namespace DigitalRightsManagement.IntegrationTests.UserAggregate;
 
 public sealed class UserTests(ApiFixture fixture) : ApiIntegrationTestsBase(fixture)
 {
