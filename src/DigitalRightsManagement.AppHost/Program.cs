@@ -2,7 +2,9 @@ using DigitalRightsManagement.Common;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var cache = builder.AddRedis(ResourceNames.Cache);
+var cache = builder.AddRedis(ResourceNames.Cache)
+    .WithRedisCommander()
+    .WithRedisInsight();
 
 var databaseServer = builder.AddPostgres(ResourceNames.DatabaseServer)
     .WithPgWeb();
