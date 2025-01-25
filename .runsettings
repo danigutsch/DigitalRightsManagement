@@ -11,13 +11,6 @@
 								<ModulePath>.*Domain.*</ModulePath>
 								<ModulePath>.*Application.*</ModulePath>
 							</Include>
-							<Exclude>
-								<ModulePath>.*AppHost.*</ModulePath>
-								<ModulePath>.*Api.*</ModulePath>
-								<ModulePath>.*Infrastructure.*</ModulePath>
-								<ModulePath>.*MigrationService.*</ModulePath>
-								<ModulePath>.*ServiceDefaults.*</ModulePath>
-							</Exclude>
 						</ModulePaths>
 						<UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
 						<AllowLowIntegrityProcesses>True</AllowLowIntegrityProcesses>
