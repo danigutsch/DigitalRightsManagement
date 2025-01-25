@@ -24,7 +24,8 @@ internal sealed class AuthorizationBehavior<TRequest, TResponse>(
         var authorizeAttribute = request.GetType().GetCustomAttribute<AuthorizeAttribute>();
         if (authorizeAttribute is null)
         {
-            return await next();
+            return await next()
+                .ConfigureAwait(false);
         }
 
         var userResult = await currentUserProvider.Get(cancellationToken);
@@ -35,7 +36,8 @@ internal sealed class AuthorizationBehavior<TRequest, TResponse>(
 
         if (authorizeAttribute.RequiredRole is null)
         {
-            return await next();
+            return await next()
+                .ConfigureAwait(false);
         }
 
         var user = userResult.Value;
@@ -47,7 +49,8 @@ internal sealed class AuthorizationBehavior<TRequest, TResponse>(
             return (TResponse)(IResult)Errors.User.Unauthorized(requiredRole);
         }
 
-        return await next();
+        return await next()
+            .ConfigureAwait(false);
     }
 }
 
