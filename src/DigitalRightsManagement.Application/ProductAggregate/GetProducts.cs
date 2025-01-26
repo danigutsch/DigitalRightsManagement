@@ -11,12 +11,12 @@ namespace DigitalRightsManagement.Application.ProductAggregate;
 [Authorize(UserRoles.Manager)]
 public sealed record GetProductsQuery : IQuery<ProductDto[]>
 {
-    internal sealed class GetProductsQueryHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : IQueryHandler<GetProductsQuery, ProductDto[]>
+    internal sealed class GetProductsQueryHandler(ICurrentUserProvider currentUserProvider, IManagementQueries queries) : IQueryHandler<GetProductsQuery, ProductDto[]>
     {
         public async Task<Result<ProductDto[]>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
             return await currentUserProvider.Get(cancellationToken)
-                .BindAsync(user => productRepository.GetById(user.Products, cancellationToken))
+                .BindAsync(user => queries.GetProductsByUserId(user.Id, cancellationToken))
                 .MapAsync(MapToDto);
         }
 
