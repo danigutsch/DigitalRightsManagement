@@ -33,10 +33,9 @@ public static class InfrastructureDependencyInjection
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         // TODO: Add option to use cache or not
-        return services
+        services
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IProductRepository, ProductRepository>()
-            .AddScoped<ResourceRepository>()
             .AddScoped<IResourceRepository>(provider =>
             {
                 var dbContext = provider.GetRequiredService<ManagementDbContext>();
@@ -45,6 +44,8 @@ public static class InfrastructureDependencyInjection
 
                 return new CachedResourceRepository(resourceRepository, cache);
             });
+
+        return services.AddScoped<IManagementQueries, ManagementQueries>();
     }
 
     public static THostBuilder AddMigrationInfrastructure<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
