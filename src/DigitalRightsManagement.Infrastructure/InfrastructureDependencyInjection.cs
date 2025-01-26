@@ -39,7 +39,8 @@ public static class InfrastructureDependencyInjection
             .AddScoped<ResourceRepository>()
             .AddScoped<IResourceRepository>(provider =>
             {
-                var resourceRepository = provider.GetRequiredService<ResourceRepository>();
+                var dbContext = provider.GetRequiredService<ManagementDbContext>();
+                var resourceRepository = new ResourceRepository(dbContext);
                 var cache = provider.GetRequiredService<IDistributedCache>();
 
                 return new CachedResourceRepository(resourceRepository, cache);
