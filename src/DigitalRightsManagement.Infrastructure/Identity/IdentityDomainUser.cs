@@ -2,7 +2,7 @@
 
 namespace DigitalRightsManagement.Infrastructure.Identity;
 
-public sealed class AuthUser : IdentityUser
+internal abstract class IdentityDomainUser : IdentityUser
 {
     public required Guid DomainUserId { get; init; }
 }

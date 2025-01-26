@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
+namespace DigitalRightsManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -13,11 +13,11 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "identity");
+                name: "management_identity");
 
             migrationBuilder.CreateTable(
                 name: "Roles",
-                schema: "identity",
+                schema: "management_identity",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
@@ -32,11 +32,10 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "Users",
-                schema: "identity",
+                schema: "management_identity",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    DomainUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -50,7 +49,8 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
                     TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false),
+                    DomainUserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,7 +59,7 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "RoleClaims",
-                schema: "identity",
+                schema: "management_identity",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -74,7 +74,7 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
                     table.ForeignKey(
                         name: "FK_RoleClaims_Roles_RoleId",
                         column: x => x.RoleId,
-                        principalSchema: "identity",
+                        principalSchema: "management_identity",
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -82,7 +82,7 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "UserClaims",
-                schema: "identity",
+                schema: "management_identity",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -97,7 +97,7 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
                     table.ForeignKey(
                         name: "FK_UserClaims_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "identity",
+                        principalSchema: "management_identity",
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -105,7 +105,7 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "UserLogins",
-                schema: "identity",
+                schema: "management_identity",
                 columns: table => new
                 {
                     LoginProvider = table.Column<string>(type: "text", nullable: false),
@@ -119,7 +119,7 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
                     table.ForeignKey(
                         name: "FK_UserLogins_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "identity",
+                        principalSchema: "management_identity",
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -127,7 +127,7 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "UserRoles",
-                schema: "identity",
+                schema: "management_identity",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "text", nullable: false),
@@ -139,14 +139,14 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
                     table.ForeignKey(
                         name: "FK_UserRoles_Roles_RoleId",
                         column: x => x.RoleId,
-                        principalSchema: "identity",
+                        principalSchema: "management_identity",
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "identity",
+                        principalSchema: "management_identity",
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -154,7 +154,7 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateTable(
                 name: "UserTokens",
-                schema: "identity",
+                schema: "management_identity",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "text", nullable: false),
@@ -168,7 +168,7 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
                     table.ForeignKey(
                         name: "FK_UserTokens_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "identity",
+                        principalSchema: "management_identity",
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -176,44 +176,44 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
-                schema: "identity",
+                schema: "management_identity",
                 table: "RoleClaims",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
-                schema: "identity",
+                schema: "management_identity",
                 table: "Roles",
                 column: "NormalizedName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
-                schema: "identity",
+                schema: "management_identity",
                 table: "UserClaims",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserLogins_UserId",
-                schema: "identity",
+                schema: "management_identity",
                 table: "UserLogins",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
-                schema: "identity",
+                schema: "management_identity",
                 table: "UserRoles",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
-                schema: "identity",
+                schema: "management_identity",
                 table: "Users",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
-                schema: "identity",
+                schema: "management_identity",
                 table: "Users",
                 column: "NormalizedUserName",
                 unique: true);
@@ -224,31 +224,31 @@ namespace DigitalRightsManagement.Infrastructure.Migrations.AuthDb
         {
             migrationBuilder.DropTable(
                 name: "RoleClaims",
-                schema: "identity");
+                schema: "management_identity");
 
             migrationBuilder.DropTable(
                 name: "UserClaims",
-                schema: "identity");
+                schema: "management_identity");
 
             migrationBuilder.DropTable(
                 name: "UserLogins",
-                schema: "identity");
+                schema: "management_identity");
 
             migrationBuilder.DropTable(
                 name: "UserRoles",
-                schema: "identity");
+                schema: "management_identity");
 
             migrationBuilder.DropTable(
                 name: "UserTokens",
-                schema: "identity");
+                schema: "management_identity");
 
             migrationBuilder.DropTable(
                 name: "Roles",
-                schema: "identity");
+                schema: "management_identity");
 
             migrationBuilder.DropTable(
                 name: "Users",
-                schema: "identity");
+                schema: "management_identity");
         }
     }
 }
