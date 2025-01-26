@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DigitalRightsManagement.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ManagementDbContext))]
     [Migration("20250123183901_ChangeNameOfProductOwnerColumn")]
     partial class ChangeNameOfProductOwnerColumn
     {

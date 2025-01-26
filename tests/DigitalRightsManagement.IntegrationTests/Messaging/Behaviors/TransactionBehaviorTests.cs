@@ -14,13 +14,13 @@ namespace DigitalRightsManagement.IntegrationTests.Messaging.Behaviors;
 public sealed class TransactionBehaviorTests : ApiIntegrationTestsBase
 {
     private readonly IServiceScope _scope;
-    private readonly ApplicationDbContext _transactionDbContext;
+    private readonly ManagementDbContext _transactionDbContext;
     private readonly TransactionBehavior<TestRequest, Result> _behavior;
 
     public TransactionBehaviorTests(ApiFixture fixture) : base(fixture)
     {
         _scope = fixture.Services.CreateScope();
-        _transactionDbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        _transactionDbContext = _scope.ServiceProvider.GetRequiredService<ManagementDbContext>();
         var logger = _scope.ServiceProvider.GetRequiredService<ILogger<TransactionBehavior<TestRequest, Result>>>();
         _behavior = new TransactionBehavior<TestRequest, Result>(_transactionDbContext, logger);
     }

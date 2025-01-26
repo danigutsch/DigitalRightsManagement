@@ -48,7 +48,7 @@ public static class InfrastructureDependencyInjection
 
     public static THostBuilder AddMigrationInfrastructure<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
-        builder.AddNpgsqlDbContext<ApplicationDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
+        builder.AddNpgsqlDbContext<ManagementDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
         builder.AddNpgsqlDbContext<AuthDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
 
         builder.Services.AddScoped<IApplicationDbManager, ApplicationDbManager>();
@@ -58,7 +58,7 @@ public static class InfrastructureDependencyInjection
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AuthDbContext>();
 
-        // We only need the services for the ApplicationDbContext
+        // We only need the services for the ManagementDbContext
         builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<AggregateRoot>());
 
         return builder;

@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 
 internal sealed class TransactionBehavior<TRequest, TResponse>(
-    ApplicationDbContext dbContext,
+    ManagementDbContext dbContext,
     ILogger<TransactionBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
