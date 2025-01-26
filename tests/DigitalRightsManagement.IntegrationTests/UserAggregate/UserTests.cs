@@ -37,7 +37,7 @@ public sealed class UserTests(ApiFixture fixture) : ApiIntegrationTestsBase(fixt
         var target = UserFactory.Seeded(UserRoles.Worker);
         const UserRoles desiredRole = UserRoles.Admin;
 
-        var changeRoleDto = new ChangeUserDto(target.Id, desiredRole);
+        var changeRoleDto = new ChangeRoleDto(target.Id, desiredRole);
 
         // Act
         var response = await GetHttpClient(admin).PostAsJsonAsync("users/change-role", changeRoleDto);

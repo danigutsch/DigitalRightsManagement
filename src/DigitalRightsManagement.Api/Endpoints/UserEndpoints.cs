@@ -43,7 +43,7 @@ internal class UserEndpoints : EndpointGroupBase
         return result.ToMinimalApiResult();
     }
 
-    private static async Task<IResult> ChangeRole([FromBody] ChangeUserDto dto, [FromServices] IMediator mediator, CancellationToken ct)
+    private static async Task<IResult> ChangeRole([FromBody] ChangeRoleDto dto, [FromServices] IMediator mediator, CancellationToken ct)
     {
         var command = new ChangeUserRoleCommand(dto.TargetId, dto.DesiredRole);
         var result = await mediator.Send(command, ct);
@@ -60,6 +60,6 @@ internal class UserEndpoints : EndpointGroupBase
     }
 }
 
-public sealed record ChangeUserDto(Guid TargetId, UserRoles DesiredRole);
+public sealed record ChangeRoleDto(Guid TargetId, UserRoles DesiredRole);
 
 public sealed record ChangeEmailDto(string NewEmail);
