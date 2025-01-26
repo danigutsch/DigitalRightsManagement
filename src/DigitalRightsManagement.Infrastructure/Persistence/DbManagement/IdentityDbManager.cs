@@ -50,7 +50,7 @@ internal sealed class IdentityDbManager(AuthDbContext dbContext, UserManager<Aut
             {
                 UserRoles.Admin => AuthorizationRoles.Admin,
                 UserRoles.Manager => AuthorizationRoles.Manager,
-                UserRoles.Viewer => AuthorizationRoles.Viewer,
+                UserRoles.Worker => AuthorizationRoles.Worker,
                 _ => throw new InvalidOperationException($"Invalid role {user.Role}")
             };
 
@@ -60,7 +60,7 @@ internal sealed class IdentityDbManager(AuthDbContext dbContext, UserManager<Aut
 
     private async Task AddRoles()
     {
-        var roles = new[] { AuthorizationRoles.Viewer, AuthorizationRoles.Manager, AuthorizationRoles.Admin }
+        var roles = new[] { AuthorizationRoles.Worker, AuthorizationRoles.Manager, AuthorizationRoles.Admin }
             .Select(r => new IdentityRole(r));
 
         foreach (var role in roles)

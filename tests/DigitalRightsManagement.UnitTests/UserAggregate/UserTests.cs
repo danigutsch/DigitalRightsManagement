@@ -146,7 +146,7 @@ public sealed class UserTests : UnitTestBase
         var admin = UserFactory.Create(role: UserRoles.Admin);
 
         const UserRoles targetRole = UserRoles.Manager;
-        var user = UserFactory.Create(role: UserRoles.Viewer);
+        var user = UserFactory.Create(role: UserRoles.Worker);
 
         // Act
         var result = user.ChangeRole(admin, targetRole);
@@ -162,7 +162,7 @@ public sealed class UserTests : UnitTestBase
         // Arrange
         var admin = UserFactory.Create(role: UserRoles.Admin);
 
-        const UserRoles targetRole = UserRoles.Viewer;
+        const UserRoles targetRole = UserRoles.Worker;
         var user = UserFactory.Create(role: UserRoles.Manager);
 
         // Act
@@ -178,7 +178,7 @@ public sealed class UserTests : UnitTestBase
     {
         // Arrange
         var admin = UserFactory.Create(role: UserRoles.Admin);
-        var user = UserFactory.Create(role: UserRoles.Viewer);
+        var user = UserFactory.Create(role: UserRoles.Worker);
 
         // Act
         var result = user.ChangeRole(admin, UserRoles.Manager);
@@ -197,7 +197,7 @@ public sealed class UserTests : UnitTestBase
             .Select(role =>
                 (
                     Promoter: UserFactory.Create(role: role),
-                    Promotee: UserFactory.Create(role: UserRoles.Viewer)
+                    Promotee: UserFactory.Create(role: UserRoles.Worker)
                 )
             );
 
@@ -257,7 +257,7 @@ public sealed class UserTests : UnitTestBase
     public void Cannot_Add_Product_To_Non_Manager()
     {
         // Arrange
-        var user = UserFactory.Create(role: UserRoles.Viewer);
+        var user = UserFactory.Create(role: UserRoles.Worker);
         var product = ProductFactory.InDevelopment();
 
         // Act

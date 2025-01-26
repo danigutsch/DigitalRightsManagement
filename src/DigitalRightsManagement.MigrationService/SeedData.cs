@@ -44,17 +44,17 @@ public static class SeedData
         (User.Create("manager4", "manager4@example.com", UserRoles.Manager, Guid.Parse("58bf001c-bb9a-41fd-8917-c6eaf110af90")).Value, "OP41%z4&2x^B!Bkwr%*0p^CPw9m4^Z"),
         (User.Create("manager5", "manager5@example.com", UserRoles.Manager, Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30")).Value, "@sK#8!n6YLuM081444&#j%4$3^oq*A"),
 
-        // Viewers
-        (User.Create("viewer1", "viewer1@example.com", UserRoles.Viewer, Guid.Parse("a01d3277-a55b-411d-b526-662f4df0bbe7")).Value, "v@2q$65NbuFJRE$N3$0u6s&p2K9*aJ"),
-        (User.Create("viewer2", "viewer2@example.com", UserRoles.Viewer, Guid.Parse("ff043c9e-a1a2-4ed5-97c9-0ed1de3304f8")).Value, "zLZqvS9!7O7Q@QV6$6b@*1k&$73ogZ"),
-        (User.Create("viewer3", "viewer3@example.com", UserRoles.Viewer, Guid.Parse("cd86fe59-81d6-4e9a-8d02-dd71613f202b")).Value, "19&k6d1$yu*j25rfA4On&z!5!E&VpR"),
-        (User.Create("viewer4", "viewer4@example.com", UserRoles.Viewer, Guid.Parse("2ea745cc-7476-4e39-a2c1-048c9fd304f4")).Value, "#&&*^d^9a#mH4Qt@3$*H^p*3GmKdiU"),
-        (User.Create("viewer5", "viewer5@example.com", UserRoles.Viewer, Guid.Parse("14615405-f391-4f38-9de4-0c4aaf6a4341")).Value, "Ugn4@r*vwc&6%7*e0&A@@Xyw^!y3dS"),
-        (User.Create("viewer6", "viewer6@example.com", UserRoles.Viewer, Guid.Parse("7c588df5-4b1a-4370-9f4c-33d0c351406d")).Value, "saoYy5Q194**0O#1!E8f6iK2o9o*!V"),
-        (User.Create("viewer7", "viewer7@example.com", UserRoles.Viewer, Guid.Parse("6a0e67e9-153e-4eea-a751-77f7043e32ef")).Value, "&K!c$&j@*VLR38rj4%^%iY@Aaz@@nL"),
-        (User.Create("viewer8", "viewer8@example.com", UserRoles.Viewer, Guid.Parse("84282b24-8c11-44bb-9ccb-5c4c06ded57b")).Value, "!d93S!m3N1i5Shk$pgCL74*BADBU*J"),
-        (User.Create("viewer9", "viewer9@example.com", UserRoles.Viewer, Guid.Parse("d7efb26d-393c-4d5e-bfb6-12b3152f2994")).Value, "*@!qa2p5S$xd@A%7Y0Tj3sqN5N34wW"),
-        (User.Create("viewer10", "viewer10@example.com", UserRoles.Viewer, Guid.Parse("6cf44570-c980-4db9-b31b-c3cc77bba53a")).Value, "77#9970#HXF59Ax60&13$Nu*^sv!bB")
+        // Workers
+        (User.Create("worker1", "worker1@example.com", UserRoles.Worker, Guid.Parse("a01d3277-a55b-411d-b526-662f4df0bbe7")).Value, "v@2q$65NbuFJRE$N3$0u6s&p2K9*aJ"),
+        (User.Create("worker2", "worker2@example.com", UserRoles.Worker, Guid.Parse("ff043c9e-a1a2-4ed5-97c9-0ed1de3304f8")).Value, "zLZqvS9!7O7Q@QV6$6b@*1k&$73ogZ"),
+        (User.Create("worker3", "worker3@example.com", UserRoles.Worker, Guid.Parse("cd86fe59-81d6-4e9a-8d02-dd71613f202b")).Value, "19&k6d1$yu*j25rfA4On&z!5!E&VpR"),
+        (User.Create("worker4", "worker4@example.com", UserRoles.Worker, Guid.Parse("2ea745cc-7476-4e39-a2c1-048c9fd304f4")).Value, "#&&*^d^9a#mH4Qt@3$*H^p*3GmKdiU"),
+        (User.Create("worker5", "worker5@example.com", UserRoles.Worker, Guid.Parse("14615405-f391-4f38-9de4-0c4aaf6a4341")).Value, "Ugn4@r*vwc&6%7*e0&A@@Xyw^!y3dS"),
+        (User.Create("worker6", "worker6@example.com", UserRoles.Worker, Guid.Parse("7c588df5-4b1a-4370-9f4c-33d0c351406d")).Value, "saoYy5Q194**0O#1!E8f6iK2o9o*!V"),
+        (User.Create("worker7", "worker7@example.com", UserRoles.Worker, Guid.Parse("6a0e67e9-153e-4eea-a751-77f7043e32ef")).Value, "&K!c$&j@*VLR38rj4%^%iY@Aaz@@nL"),
+        (User.Create("worker8", "worker8@example.com", UserRoles.Worker, Guid.Parse("84282b24-8c11-44bb-9ccb-5c4c06ded57b")).Value, "!d93S!m3N1i5Shk$pgCL74*BADBU*J"),
+        (User.Create("worker9", "worker9@example.com", UserRoles.Worker, Guid.Parse("d7efb26d-393c-4d5e-bfb6-12b3152f2994")).Value, "*@!qa2p5S$xd@A%7Y0Tj3sqN5N34wW"),
+        (User.Create("worker10", "worker10@example.com", UserRoles.Worker, Guid.Parse("6cf44570-c980-4db9-b31b-c3cc77bba53a")).Value, "77#9970#HXF59Ax60&13$Nu*^sv!bB")
     ];
 
     public static IReadOnlyList<Product> Products { get; } =
