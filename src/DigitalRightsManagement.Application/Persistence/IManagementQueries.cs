@@ -1,9 +1,9 @@
 ﻿using Ardalis.Result;
-using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.Persistence;
 
 public interface IManagementQueries
 {
-    Task<Result<User>> GetById(Guid id, CancellationToken cancellationToken);
+    Task<Result<IReadOnlyList<Product>>> GetProductsByUserId(Guid userId, CancellationToken cancellationToken);
 }
