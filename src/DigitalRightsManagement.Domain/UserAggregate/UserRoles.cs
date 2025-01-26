@@ -4,5 +4,5 @@ public enum UserRoles
 {
     Admin,
     Manager,
-    Viewer
+    Worker
 }

@@ -34,7 +34,7 @@ public sealed class UserTests(ApiFixture fixture) : ApiIntegrationTestsBase(fixt
     {
         // Arrange
         var admin = UserFactory.Seeded(UserRoles.Admin);
-        var target = UserFactory.Seeded(UserRoles.Viewer);
+        var target = UserFactory.Seeded(UserRoles.Worker);
         const UserRoles desiredRole = UserRoles.Admin;
 
         var changeRoleDto = new ChangeUserDto(target.Id, desiredRole);

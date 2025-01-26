@@ -42,7 +42,7 @@ public class AuthorizationBehaviorTests
     {
         // Arrange
         var request = new AuthorizedRequestWithoutRole();
-        var user = User.Create("test", "test@test.com", UserRoles.Viewer).Value;
+        var user = User.Create("test", "test@test.com", UserRoles.Worker).Value;
         _userProvider.NextResult = Result.Success(user);
 
         // Act
@@ -77,7 +77,7 @@ public class AuthorizationBehaviorTests
     {
         // Arrange
         var request = new RequestWithAuthorizeAttribute();
-        var user = User.Create("test", "test@test.com", UserRoles.Viewer).Value;
+        var user = User.Create("test", "test@test.com", UserRoles.Worker).Value;
         _userProvider.NextResult = Result.Success(user);
 
         // Act
