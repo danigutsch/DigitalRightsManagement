@@ -1,4 +1,4 @@
-﻿using DigitalRightsManagement.Infrastructure.Identity;
+﻿using DigitalRightsManagement.Infrastructure.Identity.Management;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -10,8 +10,8 @@ using System.Text.Encodings.Web;
 namespace DigitalRightsManagement.Infrastructure.Authentication;
 
 internal sealed class BasicAuthenticationHandler(
-    UserManager<AuthUser> userManager,
-    SignInManager<AuthUser> signInManager,
+    UserManager<ManagementIdentityUser> userManager,
+    SignInManager<ManagementIdentityUser> signInManager,
     IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory logger,
     UrlEncoder encoder)

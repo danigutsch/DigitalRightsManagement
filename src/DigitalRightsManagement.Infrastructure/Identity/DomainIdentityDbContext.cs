@@ -4,17 +4,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigitalRightsManagement.Infrastructure.Identity;
 
-internal sealed class AuthDbContext(DbContextOptions<AuthDbContext> options) : IdentityDbContext<AuthUser>(options)
+public abstract class DomainIdentityDbContext<TUser>(DbContextOptions options) : IdentityDbContext<TUser>(options)
+    where TUser : IdentityUser
 {
-    private const string SchemaName = "identity";
+    protected abstract string SchemaName { get; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
         builder.HasDefaultSchema(SchemaName);
+        ConfigureIdentityTables(builder);
+    }
 
-        builder.Entity<AuthUser>(entity =>
+    private static void ConfigureIdentityTables(ModelBuilder builder)
+    {
+        builder.Entity<TUser>(entity =>
         {
             entity.ToTable("Users");
             entity.Property(user => user.UserName).IsRequired();
@@ -27,6 +31,5 @@ internal sealed class AuthDbContext(DbContextOptions<AuthDbContext> options) : I
         builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins");
         builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
         builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Common;
+using DigitalRightsManagement.Infrastructure.Identity.Management;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,12 +11,12 @@ internal static class IdentityDependencyInjection
 {
     public static TApplicationBuilder AddIdentity<TApplicationBuilder>(this TApplicationBuilder builder) where TApplicationBuilder : IHostApplicationBuilder
     {
-        builder.AddNpgsqlDbContext<AuthDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
+        builder.AddNpgsqlDbContext<ManagementIdentityDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
 
-        builder.Services.AddIdentityCore<AuthUser>()
+        builder.Services.AddIdentityCore<ManagementIdentityUser>()
             .AddRoles<IdentityRole>()
             .AddSignInManager()
-            .AddEntityFrameworkStores<AuthDbContext>();
+            .AddEntityFrameworkStores<ManagementIdentityDbContext>();
 
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 

@@ -4,6 +4,7 @@ using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Infrastructure.Caching;
 using DigitalRightsManagement.Infrastructure.Caching.Repositories;
 using DigitalRightsManagement.Infrastructure.Identity;
+using DigitalRightsManagement.Infrastructure.Identity.Management;
 using DigitalRightsManagement.Infrastructure.Messaging;
 using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
@@ -51,14 +52,14 @@ public static class InfrastructureDependencyInjection
     public static THostBuilder AddMigrationInfrastructure<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
         builder.AddNpgsqlDbContext<ManagementDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
-        builder.AddNpgsqlDbContext<AuthDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
+        builder.AddNpgsqlDbContext<ManagementIdentityDbContext>(ResourceNames.Database, settings => settings.DisableRetry = true);
 
         builder.Services.AddScoped<IApplicationDbManager, ApplicationDbManager>();
         builder.Services.AddScoped<IIdentityDbManager, IdentityDbManager>();
 
-        builder.Services.AddIdentityCore<AuthUser>()
+        builder.Services.AddIdentityCore<ManagementIdentityUser>()
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<AuthDbContext>();
+            .AddEntityFrameworkStores<ManagementIdentityDbContext>();
 
         // We only need the services for the ManagementDbContext
         builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<AggregateRoot>());

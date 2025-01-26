@@ -1,6 +1,6 @@
 ﻿using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Infrastructure.Authorization;
-using DigitalRightsManagement.Infrastructure.Identity;
+using DigitalRightsManagement.Infrastructure.Identity.Management;
 using Microsoft.AspNetCore.Identity;
 using System.Transactions;
 
@@ -11,7 +11,7 @@ public interface IIdentityDbManager : IDatabaseManager
     public void SetSeedData(IEnumerable<(User user, string password)> users);
 }
 
-internal sealed class IdentityDbManager(AuthDbContext dbContext, UserManager<AuthUser> userManager, RoleManager<IdentityRole> roleManager) : DatabaseManager<AuthDbContext>(dbContext), IIdentityDbManager
+internal sealed class IdentityDbManager(ManagementIdentityDbContext dbContext, UserManager<ManagementIdentityUser> userManager, RoleManager<IdentityRole> roleManager) : DatabaseManager<ManagementIdentityDbContext>(dbContext), IIdentityDbManager
 {
     private List<(User user, string password)> _users = [];
 
@@ -32,7 +32,7 @@ internal sealed class IdentityDbManager(AuthDbContext dbContext, UserManager<Aut
     {
         foreach (var (user, password) in _users)
         {
-            var authUser = new AuthUser
+            var authUser = new ManagementIdentityUser
             {
                 DomainUserId = user.Id,
                 UserName = user.Username,
