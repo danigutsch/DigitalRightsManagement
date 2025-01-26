@@ -25,6 +25,9 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Status)
             .HasConversion<string>();
 
+        builder.PrimitiveCollection(p => p.AssignedWorkers)
+            .HasField("_assignedWorkers");
+
         builder.Ignore(p => p.DomainEvents);
     }
 }

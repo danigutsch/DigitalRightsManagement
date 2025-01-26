@@ -12,6 +12,9 @@ public sealed class Product : AggregateRoot
     public Guid UserId { get; private init; }
     public ProductStatus Status { get; private set; } = ProductStatus.Development;
 
+    private readonly List<Guid> _assignedWorkers = [];
+    public IReadOnlyList<Guid> AssignedWorkers => _assignedWorkers.AsReadOnly();
+
     private Product(string name, string description, Price price, Guid createdBy, Guid? id = null) : base(id ?? Guid.CreateVersion7())
     {
         Name = name.Trim();
