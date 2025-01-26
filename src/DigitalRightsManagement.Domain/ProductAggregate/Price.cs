@@ -18,12 +18,12 @@ public sealed class Price : ValueObject
     {
         if (value < 0)
         {
-            return Errors.Product.InvalidPrice(value);
+            return Errors.Products.InvalidPrice(value);
         }
 
         if (!Enum.IsDefined(currency))
         {
-            return Errors.Product.InvalidCurrency(currency);
+            return Errors.Products.InvalidCurrency(currency);
         }
 
         return new Price(value, currency);
