@@ -30,7 +30,7 @@ public sealed class User : AggregateRoot
     {
         if (string.IsNullOrWhiteSpace(username))
         {
-            return Errors.User.InvalidUsername();
+            return Errors.Users.InvalidUsername();
         }
 
         var emailValidation = ValidateEmail(email);
@@ -41,12 +41,12 @@ public sealed class User : AggregateRoot
 
         if (!Enum.IsDefined(role))
         {
-            return Errors.User.UnknownRole();
+            return Errors.Users.UnknownRole();
         }
 
         if (id is not null && id == Guid.Empty)
         {
-            return Errors.User.EmptyId();
+            return Errors.Users.EmptyId();
         }
 
         var user = new User(username, email, role, id);
@@ -58,17 +58,17 @@ public sealed class User : AggregateRoot
     {
         if (!Enum.IsDefined(newRole))
         {
-            return Errors.User.UnknownRole();
+            return Errors.Users.UnknownRole();
         }
 
         if (Role == newRole)
         {
-            return Errors.User.AlreadyInRole(Id, newRole);
+            return Errors.Users.AlreadyInRole(Id, newRole);
         }
 
         if (admin.Role != UserRoles.Admin)
         {
-            return Errors.User.UnauthorizedToPromote(admin.Id, Id, newRole);
+            return Errors.Users.UnauthorizedToPromote(admin.Id, Id, newRole);
         }
 
         Role = newRole;
@@ -82,12 +82,12 @@ public sealed class User : AggregateRoot
     {
         if (Role != UserRoles.Manager)
         {
-            return Errors.User.UnauthorizedToOwnProduct(Id);
+            return Errors.Users.UnauthorizedToOwnProduct(Id);
         }
 
         if (Products.Contains(productId))
         {
-            return Errors.Product.AlreadyOwned(Id, productId);
+            return Errors.Products.AlreadyOwned(Id, productId);
         }
 
         _products.Add(productId);
@@ -101,7 +101,7 @@ public sealed class User : AggregateRoot
     {
         if (Role != UserRoles.Manager)
         {
-            return Errors.User.UnauthorizedToOwnProduct(Id);
+            return Errors.Users.UnauthorizedToOwnProduct(Id);
         }
 
         Guid[] newProductIds = [..productsIds
@@ -109,7 +109,7 @@ public sealed class User : AggregateRoot
 
         if (newProductIds.Length == 0)
         {
-            return Errors.Product.AlreadyOwned(Id);
+            return Errors.Products.AlreadyOwned(Id);
         }
 
         _products.AddRange([.. newProductIds]);
@@ -143,34 +143,34 @@ public sealed class User : AggregateRoot
 
         if (trimmedEmail.AsSpan().ContainsAny([' ', '\n', '\r', '\t']))
         {
-            return Errors.User.InvalidEmail();
+            return Errors.Users.InvalidEmail();
         }
 
         var indexOfAt = trimmedEmail.IndexOf('@', StringComparison.Ordinal);
         if (indexOfAt <= 0)
         {
-            return Errors.User.InvalidEmail();
+            return Errors.Users.InvalidEmail();
         }
 
         if (indexOfAt != trimmedEmail.LastIndexOf('@'))
         {
-            return Errors.User.InvalidEmail();
+            return Errors.Users.InvalidEmail();
         }
 
         var indexOfDot = trimmedEmail.LastIndexOf('.');
         if (indexOfDot <= 0)
         {
-            return Errors.User.InvalidEmail();
+            return Errors.Users.InvalidEmail();
         }
 
         if (indexOfDot <= indexOfAt + 2)
         {
-            return Errors.User.InvalidEmail();
+            return Errors.Users.InvalidEmail();
         }
 
         if (indexOfDot == trimmedEmail.Length - 1)
         {
-            return Errors.User.InvalidEmail();
+            return Errors.Users.InvalidEmail();
         }
 
         return Result.Success();

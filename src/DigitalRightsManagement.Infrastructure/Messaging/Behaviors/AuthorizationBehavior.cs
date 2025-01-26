@@ -46,7 +46,7 @@ internal sealed class AuthorizationBehavior<TRequest, TResponse>(
         if (user.Role > requiredRole)
         {
             logger.AuthorizationFailed(typeof(TRequest).Name, requiredRole);
-            return (TResponse)(IResult)Errors.User.Unauthorized(requiredRole);
+            return (TResponse)(IResult)Errors.Users.Unauthorized(requiredRole);
         }
 
         return await next()

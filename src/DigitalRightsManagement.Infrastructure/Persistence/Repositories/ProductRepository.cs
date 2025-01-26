@@ -16,7 +16,7 @@ internal sealed class ProductRepository(ManagementDbContext context) : IProductR
         var product = await context.Products.FindAsync([id], ct);
         if (product is null)
         {
-            return Errors.Product.NotFound(id);
+            return Errors.Products.NotFound(id);
         }
 
         return product;

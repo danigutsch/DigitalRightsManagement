@@ -33,22 +33,22 @@ public sealed class Product : AggregateRoot
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            return Errors.Product.InvalidName();
+            return Errors.Products.InvalidName();
         }
 
         if (string.IsNullOrWhiteSpace(description))
         {
-            return Errors.Product.InvalidDescription();
+            return Errors.Products.InvalidDescription();
         }
 
         if (manager == Guid.Empty)
         {
-            return Errors.Product.EmptyCreatorId();
+            return Errors.Products.EmptyCreatorId();
         }
 
         if (id is not null && id == Guid.Empty)
         {
-            return Errors.Product.EmptyId();
+            return Errors.Products.EmptyId();
         }
 
         var product = new Product(name, description, price, manager, id);
@@ -83,7 +83,7 @@ public sealed class Product : AggregateRoot
 
         if (string.IsNullOrWhiteSpace(newDescription))
         {
-            return Errors.Product.InvalidDescription();
+            return Errors.Products.InvalidDescription();
         }
 
         var oldDescription = Description;
@@ -106,9 +106,9 @@ public sealed class Product : AggregateRoot
         switch (Status)
         {
             case ProductStatus.Obsolete:
-                return Errors.Product.InvalidStatusChange(Status, ProductStatus.Published);
+                return Errors.Products.InvalidStatusChange(Status, ProductStatus.Published);
             case ProductStatus.Published:
-                return Errors.Product.AlreadyInStatus(Status);
+                return Errors.Products.AlreadyInStatus(Status);
         }
 
         Status = ProductStatus.Published;
@@ -128,7 +128,7 @@ public sealed class Product : AggregateRoot
 
         if (Status == ProductStatus.Obsolete)
         {
-            return Errors.Product.AlreadyInStatus(Status);
+            return Errors.Products.AlreadyInStatus(Status);
         }
 
         Status = ProductStatus.Obsolete;
@@ -142,12 +142,12 @@ public sealed class Product : AggregateRoot
     {
         if (userId == Guid.Empty)
         {
-            return Errors.User.EmptyId();
+            return Errors.Users.EmptyId();
         }
 
         if (userId != UserId)
         {
-            return Errors.Product.InvalidManager(userId, UserId);
+            return Errors.Products.InvalidManager(userId, UserId);
         }
 
         return Result.Success();

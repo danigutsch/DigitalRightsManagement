@@ -8,7 +8,7 @@ namespace DigitalRightsManagement.Domain;
 
 public static class Errors
 {
-    public static class Product
+    public static class Products
     {
         public static Result InvalidName()
         {
@@ -95,7 +95,7 @@ public static class Errors
         }
     }
 
-    public static class User
+    public static class Users
     {
         public static Result EmptyId()
         {
