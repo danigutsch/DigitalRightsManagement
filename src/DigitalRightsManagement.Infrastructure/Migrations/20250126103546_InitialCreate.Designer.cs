@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalRightsManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ManagementDbContext))]
-    [Migration("20250123183901_ChangeNameOfProductOwnerColumn")]
-    partial class ChangeNameOfProductOwnerColumn
+    [Migration("20250126103546_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,6 +29,10 @@ namespace DigitalRightsManagement.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
+
+                    b.PrimitiveCollection<Guid[]>("AssignedWorkers")
+                        .IsRequired()
+                        .HasColumnType("uuid[]");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -62,6 +66,10 @@ namespace DigitalRightsManagement.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.PrimitiveCollection<Guid[]>("Products")
+                        .IsRequired()
+                        .HasColumnType("uuid[]");
+
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
@@ -70,11 +78,6 @@ namespace DigitalRightsManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
-
-                    b.Property<string>("_products")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Products");
 
                     b.HasKey("Id");
 
