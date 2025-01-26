@@ -9,7 +9,7 @@ public interface IApplicationDbManager : IDatabaseManager
     void SetSeedData(IEnumerable<User> users, IEnumerable<Product> products);
 }
 
-internal sealed class ApplicationDbManager(ApplicationDbContext dbContext) : DatabaseManager<ApplicationDbContext>(dbContext), IApplicationDbManager
+internal sealed class ApplicationDbManager(ManagementDbContext dbContext) : DatabaseManager<ManagementDbContext>(dbContext), IApplicationDbManager
 {
     private User[] _users = [];
     private Product[] _products = [];

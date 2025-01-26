@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 
-internal class ResourceRepository(ApplicationDbContext dbContext) : IResourceRepository
+internal class ResourceRepository(ManagementDbContext dbContext) : IResourceRepository
 {
     public async Task<bool> IsResourceOwner(Guid userId, Type resourceType, Guid[] resourceIds, CancellationToken ct)
     {

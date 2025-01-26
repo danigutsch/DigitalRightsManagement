@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigitalRightsManagement.Infrastructure.Persistence;
 
-internal sealed class ApplicationDbContext(IPublisher publisher, DbContextOptions<ApplicationDbContext> options) : DbContext(options), IUnitOfWork
+internal sealed class ManagementDbContext(IPublisher publisher, DbContextOptions<ManagementDbContext> options) : DbContext(options), IUnitOfWork
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<Product> Products => Set<Product>();

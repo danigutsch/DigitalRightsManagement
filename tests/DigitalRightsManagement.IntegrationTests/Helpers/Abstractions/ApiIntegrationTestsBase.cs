@@ -15,14 +15,14 @@ public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IAsyn
 
     protected readonly ApiFixture Fixture;
 
-    internal ApplicationDbContext DbContext { get; }
+    internal ManagementDbContext DbContext { get; }
 
     protected ApiIntegrationTestsBase(ApiFixture fixture)
     {
         Fixture = fixture;
         _scope = Fixture.Services.CreateScope();
 
-        DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        DbContext = _scope.ServiceProvider.GetRequiredService<ManagementDbContext>();
     }
 
     protected HttpClient GetHttpClient(User user)

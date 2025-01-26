@@ -4,7 +4,7 @@ using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 
-internal sealed class UserRepository(ApplicationDbContext context) : IUserRepository
+internal sealed class UserRepository(ManagementDbContext context) : IUserRepository
 {
     public IUnitOfWork UnitOfWork => context;
 

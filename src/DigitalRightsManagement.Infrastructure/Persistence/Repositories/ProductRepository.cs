@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigitalRightsManagement.Infrastructure.Persistence.Repositories;
 
-internal sealed class ProductRepository(ApplicationDbContext context) : IProductRepository
+internal sealed class ProductRepository(ManagementDbContext context) : IProductRepository
 {
     public IUnitOfWork UnitOfWork => context;
 

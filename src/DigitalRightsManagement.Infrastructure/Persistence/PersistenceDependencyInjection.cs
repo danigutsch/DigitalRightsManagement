@@ -11,7 +11,7 @@ internal static class PersistenceDependencyInjection
     public static THostBuilder AddPersistence<THostBuilder>(this THostBuilder builder) where THostBuilder : IHostApplicationBuilder
     {
         // BUG: AddNpgsqlDbContext registers the DbContext as singleton, creating problems injecting domain event handler dependencies
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        builder.Services.AddDbContext<ManagementDbContext>(options =>
         {
             options.UseNpgsql(builder.Configuration.GetConnectionString(ResourceNames.Database));
             options.EnableDetailedErrors();

@@ -6,7 +6,7 @@ namespace DigitalRightsManagement.Infrastructure.Messaging;
 
 internal static class PublisherExtensions
 {
-    public static async Task PublishDomainEvents(this IPublisher publisher, ApplicationDbContext dbContext, CancellationToken cancellationToken)
+    public static async Task PublishDomainEvents(this IPublisher publisher, ManagementDbContext dbContext, CancellationToken cancellationToken)
     {
         var domainEvents = dbContext.ChangeTracker.Entries<AggregateRoot>()
             .SelectMany(e => e.Entity.PopDomainEvents());
