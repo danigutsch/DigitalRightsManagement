@@ -9,7 +9,7 @@ public sealed class Product : AggregateRoot
     public string Name { get; private set; }
     public string Description { get; private set; }
     public Price Price { get; private set; }
-    public Guid UserId { get; private init; }
+    public Guid AgentId { get; private init; }
     public ProductStatus Status { get; private set; } = ProductStatus.Development;
 
     private readonly List<Guid> _assignedWorkers = [];
@@ -20,7 +20,7 @@ public sealed class Product : AggregateRoot
         Name = name.Trim();
         Description = description.Trim();
         Price = price;
-        UserId = createdBy;
+        AgentId = createdBy;
 
         QueueDomainEvent(new ProductCreated(Id, createdBy, name, description, price));
     }
@@ -56,9 +56,9 @@ public sealed class Product : AggregateRoot
         return product;
     }
 
-    public Result UpdatePrice(Guid userId, Price newPrice, string reason)
+    public Result UpdatePrice(Guid agentId, Price newPrice, string reason)
     {
-        var ownerValidation = ValidateOwner(userId);
+        var ownerValidation = ValidateOwner(agentId);
         if (!ownerValidation.IsSuccess)
         {
             return ownerValidation;
@@ -73,9 +73,9 @@ public sealed class Product : AggregateRoot
         return Result.Success();
     }
 
-    public Result UpdateDescription(Guid userId, string newDescription)
+    public Result UpdateDescription(Guid agentId, string newDescription)
     {
-        var ownerValidation = ValidateOwner(userId);
+        var ownerValidation = ValidateOwner(agentId);
         if (!ownerValidation.IsSuccess)
         {
             return ownerValidation;
@@ -95,9 +95,9 @@ public sealed class Product : AggregateRoot
         return Result.Success();
     }
 
-    public Result Publish(Guid userId)
+    public Result Publish(Guid agentId)
     {
-        var ownerValidation = ValidateOwner(userId);
+        var ownerValidation = ValidateOwner(agentId);
         if (!ownerValidation.IsSuccess)
         {
             return ownerValidation;
@@ -113,14 +113,14 @@ public sealed class Product : AggregateRoot
 
         Status = ProductStatus.Published;
 
-        QueueDomainEvent(new ProductPublished(Id, userId));
+        QueueDomainEvent(new ProductPublished(Id, agentId));
 
         return Result.Success();
     }
 
-    public Result Obsolete(Guid userId)
+    public Result Obsolete(Guid agentId)
     {
-        var ownerValidation = ValidateOwner(userId);
+        var ownerValidation = ValidateOwner(agentId);
         if (!ownerValidation.IsSuccess)
         {
             return ownerValidation;
@@ -133,21 +133,21 @@ public sealed class Product : AggregateRoot
 
         Status = ProductStatus.Obsolete;
 
-        QueueDomainEvent(new ProductObsoleted(Id, userId));
+        QueueDomainEvent(new ProductObsoleted(Id, agentId));
 
         return Result.Success();
     }
 
-    private Result ValidateOwner(Guid userId)
+    private Result ValidateOwner(Guid agentId)
     {
-        if (userId == Guid.Empty)
+        if (agentId == Guid.Empty)
         {
-            return Errors.Users.EmptyId();
+            return Errors.Agents.EmptyId();
         }
 
-        if (userId != UserId)
+        if (agentId != AgentId)
         {
-            return Errors.Products.InvalidManager(userId, UserId);
+            return Errors.Products.InvalidManager(agentId, AgentId);
         }
 
         return Result.Success();

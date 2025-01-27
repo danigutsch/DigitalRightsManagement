@@ -18,7 +18,7 @@ internal static class IdentityDependencyInjection
             .AddSignInManager()
             .AddEntityFrameworkStores<ManagementIdentityDbContext>();
 
-        builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+        builder.Services.AddScoped<ICurrentAgentProvider, CurrentAgentProvider>();
 
         return builder;
     }

@@ -21,8 +21,8 @@ internal sealed class DbInitializer(
             var applicationDbManager = scope.ServiceProvider.GetRequiredService<IApplicationDbManager>();
             var identityDbManager = scope.ServiceProvider.GetRequiredService<IIdentityDbManager>();
 
-            applicationDbManager.SetSeedData(SeedData.Users, SeedData.Products);
-            identityDbManager.SetSeedData(SeedData.UsersAndPasswords);
+            applicationDbManager.SetSeedData(SeedData.Agents, SeedData.Products);
+            identityDbManager.SetSeedData(SeedData.AgentsAndPasswords);
 
             await CreateDatabases(stoppingToken, applicationDbManager, identityDbManager);
         }

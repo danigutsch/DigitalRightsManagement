@@ -2,15 +2,15 @@
 using DigitalRightsManagement.Application;
 using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Domain;
-using DigitalRightsManagement.Domain.UserAggregate;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
+using DigitalRightsManagement.Domain.AgentAggregate;
 
 namespace DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 
 internal sealed class AuthorizationBehavior<TRequest, TResponse>(
-    ICurrentUserProvider currentUserProvider,
+    ICurrentAgentProvider currentAgentProvider,
     ILogger<AuthorizationBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
@@ -28,10 +28,10 @@ internal sealed class AuthorizationBehavior<TRequest, TResponse>(
                 .ConfigureAwait(false);
         }
 
-        var userResult = await currentUserProvider.Get(cancellationToken);
-        if (!userResult.IsSuccess)
+        var agentResult = await currentAgentProvider.Get(cancellationToken);
+        if (!agentResult.IsSuccess)
         {
-            return (TResponse)(IResult)userResult.Map();
+            return (TResponse)(IResult)agentResult.Map();
         }
 
         if (authorizeAttribute.RequiredRole is null)
@@ -40,13 +40,13 @@ internal sealed class AuthorizationBehavior<TRequest, TResponse>(
                 .ConfigureAwait(false);
         }
 
-        var user = userResult.Value;
+        var agent = agentResult.Value;
         var requiredRole = authorizeAttribute.RequiredRole.Value;
 
-        if (user.Role > requiredRole)
+        if (agent.Role > requiredRole)
         {
             logger.AuthorizationFailed(typeof(TRequest).Name, requiredRole);
-            return (TResponse)(IResult)Errors.Users.Unauthorized(requiredRole);
+            return (TResponse)(IResult)Errors.Agents.Unauthorized(requiredRole);
         }
 
         return await next()
@@ -56,6 +56,6 @@ internal sealed class AuthorizationBehavior<TRequest, TResponse>(
 
 internal static partial class AuthorizationBehaviorLogger
 {
-    [LoggerMessage(LogLevel.Warning, "Authorization failed for request {Request}. User must be at least {RequiredRole}")]
-    public static partial void AuthorizationFailed(this ILogger logger, string request, UserRoles requiredRole);
+    [LoggerMessage(LogLevel.Warning, "Authorization failed for request {Request}. Agent must be at least {RequiredRole}")]
+    public static partial void AuthorizationFailed(this ILogger logger, string request, AgentRoles requiredRole);
 }

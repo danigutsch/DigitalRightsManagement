@@ -10,7 +10,7 @@ using System.Reflection;
 namespace DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 
 internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
-    ICurrentUserProvider currentUserProvider,
+    ICurrentAgentProvider currentAgentProvider,
     IResourceRepository resourceRepository,
     ILogger<ResourceOwnerAuthorizationBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
@@ -29,14 +29,14 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
                 .ConfigureAwait(false);
         }
 
-        var userResult = await currentUserProvider.Get(cancellationToken);
-        if (!userResult.IsSuccess)
+        var agentResult = await currentAgentProvider.Get(cancellationToken);
+        if (!agentResult.IsSuccess)
         {
-            return (TResponse)(IResult)userResult.Map();
+            return (TResponse)(IResult)agentResult.Map();
         }
 
-        var user = userResult.Value;
-        var resourceIds = GetResourceIds(request, attribute.IdPropertyPath);
+        var agent = agentResult.Value;
+        var resourceIds = GetResourceIds(request, attribute.ResourceIdPropertyPath);
         if (resourceIds.Length == 0)
         {
             logger.InvalidResourceId(typeof(TRequest).Name);
@@ -44,11 +44,11 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
         }
 
         var resourceType = attribute.GetType().GetGenericArguments()[0];
-        var isOwner = await resourceRepository.IsResourceOwner(user.Id, resourceType, resourceIds, cancellationToken);
+        var isOwner = await resourceRepository.IsResourceOwner(agent.Id, resourceType, resourceIds, cancellationToken);
 
         if (!isOwner)
         {
-            logger.UnauthorizedResourceAccess(typeof(TRequest).Name, user.Id);
+            logger.UnauthorizedResourceAccess(typeof(TRequest).Name, agent.Id);
             return (TResponse)(IResult)Result.Unauthorized();
         }
 
@@ -104,6 +104,6 @@ internal static partial class ResourceOwnerAuthorizationBehaviorLogger
     [LoggerMessage(LogLevel.Warning, "Invalid resource ID for request {Request}")]
     public static partial void InvalidResourceId(this ILogger logger, string request);
 
-    [LoggerMessage(LogLevel.Warning, "User {UserId} attempted unauthorized resource access via {Request}")]
-    public static partial void UnauthorizedResourceAccess(this ILogger logger, string request, Guid userId);
+    [LoggerMessage(LogLevel.Warning, "Agent {AgentId} attempted unauthorized resource access via {Request}")]
+    public static partial void UnauthorizedResourceAccess(this ILogger logger, string request, Guid agentId);
 }

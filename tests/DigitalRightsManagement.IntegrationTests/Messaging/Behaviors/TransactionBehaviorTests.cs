@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result;
-using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.IntegrationTests.Helpers.Abstractions;
@@ -29,8 +29,8 @@ public sealed class TransactionBehaviorTests : ApiIntegrationTestsBase
     public async Task Transaction_Commits_On_Success()
     {
         // Arrange
-        var user = UserFactory.Seeded(UserRoles.Manager);
-        var product = ProductFactory.InDevelopment(manager: user.Id);
+        var agent = AgentFactory.Seeded(AgentRoles.Manager);
+        var product = ProductFactory.InDevelopment(manager: agent.Id);
 
         var request = new TestRequest();
         var productId = product.Id;
@@ -55,8 +55,8 @@ public sealed class TransactionBehaviorTests : ApiIntegrationTestsBase
     public async Task Transaction_Rolls_Back_On_Error()
     {
         // Arrange
-        var user = UserFactory.Seeded(UserRoles.Manager);
-        var product = ProductFactory.InDevelopment(manager: user.Id);
+        var agent = AgentFactory.Seeded(AgentRoles.Manager);
+        var product = ProductFactory.InDevelopment(manager: agent.Id);
 
         var request = new TestRequest();
         var productId = product.Id;
@@ -83,9 +83,9 @@ public sealed class TransactionBehaviorTests : ApiIntegrationTestsBase
     public async Task Nested_Transactions_Share_Same_Transaction()
     {
         // Arrange
-        var user = UserFactory.Seeded(UserRoles.Manager);
-        var product1 = ProductFactory.InDevelopment(manager: user.Id);
-        var product2 = ProductFactory.InDevelopment(manager: user.Id);
+        var agent = AgentFactory.Seeded(AgentRoles.Manager);
+        var product1 = ProductFactory.InDevelopment(manager: agent.Id);
+        var product2 = ProductFactory.InDevelopment(manager: agent.Id);
 
         var request = new TestRequest();
         var product1Id = product1.Id;

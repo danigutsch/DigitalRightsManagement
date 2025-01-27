@@ -11,20 +11,20 @@ namespace DigitalRightsManagement.Application.ProductAggregate;
 [AuthorizeResourceOwner<Product>]
 public sealed record MakeProductObsoleteCommand(Guid ProductId) : ICommand
 {
-    internal sealed class MakeProductObsoleteCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<MakeProductObsoleteCommand>
+    internal sealed class MakeProductObsoleteCommandHandler(ICurrentAgentProvider currentAgentProvider, IProductRepository productRepository) : ICommandHandler<MakeProductObsoleteCommand>
     {
         public async Task<Result> Handle(MakeProductObsoleteCommand command, CancellationToken cancellationToken)
         {
-            var userResult = await currentUserProvider.Get(cancellationToken);
-            if (!userResult.IsSuccess)
+            var agentResult = await currentAgentProvider.Get(cancellationToken);
+            if (!agentResult.IsSuccess)
             {
-                return userResult.Map();
+                return agentResult.Map();
             }
 
-            var user = userResult.Value;
+            var agent = agentResult.Value;
 
             return await productRepository.GetById(command.ProductId, cancellationToken)
-                .BindAsync(product => product.Obsolete(user.Id))
+                .BindAsync(product => product.Obsolete(agent.Id))
                 .Tap(() => productRepository.UnitOfWork.SaveEntities(cancellationToken));
         }
     }

@@ -35,7 +35,7 @@ public static class InfrastructureDependencyInjection
     {
         // TODO: Add option to use cache or not
         services
-            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IAgentRepository, AgentRepository>()
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IResourceRepository>(provider =>
             {

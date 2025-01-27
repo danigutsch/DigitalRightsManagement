@@ -1,12 +1,12 @@
 ﻿using DigitalRightsManagement.Api.Endpoints;
 using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
-using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.IntegrationTests.Helpers.Abstractions;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 using System.Net.Http.Json;
+using DigitalRightsManagement.Domain.AgentAggregate;
 
 namespace DigitalRightsManagement.IntegrationTests.ProductAggregate;
 
@@ -16,7 +16,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Get_Products_Happy_Path()
     {
         // Arrange
-        var managerWithProducts = UserFactory.Seeded(user => user.Products.Count > 0);
+        var managerWithProducts = AgentFactory.Seeded(agent => agent.Products.Count > 0);
 
         // Act
         var response = await GetHttpClient(managerWithProducts).GetAsync("products");
@@ -26,7 +26,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         var products = await response.Content.ReadFromJsonAsync<ProductDto[]>();
 
         var productNames = await DbContext.Products
-            .Where(p => p.UserId == managerWithProducts.Id)
+            .Where(p => p.AgentId == managerWithProducts.Id)
             .Select(p => p.Name)
             .ToArrayAsync();
 
@@ -43,7 +43,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         var productPrice = Faker.Random.Decimal(1, 100);
         var productCurrency = Faker.PickRandom<Currency>();
 
-        var manager = UserFactory.Seeded(UserRoles.Manager);
+        var manager = AgentFactory.Seeded(AgentRoles.Manager);
 
         var createProductDto = new CreateProductDto(productName, productDescription, productPrice, productCurrency);
 
@@ -62,7 +62,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         product.Price.Amount.ShouldBe(productPrice);
         product.Price.Currency.ShouldBe(productCurrency);
 
-        manager = await DbContext.Users.FindAsync(manager.Id);
+        manager = await DbContext.Agents.FindAsync(manager.Id);
         manager.ShouldNotBeNull();
         manager.Products.ShouldContain(productId => productId == createdProductId);
     }
@@ -71,7 +71,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Update_Price_Happy_Path()
     {
         // Arrange
-        var manager = UserFactory.Seeded(user => user.Products.Count > 0);
+        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0);
         var productId = manager.Products[0];
 
         var newPrice = Faker.Random.Decimal(1, 100);
@@ -96,7 +96,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Update_Description_Happy_Path()
     {
         // Arrange
-        var manager = UserFactory.Seeded(user => user.Products.Count > 0);
+        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0);
         var productId = manager.Products[0];
 
         var newDescription = Faker.Commerce.ProductDescription();
@@ -118,8 +118,8 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Publish_Product_Happy_Path()
     {
         // Arrange
-        var manager = UserFactory.Seeded(user => user.Products.Count > 0);
-        var product = await DbContext.Products.FirstAsync(p => p.UserId == manager.Id && p.Status == ProductStatus.Development);
+        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0);
+        var product = await DbContext.Products.FirstAsync(p => p.AgentId == manager.Id && p.Status == ProductStatus.Development);
 
         // Act
         var response = await GetHttpClient(manager).PostAsync($"/products/{product.Id}/publish", null);
@@ -136,8 +136,8 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Obsolete_Product_Happy_Path()
     {
         // Arrange
-        var manager = UserFactory.Seeded(user => user.Products.Count > 0);
-        var product = await DbContext.Products.FirstAsync(p => p.UserId == manager.Id);
+        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0);
+        var product = await DbContext.Products.FirstAsync(p => p.AgentId == manager.Id);
 
         // Act
         var response = await GetHttpClient(manager).PostAsync($"/products/{product.Id}/obsolete", null);
