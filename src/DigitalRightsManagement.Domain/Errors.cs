@@ -160,4 +160,21 @@ public static class Errors
             return Result.Unauthorized(code, message);
         }
     }
+
+    public static class Identity
+    {
+        public static Result InvalidAuthCredentials()
+        {
+            const string code = "identity.credentials.missing";
+            const string message = "Missing or invalid authentication credentials";
+            return Result.Invalid(new ValidationError(code, message));
+        }
+
+        public static Result InvalidClaim()
+        {
+            const string code = "identity.claim.invalid";
+            const string message = "Invalid or missing identity claim";
+            return Result.Invalid(new ValidationError(code, message));
+        }
+    }
 }
