@@ -93,6 +93,13 @@ public static class Errors
             var message = $"The product [{productId}] was not found.";
             return Result.NotFound(code, message);
         }
+
+        public static Result WorkerAlreadyAssigned(Guid productId, Guid workerId)
+        {
+            const string code = "product.worker.already-assigned";
+            var message = $"The worker [{workerId}] is already assigned to product [{productId}].";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
+        }
     }
 
     public static class Agents
