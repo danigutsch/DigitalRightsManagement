@@ -99,7 +99,7 @@ public sealed class Agent : AggregateRoot
 
     public Result AddProducts(IEnumerable<Guid> productsIds)
     {
-        if (Role != AgentRoles.Manager)
+        if (Role != AgentRoles.Manager && Role != AgentRoles.Worker)
         {
             return Errors.Agents.UnauthorizedToOwnProduct(Id);
         }
@@ -117,6 +117,19 @@ public sealed class Agent : AggregateRoot
         {
             QueueDomainEvent(new ProductAdded(Id, productId));
         }
+
+        return Result.Success();
+    }
+
+    public Result RemoveProduct(Guid productId)
+    {
+        if (!_products.Contains(productId))
+        {
+            return Result.Success(); // Already removed
+        }
+
+        _products.Remove(productId);
+        QueueDomainEvent(new ProductRemoved(Id, productId));
 
         return Result.Success();
     }
