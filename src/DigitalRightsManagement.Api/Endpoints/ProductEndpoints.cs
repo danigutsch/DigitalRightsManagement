@@ -32,6 +32,12 @@ internal class ProductEndpoints : EndpointGroupBase
             .WithDescription("Allows a manager to assign a worker (user with Viewer role) to their product.")
             .ProducesDefault();
 
+        group.MapDelete("/{id:guid}/workers/{workerId:guid}", UnassignWorker)
+            .WithName("Unassign Worker")
+            .WithSummary("Unassign a worker from a product")
+            .WithDescription("Allows a manager to remove a worker from their product.")
+            .ProducesDefault();
+
         group.MapPut("/{id:guid}/price", UpdatePrice)
             .WithName("Update Product Price")
             .WithSummary("Update a product's price")
@@ -74,13 +80,16 @@ internal class ProductEndpoints : EndpointGroupBase
 
         return result.ToMinimalApiResult();
     }
-    private static async Task<IResult> AssignWorker(
-        Guid id,
-        [FromBody] AssignWorkerDto dto,
-        [FromServices] IMediator mediator,
-        CancellationToken ct)
+    private static async Task<IResult> AssignWorker(Guid id, [FromBody] AssignWorkerDto dto, [FromServices] IMediator mediator, CancellationToken ct)
     {
         var command = new AssignWorkerCommand(id, dto.WorkerId);
+        var result = await mediator.Send(command, ct);
+        return result.ToMinimalApiResult();
+    }
+
+    private static async Task<IResult> UnassignWorker(Guid id, Guid workerId, [FromServices] IMediator mediator, CancellationToken ct)
+    {
+        var command = new UnassignWorkerCommand(id, workerId);
         var result = await mediator.Send(command, ct);
         return result.ToMinimalApiResult();
     }

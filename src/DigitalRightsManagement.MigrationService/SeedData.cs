@@ -8,13 +8,17 @@ public static class SeedData
 {
     static SeedData()
     {
-        var agents = AgentsAndPasswords.Select(x =>
+        var agents = AgentsAndPasswords.Select(t =>
         {
-            var (agent, _) = x;
+            var (agent, _) = t;
 
             var productsToAdd = Products
-                .Where(product => product.AgentId == agent.Id)
-                .ExceptBy(agent.Products, product => product.Id)
+                .Where(product => agent.Role switch
+                {
+                    AgentRoles.Manager => product.AgentId == agent.Id,
+                    AgentRoles.Worker => product.AssignedWorkers.Contains(agent.Id),
+                    _ => false
+                })
                 .Select(product => product.Id);
 
             agent.AddProducts(productsToAdd);
@@ -59,12 +63,73 @@ public static class SeedData
 
     public static IReadOnlyList<Product> Products { get; } =
     [
-        Product.Create("Product1", "Description1", Price.Create(10, Currency.Dollar).Value, Guid.Parse("08c7acee-0f8c-4e70-9f72-c59db53ae0be"), Guid.Parse("2a1b2bc7-339a-47aa-9ba3-a2cf2e6aaf2c")).Value,
-        Product.Create("Product2", "Description2", Price.Create(20, Currency.Dollar).Value, Guid.Parse("3d792f3d-8764-49c1-ae2b-40444ffbb2f9"), Guid.Parse("474c01ab-eeff-48ff-8199-9eb4b6595033")).Value,
-        Product.Create("Product3", "Description3", Price.Create(30, Currency.Dollar).Value, Guid.Parse("58bf001c-bb9a-41fd-8917-c6eaf110af90"), Guid.Parse("6517c639-7083-46e8-a0a7-65308f0c0f6a")).Value,
-        Product.Create("Product4", "Description4", Price.Create(40, Currency.Dollar).Value, Guid.Parse("58bf001c-bb9a-41fd-8917-c6eaf110af90"), Guid.Parse("7b6b5c25-99f2-497e-bde1-c06d8ebfd542")).Value,
-        Product.Create("Product5", "Description5", Price.Create(50, Currency.Dollar).Value, Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"), Guid.Parse("2683e1c1-c872-497a-adfd-29d6d07c3efa")).Value,
-        Product.Create("Product6", "Description6", Price.Create(60, Currency.Dollar).Value, Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"), Guid.Parse("1ad91ef7-1d94-4b24-a8b2-e6337c601e4d")).Value,
-        Product.Create("Product7", "Description7", Price.Create(70, Currency.Dollar).Value, Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"), Guid.Parse("86cb3f82-23e3-4154-8a55-ed01213383d5")).Value
+        CreateProductWithWorkers(
+            "Product1",
+            "Description1",
+            Price.Create(10, Currency.Dollar).Value,
+            Guid.Parse("08c7acee-0f8c-4e70-9f72-c59db53ae0be"),
+            Guid.Parse("2a1b2bc7-339a-47aa-9ba3-a2cf2e6aaf2c"),
+            [
+                Guid.Parse("cd86fe59-81d6-4e9a-8d02-dd71613f202b"),
+                Guid.Parse("2ea745cc-7476-4e39-a2c1-048c9fd304f4")
+            ]),
+        CreateProductWithWorkers(
+            "Product2",
+            "Description2",
+            Price.Create(20, Currency.Dollar).Value,
+            Guid.Parse("3d792f3d-8764-49c1-ae2b-40444ffbb2f9"),
+            Guid.Parse("474c01ab-eeff-48ff-8199-9eb4b6595033"),
+            [
+                Guid.Parse("14615405-f391-4f38-9de4-0c4aaf6a4341"),
+                Guid.Parse("7c588df5-4b1a-4370-9f4c-33d0c351406d"),
+                Guid.Parse("6a0e67e9-153e-4eea-a751-77f7043e32ef")
+            ]),
+        CreateProductWithWorkers(
+            "Product3",
+            "Description3",
+            Price.Create(30, Currency.Dollar).Value,
+            Guid.Parse("58bf001c-bb9a-41fd-8917-c6eaf110af90"),
+            Guid.Parse("6517c639-7083-46e8-a0a7-65308f0c0f6a"),
+            [
+                Guid.Parse("84282b24-8c11-44bb-9ccb-5c4c06ded57b"),
+                Guid.Parse("d7efb26d-393c-4d5e-bfb6-12b3152f2994")
+            ]),
+        CreateProductWithWorkers(
+            "Product4",
+            "Description4",
+            Price.Create(40, Currency.Dollar).Value,
+            Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"),
+            Guid.Parse("7b6b5c25-99f2-497e-bde1-c06d8ebfd542"),
+            [
+                Guid.Parse("a01d3277-a55b-411d-b526-662f4df0bbe7"),
+                Guid.Parse("ff043c9e-a1a2-4ed5-97c9-0ed1de3304f8"),
+                Guid.Parse("6cf44570-c980-4db9-b31b-c3cc77bba53a")
+            ]),
+        CreateProductWithWorkers(
+            "Product5",
+            "Description5",
+            Price.Create(50, Currency.Dollar).Value,
+            Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"),
+            Guid.Parse("2683e1c1-c872-497a-adfd-29d6d07c3efa"),
+            [
+                Guid.Parse("cd86fe59-81d6-4e9a-8d02-dd71613f202b"),
+                Guid.Parse("2ea745cc-7476-4e39-a2c1-048c9fd304f4"),
+                Guid.Parse("14615405-f391-4f38-9de4-0c4aaf6a4341")
+            ])
     ];
+    private static Product CreateProductWithWorkers(
+        string name,
+        string description,
+        Price price,
+        Guid createdBy,
+        Guid id,
+        Guid[] workerIds)
+    {
+        var product = Product.Create(name, description, price, createdBy, id).Value;
+        foreach (var workerId in workerIds)
+        {
+            product.AssignWorker(createdBy, workerId);
+        }
+        return product;
+    }
 }

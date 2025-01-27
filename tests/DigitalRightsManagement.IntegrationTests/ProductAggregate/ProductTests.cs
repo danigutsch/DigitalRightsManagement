@@ -7,6 +7,7 @@ using DigitalRightsManagement.Tests.Shared.Factories;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 using System.Net.Http.Json;
+using DigitalRightsManagement.MigrationService;
 
 namespace DigitalRightsManagement.IntegrationTests.ProductAggregate;
 
@@ -174,5 +175,24 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         worker = await DbContext.Agents.FindAsync(worker.Id);
         worker.ShouldNotBeNull();
         worker.Products.ShouldContain(productId);
+    }
+
+    [Fact]
+    public async Task Unassign_Worker_Happy_Path()
+    {
+        // Arrange
+        var product = SeedData.Products.First(p => p.AssignedWorkers.Count > 0);
+        var manager = SeedData.Agents.First(a => a.Id == product.AgentId);
+        var workerId = product.AssignedWorkers[0];
+
+        // Act
+        var response = await GetHttpClient(manager).DeleteAsync($"/products/{product.Id}/workers/{workerId}");
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        product = await DbContext.Products.FindAsync(product.Id);
+        product.ShouldNotBeNull();
+        product.AssignedWorkers.ShouldNotContain(workerId);
     }
 }
