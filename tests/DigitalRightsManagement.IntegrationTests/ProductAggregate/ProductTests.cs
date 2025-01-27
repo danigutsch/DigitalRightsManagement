@@ -170,5 +170,9 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         var product = await DbContext.Products.FindAsync(productId);
         product.ShouldNotBeNull();
         product.AssignedWorkers.ShouldContain(worker.Id);
+
+        worker = await DbContext.Agents.FindAsync(worker.Id);
+        worker.ShouldNotBeNull();
+        worker.Products.ShouldContain(productId);
     }
 }

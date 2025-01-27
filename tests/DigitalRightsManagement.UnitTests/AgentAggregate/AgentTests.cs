@@ -254,10 +254,10 @@ public sealed class AgentTests : UnitTestBase
     }
 
     [Fact]
-    public void Cannot_Add_Product_To_Non_Manager()
+    public void Cannot_Add_Product_To_Admin()
     {
         // Arrange
-        var agent = AgentFactory.Create(role: AgentRoles.Worker);
+        var agent = AgentFactory.Create(role: AgentRoles.Admin);
         var product = ProductFactory.InDevelopment();
 
         // Act
