@@ -166,6 +166,13 @@ public static class Errors
             var message = $"The agent is not authorized to perform this action. Required role: {requiredRole}.";
             return Result.Unauthorized(code, message);
         }
+
+        public static Result InvalidWorkerRole(Guid userId, AgentRoles role)
+        {
+            const string code = "user.role.invalid-worker";
+            var message = $"The user [{userId}] with role {role} cannot be assigned as a worker.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
     }
 
     public static class Identity
