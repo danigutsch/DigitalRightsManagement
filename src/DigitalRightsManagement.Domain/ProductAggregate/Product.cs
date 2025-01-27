@@ -176,4 +176,28 @@ public sealed class Product : AggregateRoot
 
         return Result.Success();
     }
+
+    public Result UnassignWorker(Guid userId, Guid workerId)
+    {
+        var ownerValidation = ValidateOwner(userId);
+        if (!ownerValidation.IsSuccess)
+        {
+            return ownerValidation;
+        }
+
+        if (workerId == Guid.Empty)
+        {
+            return Errors.Agents.EmptyId();
+        }
+
+        if (!_assignedWorkers.Contains(workerId))
+        {
+            return Errors.Products.WorkerNotAssigned(Id, workerId);
+        }
+
+        _assignedWorkers.Remove(workerId);
+        QueueDomainEvent(new WorkerUnassigned(Id, userId, workerId));
+
+        return Result.Success();
+    }
 }

@@ -100,6 +100,13 @@ public static class Errors
             var message = $"The worker [{workerId}] is already assigned to product [{productId}].";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
+
+        public static Result WorkerNotAssigned(Guid productId, Guid workerId)
+        {
+            const string code = "product.worker.not-assigned";
+            var message = $"The worker [{workerId}] is not assigned to product [{productId}].";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
     }
 
     public static class Agents
