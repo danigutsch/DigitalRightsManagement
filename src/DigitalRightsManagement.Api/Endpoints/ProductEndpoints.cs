@@ -26,6 +26,12 @@ internal class ProductEndpoints : EndpointGroupBase
             .WithDescription("Allows a manager or higher to create a new product.")
             .ProducesDefault();
 
+        group.MapPost("/{id:guid}/workers", AssignWorker)
+            .WithName("Assign Worker")
+            .WithSummary("Assign a worker to a product")
+            .WithDescription("Allows a manager to assign a worker (user with Viewer role) to their product.")
+            .ProducesDefault();
+
         group.MapPut("/{id:guid}/price", UpdatePrice)
             .WithName("Update Product Price")
             .WithSummary("Update a product's price")
@@ -68,6 +74,17 @@ internal class ProductEndpoints : EndpointGroupBase
 
         return result.ToMinimalApiResult();
     }
+    private static async Task<IResult> AssignWorker(
+        Guid id,
+        [FromBody] AssignWorkerDto dto,
+        [FromServices] IMediator mediator,
+        CancellationToken ct)
+    {
+        var command = new AssignWorkerCommand(id, dto.WorkerId);
+        var result = await mediator.Send(command, ct);
+        return result.ToMinimalApiResult();
+    }
+
     private static async Task<IResult> UpdatePrice(Guid id, [FromBody] UpdatePriceDto dto, [FromServices] IMediator mediator, CancellationToken ct)
     {
         var command = new UpdatePriceCommand(id, dto.Price, dto.Currency, dto.Reason);
@@ -102,6 +119,8 @@ internal class ProductEndpoints : EndpointGroupBase
 }
 
 public sealed record CreateProductDto(string ProductName, string ProductDescription, decimal Price, Currency Currency);
+
+public sealed record AssignWorkerDto(Guid WorkerId);
 
 public sealed record UpdatePriceDto(decimal Price, Currency Currency, string Reason);
 

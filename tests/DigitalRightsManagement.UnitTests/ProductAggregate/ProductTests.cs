@@ -421,4 +421,89 @@ public sealed class ProductTests : UnitTestBase
         // Assert
         result.IsInvalid().ShouldBeTrue();
     }
+
+    [Fact]
+    public void Can_Assign_Worker()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var workerId = Guid.NewGuid();
+
+        // Act
+        var result = product.AssignWorker(product.AgentId, workerId);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        product.AssignedWorkers.ShouldHaveSingleItem().ShouldBe(workerId);
+    }
+
+    [Fact]
+    public void Cannot_Assign_Empty_Worker_Id()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var emptyWorkerId = Guid.Empty;
+
+        // Act
+        var result = product.AssignWorker(product.AgentId, emptyWorkerId);
+
+        // Assert
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("empty");
+    }
+
+    [Fact]
+    public void Cannot_Assign_Same_Worker_Twice()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var workerId = Guid.NewGuid();
+
+        // Act
+        var result = product.AssignWorker(product.AgentId, workerId);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+
+        // Act
+        result = product.AssignWorker(product.AgentId, workerId);
+
+        // Assert
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("already-assigned");
+    }
+
+    [Fact]
+    public void Only_Owner_Can_Assign_Worker()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var workerId = Guid.NewGuid();
+        var randomUserId = Guid.NewGuid();
+
+        // Act
+        var result = product.AssignWorker(randomUserId, workerId);
+
+        // Assert
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("manager.invalid");
+    }
+
+    [Fact]
+    public void Assignment_Queues_Event()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var workerId = Guid.NewGuid();
+
+        // Act
+        var result = product.AssignWorker(product.AgentId, workerId);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        product.DomainEvents.OfType<WorkerAssigned>().ShouldHaveSingleItem();
+    }
 }

@@ -1,12 +1,12 @@
 ﻿using DigitalRightsManagement.Api.Endpoints;
 using DigitalRightsManagement.Application.ProductAggregate;
+using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.IntegrationTests.Helpers.Abstractions;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 using System.Net.Http.Json;
-using DigitalRightsManagement.Domain.AgentAggregate;
 
 namespace DigitalRightsManagement.IntegrationTests.ProductAggregate;
 
@@ -148,5 +148,27 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         await DbContext.Entry(product).ReloadAsync();
         product.ShouldNotBeNull();
         product.Status.ShouldBe(ProductStatus.Obsolete);
+    }
+
+    [Fact]
+    public async Task Assign_Worker_Happy_Path()
+    {
+        // Arrange
+        var manager = AgentFactory.Seeded(user => user.Products.Count > 0);
+        var productId = manager.Products[0];
+        var worker = AgentFactory.Seeded(AgentRoles.Worker);
+
+        var assignWorkerDto = new AssignWorkerDto(worker.Id);
+
+        // Act
+        var response = await GetHttpClient(manager)
+            .PostAsJsonAsync($"/products/{productId}/workers", assignWorkerDto);
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        var product = await DbContext.Products.FindAsync(productId);
+        product.ShouldNotBeNull();
+        product.AssignedWorkers.ShouldContain(worker.Id);
     }
 }
