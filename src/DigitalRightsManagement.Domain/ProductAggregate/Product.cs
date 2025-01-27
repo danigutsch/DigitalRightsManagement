@@ -56,6 +56,30 @@ public sealed class Product : AggregateRoot
         return product;
     }
 
+    public Result AssignWorker(Guid userId, Guid workerId)
+    {
+        var ownerValidation = ValidateOwner(userId);
+        if (!ownerValidation.IsSuccess)
+        {
+            return ownerValidation;
+        }
+
+        if (workerId == Guid.Empty)
+        {
+            return Errors.Agents.EmptyId();
+        }
+
+        if (_assignedWorkers.Contains(workerId))
+        {
+            return Errors.Products.WorkerAlreadyAssigned(Id, workerId);
+        }
+
+        _assignedWorkers.Add(workerId);
+        QueueDomainEvent(new WorkerAssigned(Id, userId, workerId));
+
+        return Result.Success();
+    }
+
     public Result UpdatePrice(Guid agentId, Price newPrice, string reason)
     {
         var ownerValidation = ValidateOwner(agentId);
