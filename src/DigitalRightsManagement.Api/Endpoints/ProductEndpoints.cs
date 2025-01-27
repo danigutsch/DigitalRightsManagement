@@ -17,7 +17,7 @@ internal class ProductEndpoints : EndpointGroupBase
         group.MapGet("/", GetProducts)
             .WithName("Get Products")
             .WithSummary("Get the products of a agent")
-            .WithDescription("Allows a agent to get the products he/she manages.")
+            .WithDescription("Allows a agent to get the products he/she is responsible for.")
             .Produces<ProductDto[]>();
 
         group.MapPost("/create", Create)

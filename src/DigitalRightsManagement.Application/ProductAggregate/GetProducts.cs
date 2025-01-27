@@ -1,14 +1,11 @@
 ﻿using Ardalis.Result;
-using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.Messaging;
-using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-[Authorize(AgentRoles.Manager)]
 public sealed record GetProductsQuery : IQuery<ProductDto[]>
 {
     internal sealed class GetProductsQueryHandler(ICurrentAgentProvider currentAgentProvider, IManagementQueries queries) : IQueryHandler<GetProductsQuery, ProductDto[]>

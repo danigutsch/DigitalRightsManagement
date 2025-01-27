@@ -3,11 +3,11 @@ using DigitalRightsManagement.Application.ProductAggregate;
 using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.IntegrationTests.Helpers.Abstractions;
+using DigitalRightsManagement.MigrationService;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 using System.Net.Http.Json;
-using DigitalRightsManagement.MigrationService;
 
 namespace DigitalRightsManagement.IntegrationTests.ProductAggregate;
 
@@ -17,7 +17,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Get_Products_Happy_Path()
     {
         // Arrange
-        var managerWithProducts = AgentFactory.Seeded(agent => agent.Products.Count > 0);
+        var managerWithProducts = AgentFactory.Seeded(agent => agent.Products.Count > 0 && agent.Role == AgentRoles.Manager);
 
         // Act
         var response = await GetHttpClient(managerWithProducts).GetAsync("products");
@@ -72,7 +72,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Update_Price_Happy_Path()
     {
         // Arrange
-        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0);
+        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0 && agent.Role == AgentRoles.Manager);
         var productId = manager.Products[0];
 
         var newPrice = Faker.Random.Decimal(1, 100);
@@ -97,7 +97,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Update_Description_Happy_Path()
     {
         // Arrange
-        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0);
+        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0 && agent.Role == AgentRoles.Manager);
         var productId = manager.Products[0];
 
         var newDescription = Faker.Commerce.ProductDescription();
@@ -119,7 +119,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Publish_Product_Happy_Path()
     {
         // Arrange
-        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0);
+        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0 && agent.Role == AgentRoles.Manager);
         var product = await DbContext.Products.FirstAsync(p => p.AgentId == manager.Id && p.Status == ProductStatus.Development);
 
         // Act
@@ -137,7 +137,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Obsolete_Product_Happy_Path()
     {
         // Arrange
-        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0);
+        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0 && agent.Role == AgentRoles.Manager);
         var product = await DbContext.Products.FirstAsync(p => p.AgentId == manager.Id);
 
         // Act
@@ -155,7 +155,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
     public async Task Assign_Worker_Happy_Path()
     {
         // Arrange
-        var manager = AgentFactory.Seeded(user => user.Products.Count > 0);
+        var manager = AgentFactory.Seeded(user => user.Products.Count > 0 && user.Role == AgentRoles.Manager);
         var productId = manager.Products[0];
         var worker = AgentFactory.Seeded(AgentRoles.Worker);
 
@@ -194,5 +194,9 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         product = await DbContext.Products.FindAsync(product.Id);
         product.ShouldNotBeNull();
         product.AssignedWorkers.ShouldNotContain(workerId);
+
+        var worker = await DbContext.Agents.FindAsync(workerId);
+        worker.ShouldNotBeNull();
+        worker.Products.ShouldNotContain(product.Id);
     }
 }
