@@ -80,14 +80,14 @@ public sealed class Agent : AggregateRoot
 
     public Result AddProduct(Guid productId)
     {
-        if (Role != AgentRoles.Manager)
+        if (Role != AgentRoles.Manager && Role != AgentRoles.Worker)
         {
             return Errors.Agents.UnauthorizedToOwnProduct(Id);
         }
 
         if (Products.Contains(productId))
         {
-            return Errors.Products.AlreadyOwned(Id, productId);
+            return Errors.Products.AlreadyAssigned(Id, productId);
         }
 
         _products.Add(productId);
@@ -104,12 +104,11 @@ public sealed class Agent : AggregateRoot
             return Errors.Agents.UnauthorizedToOwnProduct(Id);
         }
 
-        Guid[] newProductIds = [..productsIds
-            .Except(Products)];
+        Guid[] newProductIds = [..productsIds.Except(Products)];
 
         if (newProductIds.Length == 0)
         {
-            return Errors.Products.AlreadyOwned(Id);
+            return Errors.Products.AlreadyAssigned(Id);
         }
 
         _products.AddRange([.. newProductIds]);

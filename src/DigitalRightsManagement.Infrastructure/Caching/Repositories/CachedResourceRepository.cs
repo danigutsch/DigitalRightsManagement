@@ -18,7 +18,7 @@ internal sealed class CachedResourceRepository(
         var cacheKey = GetCacheKey(ownerId, resourceType, resourceIds);
 
         var cached = await cache.GetAsync(cacheKey, ct);
-        if (cached != null)
+        if (cached is not null)
         {
             return BitConverter.ToBoolean(cached);
         }

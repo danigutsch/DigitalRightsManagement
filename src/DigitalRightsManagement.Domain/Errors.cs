@@ -73,17 +73,17 @@ public static class Errors
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
-        public static Result AlreadyOwned(Guid agentId, Guid productId)
+        public static Result AlreadyAssigned(Guid agentId, Guid productId)
         {
-            const string code = "product.already-owned";
-            var message = $"The agent [{agentId}] already owns the product [{productId}].";
+            const string code = "product.already-assigned";
+            var message = $"The agent [{agentId}] is already assigned the product [{productId}].";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
-        public static Result AlreadyOwned(Guid agentId)
+        public static Result AlreadyAssigned(Guid agentId)
         {
             const string code = "product.already-owned";
-            var message = $"The agent [{agentId}] already owns all products.";
+            var message = $"The agent [{agentId}] is already assigned all the products.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
