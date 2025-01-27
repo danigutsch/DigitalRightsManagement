@@ -29,15 +29,15 @@ public sealed class CachedResourceRepositoryTests : ApiIntegrationTestsBase
         var product = SeedData.Products.Random();
 
         // Act
-        _ = await _resourceRepository.IsResourceOwner(product.UserId, typeof(Product), [product.Id], CancellationToken.None);
+        _ = await _resourceRepository.IsResourceOwner(product.AgentId, typeof(Product), [product.Id], CancellationToken.None);
 
         // Assert
-        var cacheKey = CachedResourceRepository.GetCacheKey(product.UserId, typeof(Product), [product.Id]);
+        var cacheKey = CachedResourceRepository.GetCacheKey(product.AgentId, typeof(Product), [product.Id]);
         var cached = await _cache.GetAsync(cacheKey);
         cached.ShouldNotBeNull();
 
         // Act
-        _ = await _resourceRepository.IsResourceOwner(product.UserId, typeof(Product), [product.Id], CancellationToken.None);
+        _ = await _resourceRepository.IsResourceOwner(product.AgentId, typeof(Product), [product.Id], CancellationToken.None);
 
         // Assert
         var cachedAgain = await _cache.GetAsync(cacheKey);
@@ -49,7 +49,7 @@ public sealed class CachedResourceRepositoryTests : ApiIntegrationTestsBase
     {
         // Arrange
         var productGroupings = SeedData.Products
-            .GroupBy(p => p.UserId)
+            .GroupBy(p => p.AgentId)
             .Where(g => g.Count() > 1)
             .Random();
 

@@ -11,20 +11,20 @@ namespace DigitalRightsManagement.Application.ProductAggregate;
 [AuthorizeResourceOwner<Product>]
 public sealed record PublishProductCommand(Guid ProductId) : ICommand
 {
-    internal sealed class PublishProductCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<PublishProductCommand>
+    internal sealed class PublishProductCommandHandler(ICurrentAgentProvider currentAgentProvider, IProductRepository productRepository) : ICommandHandler<PublishProductCommand>
     {
         public async Task<Result> Handle(PublishProductCommand command, CancellationToken cancellationToken)
         {
-            var userResult = await currentUserProvider.Get(cancellationToken);
-            if (!userResult.IsSuccess)
+            var agentResult = await currentAgentProvider.Get(cancellationToken);
+            if (!agentResult.IsSuccess)
             {
-                return userResult.Map();
+                return agentResult.Map();
             }
 
-            var user = userResult.Value;
+            var agent = agentResult.Value;
 
             return await productRepository.GetById(command.ProductId, cancellationToken)
-                .BindAsync(product => product.Publish(user.Id))
+                .BindAsync(product => product.Publish(agent.Id))
                 .Tap(() => productRepository.UnitOfWork.SaveEntities(cancellationToken));
         }
     }

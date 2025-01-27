@@ -1,23 +1,23 @@
-﻿using DigitalRightsManagement.Domain.UserAggregate;
-using DigitalRightsManagement.Infrastructure.Authorization;
+﻿using DigitalRightsManagement.Infrastructure.Authorization;
 using DigitalRightsManagement.Infrastructure.Identity.Management;
 using Microsoft.AspNetCore.Identity;
 using System.Transactions;
+using DigitalRightsManagement.Domain.AgentAggregate;
 
 namespace DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
 
 public interface IIdentityDbManager : IDatabaseManager
 {
-    public void SetSeedData(IEnumerable<(User user, string password)> users);
+    public void SetSeedData(IEnumerable<(Agent agent, string password)> users);
 }
 
 internal sealed class IdentityDbManager(ManagementIdentityDbContext dbContext, UserManager<ManagementIdentityUser> userManager, RoleManager<IdentityRole> roleManager) : DatabaseManager<ManagementIdentityDbContext>(dbContext), IIdentityDbManager
 {
-    private List<(User user, string password)> _users = [];
+    private List<(Agent agent, string password)> _agents = [];
 
     public override async Task SeedDatabase(CancellationToken ct)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_users.Count);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_agents.Count);
 
         using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
@@ -30,13 +30,13 @@ internal sealed class IdentityDbManager(ManagementIdentityDbContext dbContext, U
 
     private async Task AddUsers()
     {
-        foreach (var (user, password) in _users)
+        foreach (var (agent, password) in _agents)
         {
             var authUser = new ManagementIdentityUser
             {
-                DomainUserId = user.Id,
-                UserName = user.Username,
-                Email = user.Email,
+                DomainUserId = agent.Id,
+                UserName = agent.Username,
+                Email = agent.Email,
                 EmailConfirmed = true
             };
 
@@ -46,12 +46,12 @@ internal sealed class IdentityDbManager(ManagementIdentityDbContext dbContext, U
                 throw new InvalidOperationException($"Failed to create user {authUser.UserName}");
             }
 
-            var role = user.Role switch
+            var role = agent.Role switch
             {
-                UserRoles.Admin => AuthorizationRoles.Admin,
-                UserRoles.Manager => AuthorizationRoles.Manager,
-                UserRoles.Worker => AuthorizationRoles.Worker,
-                _ => throw new InvalidOperationException($"Invalid role {user.Role}")
+                AgentRoles.Admin => AuthorizationRoles.Admin,
+                AgentRoles.Manager => AuthorizationRoles.Manager,
+                AgentRoles.Worker => AuthorizationRoles.Worker,
+                _ => throw new InvalidOperationException($"Invalid role {agent.Role}")
             };
 
             await userManager.AddToRoleAsync(authUser, role);
@@ -73,5 +73,5 @@ internal sealed class IdentityDbManager(ManagementIdentityDbContext dbContext, U
         }
     }
 
-    public void SetSeedData(IEnumerable<(User user, string password)> users) => _users = [.. users];
+    public void SetSeedData(IEnumerable<(Agent agent, string password)> users) => _agents = [.. users];
 }

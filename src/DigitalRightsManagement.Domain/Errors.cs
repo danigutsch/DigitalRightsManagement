@@ -1,8 +1,8 @@
 ﻿#pragma warning disable CA1034
 
 using Ardalis.Result;
+using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
-using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Domain;
 
@@ -59,10 +59,10 @@ public static class Errors
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
-        public static Result InvalidManager(Guid userId, Guid manager)
+        public static Result InvalidManager(Guid agentId, Guid manager)
         {
             const string code = "product.manager.invalid";
-            var message = $"The user [{userId}] is not the manager of the product. Manager: [{manager}].";
+            var message = $"The agent [{agentId}] is not the manager of the product. Manager: [{manager}].";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
@@ -73,17 +73,17 @@ public static class Errors
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
-        public static Result AlreadyOwned(Guid userId, Guid productId)
+        public static Result AlreadyOwned(Guid agentId, Guid productId)
         {
             const string code = "product.already-owned";
-            var message = $"The user [{userId}] already owns the product [{productId}].";
+            var message = $"The agent [{agentId}] already owns the product [{productId}].";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
-        public static Result AlreadyOwned(Guid userId)
+        public static Result AlreadyOwned(Guid agentId)
         {
             const string code = "product.already-owned";
-            var message = $"The user [{userId}] already owns all products.";
+            var message = $"The agent [{agentId}] already owns all products.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
@@ -95,68 +95,68 @@ public static class Errors
         }
     }
 
-    public static class Users
+    public static class Agents
     {
         public static Result EmptyId()
         {
-            const string code = "user.id.empty";
-            const string message = "The user ID can not be empty.";
+            const string code = "agent.id.empty";
+            const string message = "The agent ID can not be empty.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
         public static Result InvalidUsername()
         {
-            const string code = "user.username.invalid";
+            const string code = "agent.username.invalid";
             const string message = "Invalid username.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
         public static Result InvalidEmail()
         {
-            const string code = "user.email.invalid";
+            const string code = "agent.email.invalid";
             const string message = "Invalid email.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
         public static Result UnknownRole()
         {
-            const string code = "user.role.unknown";
+            const string code = "agent.role.unknown";
             const string message = "Unknown role.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
-        public static Result UnauthorizedToPromote(Guid promoterId, Guid promoteeId, UserRoles desiredRole)
+        public static Result UnauthorizedToPromote(Guid promoterId, Guid promoteeId, AgentRoles desiredRole)
         {
-            const string code = "user.unauthorized.promote";
-            var message = $"User [{promoterId}] can not promote [{promoteeId}] to role {desiredRole}.";
+            const string code = "agent.unauthorized.promote";
+            var message = $"Agent [{promoterId}] can not promote [{promoteeId}] to role {desiredRole}.";
             return Result.Unauthorized(code, message);
         }
 
-        public static Result AlreadyInRole(Guid userId, UserRoles desiredRole)
+        public static Result AlreadyInRole(Guid agentId, AgentRoles desiredRole)
         {
-            const string code = "user.role.already-in-role";
-            var message = $"The user [{userId}] is already in role {desiredRole}.";
+            const string code = "agent.role.already-in-role";
+            var message = $"The agent [{agentId}] is already in role {desiredRole}.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
         public static Result UnauthorizedToOwnProduct(Guid id)
         {
-            const string code = "user.unauthorized.own-product";
+            const string code = "agent.unauthorized.own-product";
             var message = $"The can not [{id}] own a product.";
             return Result.Unauthorized(code, message);
         }
 
         public static Result NotFound()
         {
-            const string code = "user.not-found";
-            const string message = "The user was not found.";
+            const string code = "agent.not-found";
+            const string message = "The agent was not found.";
             return Result.NotFound(code, message);
         }
 
-        public static Result Unauthorized(UserRoles requiredRole)
+        public static Result Unauthorized(AgentRoles requiredRole)
         {
-            const string code = "user.unauthorized";
-            var message = $"The user is not authorized to perform this action. Required role: {requiredRole}.";
+            const string code = "agent.unauthorized";
+            var message = $"The agent is not authorized to perform this action. Required role: {requiredRole}.";
             return Result.Unauthorized(code, message);
         }
     }

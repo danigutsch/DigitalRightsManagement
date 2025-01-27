@@ -4,28 +4,28 @@ using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
+using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
-using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-[Authorize(UserRoles.Manager)]
+[Authorize(AgentRoles.Manager)]
 public sealed record CreateProductCommand(string Name, string Description, decimal Price, Currency Currency) : ICommand<Guid>
 {
-    internal sealed class CreateProductCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<CreateProductCommand, Guid>
+    internal sealed class CreateProductCommandHandler(ICurrentAgentProvider currentAgentProvider, IProductRepository productRepository) : ICommandHandler<CreateProductCommand, Guid>
     {
         public async Task<Result<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
-            var userResult = await currentUserProvider.Get(cancellationToken);
-            if (!userResult.IsSuccess)
+            var agentResult = await currentAgentProvider.Get(cancellationToken);
+            if (!agentResult.IsSuccess)
             {
-                return userResult.Map();
+                return agentResult.Map();
             }
 
-            var user = userResult.Value;
+            var agent = agentResult.Value;
 
             return await Domain.ProductAggregate.Price.Create(command.Price, command.Currency)
-                .Bind(price => Product.Create(command.Name, command.Description, price, user.Id))
+                .Bind(price => Product.Create(command.Name, command.Description, price, agent.Id))
                 .Tap(productRepository.Add)
                 .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
                 .MapAsync(product => product.Id);

@@ -1,12 +1,12 @@
-﻿using DigitalRightsManagement.Domain.UserAggregate;
+﻿using DigitalRightsManagement.Domain.AgentAggregate;
 
 namespace DigitalRightsManagement.Application.Authorization
 {
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class AuthorizeAttribute() : Attribute
     {
-        public AuthorizeAttribute(UserRoles requiredRole) : this() => RequiredRole = requiredRole;
+        public AuthorizeAttribute(AgentRoles requiredRole) : this() => RequiredRole = requiredRole;
 
-        public UserRoles? RequiredRole { get; }
+        public AgentRoles? RequiredRole { get; }
     }
 }

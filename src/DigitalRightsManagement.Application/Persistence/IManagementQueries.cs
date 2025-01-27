@@ -5,5 +5,5 @@ namespace DigitalRightsManagement.Application.Persistence;
 
 public interface IManagementQueries
 {
-    Task<Result<IReadOnlyList<Product>>> GetProductsByUserId(Guid userId, CancellationToken cancellationToken);
+    Task<Result<IReadOnlyList<Product>>> GetProductsByAgentId(Guid agentId, CancellationToken cancellationToken);
 }

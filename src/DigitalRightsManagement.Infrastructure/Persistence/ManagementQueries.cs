@@ -7,11 +7,11 @@ namespace DigitalRightsManagement.Infrastructure.Persistence;
 
 internal sealed class ManagementQueries(ManagementDbContext dbContext) : IManagementQueries
 {
-    public async Task<Result<IReadOnlyList<Product>>> GetProductsByUserId(Guid userId, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyList<Product>>> GetProductsByAgentId(Guid agentId, CancellationToken cancellationToken)
     {
         return await dbContext.Products
             .AsNoTracking()
-            .Where(product => product.UserId == userId)
+            .Where(product => product.AgentId == agentId)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
     }

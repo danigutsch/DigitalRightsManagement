@@ -1,22 +1,22 @@
-﻿using DigitalRightsManagement.Domain.ProductAggregate;
-using DigitalRightsManagement.Domain.UserAggregate;
+﻿using DigitalRightsManagement.Domain.AgentAggregate;
+using DigitalRightsManagement.Domain.ProductAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
 
 public interface IApplicationDbManager : IDatabaseManager
 {
-    void SetSeedData(IEnumerable<User> users, IEnumerable<Product> products);
+    void SetSeedData(IEnumerable<Agent> agents, IEnumerable<Product> products);
 }
 
 internal sealed class ApplicationDbManager(ManagementDbContext dbContext) : DatabaseManager<ManagementDbContext>(dbContext), IApplicationDbManager
 {
-    private User[] _users = [];
+    private Agent[] _agents = [];
     private Product[] _products = [];
 
     public override async Task SeedDatabase(CancellationToken ct)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_users.Length);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_agents.Length);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_products.Length);
 
         var strategy = Context.Database.CreateExecutionStrategy();
@@ -24,7 +24,7 @@ internal sealed class ApplicationDbManager(ManagementDbContext dbContext) : Data
         {
             await using var transaction = await Context.Database.BeginTransactionAsync(ct);
 
-            Context.Users.AddRange(_users);
+            Context.Agents.AddRange(_agents);
             Context.Products.AddRange(_products);
 
             await Context.SaveChangesAsync(ct);
@@ -33,9 +33,9 @@ internal sealed class ApplicationDbManager(ManagementDbContext dbContext) : Data
         }).ConfigureAwait(false);
     }
 
-    public void SetSeedData(IEnumerable<User> users, IEnumerable<Product> products)
+    public void SetSeedData(IEnumerable<Agent> agents, IEnumerable<Product> products)
     {
-        _users = [.. users];
+        _agents = [.. agents];
         _products = [.. products];
     }
 }

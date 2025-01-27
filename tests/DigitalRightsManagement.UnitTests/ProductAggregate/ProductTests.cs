@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
+using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate.Events;
-using DigitalRightsManagement.Domain.UserAggregate;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using DigitalRightsManagement.Tests.Shared.TestData;
 using DigitalRightsManagement.UnitTests.Helpers.Abstractions;
@@ -112,7 +112,7 @@ public sealed class ProductTests : UnitTestBase
         priceResult.Value.Currency.ShouldBe(_validProduct.Price.Currency);
 
         // Act
-        var productResult = Product.Create(_validProduct.Name, _validProduct.Description, priceResult.Value, _validProduct.UserId);
+        var productResult = Product.Create(_validProduct.Name, _validProduct.Description, priceResult.Value, _validProduct.AgentId);
 
         // Assert
         productResult.IsSuccess.ShouldBeTrue();
@@ -127,7 +127,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         // Act
-        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.UserId);
+        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.AgentId);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -141,7 +141,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         // Act
-        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.UserId);
+        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.AgentId);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -152,7 +152,7 @@ public sealed class ProductTests : UnitTestBase
     public void Can_Update_Price()
     {
         // Arrange
-        var manager = UserFactory.Create(role: UserRoles.Manager);
+        var manager = AgentFactory.Create(role: AgentRoles.Manager);
         var product = ProductFactory.InDevelopment(manager: manager.Id);
         var newPrice = Price.Create(2m, Currency.Euro).Value;
 
@@ -164,7 +164,7 @@ public sealed class ProductTests : UnitTestBase
     }
 
     [Fact]
-    public void Can_Not_Update_Price_With_Empty_User_Id()
+    public void Can_Not_Update_Price_With_Empty_Agent_Id()
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
@@ -183,10 +183,10 @@ public sealed class ProductTests : UnitTestBase
         // Arrange
         var product = ProductFactory.InDevelopment();
         var newPrice = Price.Create(2m, Currency.Euro).Value;
-        var randomUserId = Guid.NewGuid();
+        var randomAgentId = Guid.NewGuid();
 
         // Act
-        var result = product.UpdatePrice(randomUserId, newPrice, "reason");
+        var result = product.UpdatePrice(randomAgentId, newPrice, "reason");
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
@@ -196,7 +196,7 @@ public sealed class ProductTests : UnitTestBase
     public void Price_Update_Queues_Event()
     {
         // Arrange
-        var manager = UserFactory.Create(role: UserRoles.Manager);
+        var manager = AgentFactory.Create(role: AgentRoles.Manager);
         var product = ProductFactory.InDevelopment(manager: manager.Id);
         var newPrice = Price.Create(2m, Currency.Euro).Value;
 
@@ -212,7 +212,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         // Act
-        var product = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.UserId).Value;
+        var product = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, _validProduct.AgentId).Value;
 
         // Assert
         product.Status.ShouldBe(ProductStatus.Development);
@@ -225,7 +225,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = product.Publish(product.UserId);
+        var result = product.Publish(product.AgentId);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -239,7 +239,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Published();
 
         // Act
-        var result = product.Publish(product.UserId);
+        var result = product.Publish(product.AgentId);
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
@@ -252,14 +252,14 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Obsolete();
 
         // Act
-        var result = product.Publish(product.UserId);
+        var result = product.Publish(product.AgentId);
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
     }
 
     [Fact]
-    public void Can_Not_Publish_With_Empty_User_Id()
+    public void Can_Not_Publish_With_Empty_Agent_Id()
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
@@ -278,7 +278,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        product.Publish(product.UserId);
+        product.Publish(product.AgentId);
 
         // Assert
         product.DomainEvents.OfType<ProductPublished>().ShouldHaveSingleItem();
@@ -291,7 +291,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = product.Obsolete(product.UserId);
+        var result = product.Obsolete(product.AgentId);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -305,7 +305,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Published();
 
         // Act
-        var result = product.Obsolete(product.UserId);
+        var result = product.Obsolete(product.AgentId);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -319,14 +319,14 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Obsolete();
 
         // Act
-        var result = product.Obsolete(product.UserId);
+        var result = product.Obsolete(product.AgentId);
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
     }
 
     [Fact]
-    public void Can_Not_Obsolete_With_Empty_User_Id()
+    public void Can_Not_Obsolete_With_Empty_Agent_Id()
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
@@ -345,7 +345,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.Published();
 
         // Act
-        product.Obsolete(product.UserId);
+        product.Obsolete(product.AgentId);
 
         // Assert
         product.DomainEvents.OfType<ProductObsoleted>().ShouldHaveSingleItem();
@@ -359,7 +359,7 @@ public sealed class ProductTests : UnitTestBase
         const string newDescription = "new description";
 
         // Act
-        var result = product.UpdateDescription(product.UserId, newDescription);
+        var result = product.UpdateDescription(product.AgentId, newDescription);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -371,25 +371,25 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var randomUserId = Guid.NewGuid();
+        var randomAgentId = Guid.NewGuid();
 
         // Act
-        var result = product.UpdateDescription(randomUserId, string.Empty);
+        var result = product.UpdateDescription(randomAgentId, string.Empty);
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
     }
 
     [Fact]
-    public void Can_Not_Update_Description_With_Empty_User_Id()
+    public void Can_Not_Update_Description_With_Empty_Agent_Id()
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
         const string newDescription = "new description";
-        var emptyUserId = Guid.Empty;
+        var emptyAgentId = Guid.Empty;
 
         // Act
-        var result = product.UpdateDescription(emptyUserId, newDescription);
+        var result = product.UpdateDescription(emptyAgentId, newDescription);
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
@@ -403,7 +403,7 @@ public sealed class ProductTests : UnitTestBase
         const string newDescription = "new description";
 
         // Act
-        product.UpdateDescription(product.UserId, newDescription);
+        product.UpdateDescription(product.AgentId, newDescription);
 
         // Assert
         product.DomainEvents.OfType<DescriptionUpdated>().ShouldHaveSingleItem();
@@ -416,7 +416,7 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = product.UpdateDescription(product.UserId, newDescription);
+        var result = product.UpdateDescription(product.AgentId, newDescription);
 
         // Assert
         result.IsInvalid().ShouldBeTrue();

@@ -11,17 +11,17 @@ namespace DigitalRightsManagement.Application.ProductAggregate;
 [AuthorizeResourceOwner<Product>]
 public sealed record UpdatePriceCommand(Guid ProductId, decimal NewPrice, Currency Currency, string Reason) : ICommand
 {
-    internal sealed class UpdatePriceCommandHandler(ICurrentUserProvider currentUserProvider, IProductRepository productRepository) : ICommandHandler<UpdatePriceCommand>
+    internal sealed class UpdatePriceCommandHandler(ICurrentAgentProvider currentAgentProvider, IProductRepository productRepository) : ICommandHandler<UpdatePriceCommand>
     {
         public async Task<Result> Handle(UpdatePriceCommand command, CancellationToken cancellationToken)
         {
-            var userResult = await currentUserProvider.Get(cancellationToken);
-            if (!userResult.IsSuccess)
+            var agentResult = await currentAgentProvider.Get(cancellationToken);
+            if (!agentResult.IsSuccess)
             {
-                return userResult.Map();
+                return agentResult.Map();
             }
 
-            var user = userResult.Value;
+            var agent = agentResult.Value;
 
             var productResult = await productRepository.GetById(command.ProductId, cancellationToken);
             if (!productResult.IsSuccess)
@@ -32,7 +32,7 @@ public sealed record UpdatePriceCommand(Guid ProductId, decimal NewPrice, Curren
             var product = productResult.Value;
 
             return await Price.Create(command.NewPrice, command.Currency)
-                .Tap(price => product.UpdatePrice(user.Id, price, command.Reason))
+                .Tap(price => product.UpdatePrice(agent.Id, price, command.Reason))
                 .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
                 .MapAsync(_ => Result.Success());
         }

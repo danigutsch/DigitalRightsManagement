@@ -3,20 +3,20 @@ using DigitalRightsManagement.Application.Authorization;
 using DigitalRightsManagement.Application.Messaging;
 using DigitalRightsManagement.Application.Persistence;
 using DigitalRightsManagement.Common.Messaging;
+using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
-using DigitalRightsManagement.Domain.UserAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-[Authorize(UserRoles.Manager)]
+[Authorize(AgentRoles.Manager)]
 public sealed record GetProductsQuery : IQuery<ProductDto[]>
 {
-    internal sealed class GetProductsQueryHandler(ICurrentUserProvider currentUserProvider, IManagementQueries queries) : IQueryHandler<GetProductsQuery, ProductDto[]>
+    internal sealed class GetProductsQueryHandler(ICurrentAgentProvider currentAgentProvider, IManagementQueries queries) : IQueryHandler<GetProductsQuery, ProductDto[]>
     {
         public async Task<Result<ProductDto[]>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
-            return await currentUserProvider.Get(cancellationToken)
-                .BindAsync(user => queries.GetProductsByUserId(user.Id, cancellationToken))
+            return await currentAgentProvider.Get(cancellationToken)
+                .BindAsync(agent => queries.GetProductsByAgentId(agent.Id, cancellationToken))
                 .MapAsync(MapToDto);
         }
 

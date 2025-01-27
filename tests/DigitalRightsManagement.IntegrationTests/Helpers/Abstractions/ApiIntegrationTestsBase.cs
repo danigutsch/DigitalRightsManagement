@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
 using DigitalRightsManagement.IntegrationTests.Helpers.HttpAuthHandlers;
@@ -25,9 +25,9 @@ public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IAsyn
         DbContext = _scope.ServiceProvider.GetRequiredService<ManagementDbContext>();
     }
 
-    protected HttpClient GetHttpClient(User user)
+    protected HttpClient GetHttpClient(Agent agent)
     {
-        var handler = new BasicAuthHandler(user.Username, SeedData.Passwords[user.Id]);
+        var handler = new BasicAuthHandler(agent.Username, SeedData.Passwords[agent.Id]);
         var client = Fixture.CreateDefaultClient(handler);
         return client;
     }
@@ -38,8 +38,8 @@ public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IAsyn
         var applicationDbManager = scope.ServiceProvider.GetRequiredService<IApplicationDbManager>();
         var identityDbManager = scope.ServiceProvider.GetRequiredService<IIdentityDbManager>();
 
-        applicationDbManager.SetSeedData(SeedData.Users, SeedData.Products);
-        identityDbManager.SetSeedData(SeedData.UsersAndPasswords);
+        applicationDbManager.SetSeedData(SeedData.Agents, SeedData.Products);
+        identityDbManager.SetSeedData(SeedData.AgentsAndPasswords);
 
         await applicationDbManager.ResetState(CancellationToken.None);
         await identityDbManager.ResetState(CancellationToken.None)

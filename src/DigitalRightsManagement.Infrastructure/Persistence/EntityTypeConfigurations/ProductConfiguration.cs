@@ -20,7 +20,7 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.OwnsOne(p => p.Price);
 
-        builder.Property(p => p.UserId);
+        builder.Property(p => p.AgentId);
 
         builder.Property(p => p.Status)
             .HasConversion<string>();

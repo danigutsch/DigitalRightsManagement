@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result;
-using DigitalRightsManagement.Domain.UserAggregate;
+using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 using DigitalRightsManagement.UnitTests.Helpers.Mocks;
 using DigitalRightsManagement.UnitTests.Helpers.TestDoubles;
@@ -10,15 +10,15 @@ namespace DigitalRightsManagement.UnitTests.Messaging.Behaviors;
 
 public class AuthorizationBehaviorTests
 {
-    private readonly TestCurrentUserProvider _userProvider;
+    private readonly TestCurrentAgentProvider _agentProvider;
     private readonly AuthorizationBehavior<BaseRequest, Result> _behavior;
 
     public AuthorizationBehaviorTests()
     {
         var logger = NullLogger<AuthorizationBehavior<BaseRequest, Result>>.Instance;
 
-        _userProvider = new TestCurrentUserProvider();
-        _behavior = new AuthorizationBehavior<BaseRequest, Result>(_userProvider, logger);
+        _agentProvider = new TestCurrentAgentProvider();
+        _behavior = new AuthorizationBehavior<BaseRequest, Result>(_agentProvider, logger);
     }
 
     [Fact]
@@ -38,12 +38,12 @@ public class AuthorizationBehaviorTests
     }
 
     [Fact]
-    public async Task Handle_AuthorizeWithoutRole_UserFound_ReturnsSuccess()
+    public async Task Handle_AuthorizeWithoutRole_AgentFound_ReturnsSuccess()
     {
         // Arrange
         var request = new AuthorizedRequestWithoutRole();
-        var user = User.Create("test", "test@test.com", UserRoles.Worker).Value;
-        _userProvider.NextResult = Result.Success(user);
+        var agent = Agent.Create("test", "test@test.com", AgentRoles.Worker).Value;
+        _agentProvider.NextResult = Result.Success(agent);
 
         // Act
         var result = await _behavior.Handle(
@@ -56,11 +56,11 @@ public class AuthorizationBehaviorTests
     }
 
     [Fact]
-    public async Task Handle_UserNotFound_ReturnsNotFound()
+    public async Task Handle_AgentNotFound_ReturnsNotFound()
     {
         // Arrange
         var request = new RequestWithAuthorizeAttribute();
-        _userProvider.NextResult = Result.NotFound();
+        _agentProvider.NextResult = Result.NotFound();
 
         // Act
         var result = await _behavior.Handle(
@@ -77,8 +77,8 @@ public class AuthorizationBehaviorTests
     {
         // Arrange
         var request = new RequestWithAuthorizeAttribute();
-        var user = User.Create("test", "test@test.com", UserRoles.Worker).Value;
-        _userProvider.NextResult = Result.Success(user);
+        var agent = Agent.Create("test", "test@test.com", AgentRoles.Worker).Value;
+        _agentProvider.NextResult = Result.Success(agent);
 
         // Act
         var result = await _behavior.Handle(
@@ -95,8 +95,8 @@ public class AuthorizationBehaviorTests
     {
         // Arrange
         var request = new RequestWithAuthorizeAttribute();
-        var user = User.Create("test", "test@test.com", UserRoles.Manager).Value;
-        _userProvider.NextResult = Result.Success(user);
+        var agent = Agent.Create("test", "test@test.com", AgentRoles.Manager).Value;
+        _agentProvider.NextResult = Result.Success(agent);
 
         // Act
         var result = await _behavior.Handle(
