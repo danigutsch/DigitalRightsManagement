@@ -506,4 +506,85 @@ public sealed class ProductTests : UnitTestBase
         result.IsSuccess.ShouldBeTrue();
         product.DomainEvents.OfType<WorkerAssigned>().ShouldHaveSingleItem();
     }
+
+    [Fact]
+    public void Can_Unassign_Worker()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var workerId = Guid.NewGuid();
+        product.AssignWorker(product.AgentId, workerId);
+
+        // Act
+        var result = product.UnassignWorker(product.AgentId, workerId);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        product.AssignedWorkers.ShouldNotContain(workerId);
+    }
+
+    [Fact]
+    public void Cannot_Unassign_Worker_Not_Assigned()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var workerId = Guid.NewGuid();
+
+        // Act
+        var result = product.UnassignWorker(product.AgentId, workerId);
+
+        // Assert
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("not-assigned");
+    }
+
+    [Fact]
+    public void Cannot_Unassign_With_Empty_Worker_Id()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var emptyWorkerId = Guid.Empty;
+
+        // Act
+        var result = product.UnassignWorker(product.AgentId, emptyWorkerId);
+
+        // Assert
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("empty");
+    }
+
+    [Fact]
+    public void Only_Owner_Can_Unassign_Worker()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var workerId = Guid.NewGuid();
+        var randomUserId = Guid.NewGuid();
+
+        // Act
+        var result = product.UnassignWorker(randomUserId, workerId);
+
+        // Assert
+        result.IsInvalid().ShouldBeTrue();
+        result.ValidationErrors.ShouldHaveSingleItem()
+            .ErrorCode.ShouldContain("manager.invalid");
+    }
+
+    [Fact]
+    public void Unassignment_Queues_Event()
+    {
+        // Arrange
+        var product = ProductFactory.InDevelopment();
+        var workerId = Guid.NewGuid();
+        product.AssignWorker(product.AgentId, workerId);
+
+        // Act
+        var result = product.UnassignWorker(product.AgentId, workerId);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        product.DomainEvents.OfType<WorkerUnassigned>().ShouldHaveSingleItem();
+    }
 }
