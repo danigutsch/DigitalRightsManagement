@@ -1,10 +1,8 @@
 ﻿namespace DigitalRightsManagement.Common.DDD;
 
-public class AggregateRoot : Entity
+public partial class AggregateRoot : Entity
 {
     protected AggregateRoot(Guid id) : base(id) { }
-
-    protected AggregateRoot() { } // Do not use
 
     private readonly List<DomainEvent> _domainEvents = [];
 
