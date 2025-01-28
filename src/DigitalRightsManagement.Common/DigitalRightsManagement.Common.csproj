@@ -1,17 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <PackageReference Include="Ardalis.Result" />
-    <PackageReference Include="MediatR.Contracts" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DigitalRightsManagement.SourceGenerators\DigitalRightsManagement.SourceGenerators.csproj" >
-	    <OutputItemType>Analyzer</OutputItemType>
-	    <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="CommunityToolkit.Diagnostics" />
-    <PackageReference Update="SonarAnalyzer.CSharp" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Ardalis.Result" />
+		<PackageReference Include="MediatR.Contracts" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DigitalRightsManagement.Analyzers\DigitalRightsManagement.Analyzers.csproj" >
+			<OutputItemType>Analyzer</OutputItemType>
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		</ProjectReference>
+		<ProjectReference Include="..\DigitalRightsManagement.SourceGenerators\DigitalRightsManagement.SourceGenerators.csproj">
+			<OutputItemType>Analyzer</OutputItemType>
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Update="CommunityToolkit.Diagnostics" />
+		<PackageReference Update="SonarAnalyzer.CSharp" />
+	</ItemGroup>
+
 </Project>
