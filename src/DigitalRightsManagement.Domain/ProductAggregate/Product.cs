@@ -4,7 +4,7 @@ using DigitalRightsManagement.Domain.ProductAggregate.Events;
 
 namespace DigitalRightsManagement.Domain.ProductAggregate;
 
-public sealed class Product : AggregateRoot
+public sealed partial class Product : AggregateRoot
 {
     public string Name { get; private set; }
     public string Description { get; private set; }
@@ -24,10 +24,6 @@ public sealed class Product : AggregateRoot
 
         QueueDomainEvent(new ProductCreated(Id, createdBy, name, description, price));
     }
-
-#pragma warning disable CS8618, CS9264
-    private Product() { } // Do not use
-#pragma warning restore CS8618, CS9264
 
     public static Result<Product> Create(string name, string description, Price price, Guid manager, Guid? id = null)
     {

@@ -4,7 +4,7 @@ using DigitalRightsManagement.Domain.AgentAggregate.Events;
 
 namespace DigitalRightsManagement.Domain.AgentAggregate;
 
-public sealed class Agent : AggregateRoot
+public sealed partial class Agent : AggregateRoot
 {
     public string Username { get; private set; }
     public string Email { get; private set; }
@@ -21,10 +21,6 @@ public sealed class Agent : AggregateRoot
 
         QueueDomainEvent(new AgentCreated(Id, username, email, role));
     }
-
-#pragma warning disable CS8618, CS9264
-    private Agent() { } // Do not use
-#pragma warning restore CS8618, CS9264
 
     public static Result<Agent> Create(string username, string email, AgentRoles role, Guid? id = null)
     {
