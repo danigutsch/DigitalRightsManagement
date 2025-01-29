@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.Sou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.Analyzers", "src\DigitalRightsManagement.Analyzers\DigitalRightsManagement.Analyzers.csproj", "{457DB73A-17D8-4C3C-B786-9649DA057442}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.UnitTests.Analyzers", "DigitalRightsManagement.UnitTests.Analyzers\DigitalRightsManagement.UnitTests.Analyzers.csproj", "{18975906-F6AD-4C23-8178-00CF40155AB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{457DB73A-17D8-4C3C-B786-9649DA057442}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{457DB73A-17D8-4C3C-B786-9649DA057442}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{457DB73A-17D8-4C3C-B786-9649DA057442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18975906-F6AD-4C23-8178-00CF40155AB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18975906-F6AD-4C23-8178-00CF40155AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18975906-F6AD-4C23-8178-00CF40155AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18975906-F6AD-4C23-8178-00CF40155AB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,6 +123,7 @@ Global
 		{60B4EA75-75B0-4DCF-9E84-EC557184917A} = {D2CB2BF5-7814-481F-8C9A-657177C9D1DD}
 		{F9FFDCC5-85A6-4B56-B0E8-9D4B7AF53D1B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{457DB73A-17D8-4C3C-B786-9649DA057442} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{18975906-F6AD-4C23-8178-00CF40155AB0} = {D2CB2BF5-7814-481F-8C9A-657177C9D1DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D30165F9-58BA-444B-87C4-D4010A4653B5}

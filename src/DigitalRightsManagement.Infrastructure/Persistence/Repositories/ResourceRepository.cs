@@ -16,12 +16,14 @@ internal class ResourceRepository(ManagementDbContext dbContext) : IResourceRepo
         var table = dbContext.GetType().GetProperty(entityType.ClrType.Name + "s")?.GetValue(dbContext)
                     ?? throw new InvalidOperationException($"DbSet for {entityType.Name} not found in DbContext");
 
-        var query = (table as IQueryable<object>)
+        var query = table as IQueryable<object>
                     ?? throw new InvalidOperationException($"Could not get IQueryable for {entityType.Name}");
 
         var unauthorized = await query
-            .Where(e => resourceIds.Contains(EF.Property<Guid>(e, "Id")))
-            .AnyAsync(e => EF.Property<Guid>(e, "AgentId") != ownerId, ct);
+            .AnyAsync(e =>
+                    resourceIds.Contains(EF.Property<Guid>(e, "Id"))
+                    && EF.Property<Guid>(e, "AgentId") != ownerId,
+                ct);
 
         return !unauthorized;
     }
