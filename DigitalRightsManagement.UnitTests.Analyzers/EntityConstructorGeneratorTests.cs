@@ -184,6 +184,8 @@ public class EntityConstructorGeneratorTests
         var allSources = sources.Append(EntityBaseClass);
         var references = AppDomain.CurrentDomain.GetAssemblies()
             .Where(assembly => !assembly.IsDynamic)
+            // Remove DigitalRightsManagement.Common assembly to avoid reference conflicts
+            .Where(assembly => !assembly.FullName!.Contains("DigitalRightsManagement.Common", StringComparison.Ordinal))
             .Select(assembly => MetadataReference.CreateFromFile(assembly.Location));
 
         var compilation = CSharpCompilation.Create(
