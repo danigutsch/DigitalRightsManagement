@@ -6,6 +6,9 @@ using System.Collections.Immutable;
 
 namespace DigitalRightsManagement.Analyzers;
 
+/// <summary>
+/// Analyzes entity instantiations to ensure they do not use parameterless constructors.
+/// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class EntityInstantiationAnalyzer : DiagnosticAnalyzer
 {
@@ -34,8 +37,10 @@ public sealed class EntityInstantiationAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true,
         description: Description);
 
+    /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
+    /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
@@ -43,6 +48,10 @@ public sealed class EntityInstantiationAnalyzer : DiagnosticAnalyzer
         context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ObjectCreationExpression);
     }
 
+    /// <summary>
+    /// Analyzes the syntax node to find entity instantiations with parameterless constructors.
+    /// </summary>
+    /// <param name="context">The syntax node analysis context.</param>
     private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var objectCreation = (ObjectCreationExpressionSyntax)context.Node;
