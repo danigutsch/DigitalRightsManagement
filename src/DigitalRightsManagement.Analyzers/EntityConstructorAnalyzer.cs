@@ -48,9 +48,7 @@ public class EntityConstructorAnalyzer : DiagnosticAnalyzer
 
         context.EnableConcurrentExecution();
 
-        context.RegisterSyntaxNodeAction(
-            AnalyzeNode,
-            SyntaxKind.ClassDeclaration);
+        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
     }
 
     private static void AnalyzeNode(SyntaxNodeAnalysisContext context)

@@ -3,6 +3,7 @@ using DigitalRightsManagement.CodeFixes;
 using DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
+using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers;
 
@@ -10,20 +11,6 @@ namespace DigitalRightsManagement.UnitTests.Analyzers;
 
 public sealed class EntityConstructorCodeFixTests
 {
-    private const string EntityBaseClass = """
-        namespace DigitalRightsManagement.Common.DDD
-        {
-            using System;
-
-            public abstract class Entity
-            {
-                public Guid Id { get; init; }
-                protected Entity(Guid id) => Id = id;
-                protected Entity() { }
-            }
-        }
-        """;
-
     [Fact]
     public async Task Removes_Manual_Constructor_In_Non_Sealed_Class()
     {
