@@ -28,6 +28,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\src\DigitalRightsManagement.Analyzers\DigitalRightsManagement.Analyzers.csproj" />
+	  <ProjectReference Include="..\src\DigitalRightsManagement.CodeFixes\DigitalRightsManagement.CodeFixes.csproj" />
 	  <ProjectReference Include="..\src\DigitalRightsManagement.Domain\DigitalRightsManagement.Domain.csproj" />
 	  <ProjectReference Include="..\src\DigitalRightsManagement.SourceGenerators\DigitalRightsManagement.SourceGenerators.csproj" />
 	</ItemGroup>
