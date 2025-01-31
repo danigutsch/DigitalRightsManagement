@@ -1,7 +1,7 @@
 ﻿using DigitalRightsManagement.Analyzers;
-using DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
+using VerifyCs = DigitalRightsManagement.UnitTests.Analyzers.Verifiers.AnalyzerVerifier<DigitalRightsManagement.Analyzers.EntityPartialAnalyzer>;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers;
 

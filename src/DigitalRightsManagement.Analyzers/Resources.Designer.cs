@@ -61,6 +61,33 @@ namespace DigitalRightsManagement.Analyzers {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Entities should not define their own parameterless constructors as they are generated automatically..
+        /// </summary>
+        internal static string EntityConstructorAnalyzerDescription {
+            get {
+                return ResourceManager.GetString("EntityConstructorAnalyzerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The entity &apos;{0}&apos; must not define its own parameterless constructor - it will be generated automatically.
+        /// </summary>
+        internal static string EntityConstructorAnalyzerMessageFormat {
+            get {
+                return ResourceManager.GetString("EntityConstructorAnalyzerMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entity must use source-generated parameterless constructor.
+        /// </summary>
+        internal static string EntityConstructorAnalyzerTitle {
+            get {
+                return ResourceManager.GetString("EntityConstructorAnalyzerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All classes that inherit from Entity must be marked as partial..
         /// </summary>
         internal static string EntityPartialAnalyzerDescription {

@@ -1,12 +1,13 @@
-﻿using DigitalRightsManagement.Analyzers;
-using DigitalRightsManagement.Common.DDD;
+﻿using DigitalRightsManagement.Common.DDD;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
 
-public static class VerifyCs
+internal static class AnalyzerVerifier<TAnalyzer>
+    where TAnalyzer : DiagnosticAnalyzer, new()
 {
     public static DiagnosticResult Diagnostic(string diagnosticId)
         => new(diagnosticId, DiagnosticSeverity.Error);
@@ -19,7 +20,7 @@ public static class VerifyCs
 
     public static async Task VerifyAnalyzerAsync(string[] sources, params DiagnosticResult[] expected)
     {
-        var test = new CSharpAnalyzerTest<EntityPartialAnalyzer, DefaultVerifier>
+        var test = new CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>
         {
             TestState = { AdditionalReferences = { typeof(Entity).Assembly } },
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
