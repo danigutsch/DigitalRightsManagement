@@ -88,6 +88,33 @@ namespace DigitalRightsManagement.Analyzers {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Entities should be created using parameterized constructors to ensure proper initialization..
+        /// </summary>
+        internal static string EntityInstantiationAnalyzerDescription {
+            get {
+                return ResourceManager.GetString("EntityInstantiationAnalyzerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; must be instantiated with a parameterized constructor.
+        /// </summary>
+        internal static string EntityInstantiationAnalyzerMessageFormat {
+            get {
+                return ResourceManager.GetString("EntityInstantiationAnalyzerMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entity instantiation must use parameterized constructor.
+        /// </summary>
+        internal static string EntityInstantiationAnalyzerTitle {
+            get {
+                return ResourceManager.GetString("EntityInstantiationAnalyzerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All classes that inherit from Entity must be marked as partial..
         /// </summary>
         internal static string EntityPartialAnalyzerDescription {

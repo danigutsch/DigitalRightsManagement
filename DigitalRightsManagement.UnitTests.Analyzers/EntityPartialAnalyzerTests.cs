@@ -1,26 +1,13 @@
 ﻿using DigitalRightsManagement.Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
+using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
 using VerifyCs = DigitalRightsManagement.UnitTests.Analyzers.Verifiers.AnalyzerVerifier<DigitalRightsManagement.Analyzers.EntityPartialAnalyzer>;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers;
 
-public class EntityAnalyzerTests
+public class EntityPartialAnalyzerTests
 {
-    private const string EntityBaseClass = """
-        namespace DigitalRightsManagement.Common.DDD
-        {
-            using System;
-
-            public abstract class Entity
-            {
-                public Guid Id { get; init; }
-                protected Entity(Guid id) => Id = id;
-                protected Entity() { }
-            }
-        }
-        """;
-
     [Fact]
     public async Task Reports_Non_Partial_Entity()
     {

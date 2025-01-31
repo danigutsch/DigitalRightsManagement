@@ -121,6 +121,10 @@
     <value>Class '{0}' inherits from Entity and must be partial</value>
     <comment>The format-able message the diagnostic displays.</comment>
   </data>
+  <data name="EntityInstantiationAnalyzerMessageFormat" xml:space="preserve">
+    <value>'{0}' must be instantiated with a parameterized constructor</value>
+    <comment>The format-able message the diagnostic displays.</comment>
+  </data>
   <data name="EntityConstructorAnalyzerMessageFormat" xml:space="preserve">
     <value>The entity '{0}' must not define its own parameterless constructor - it will be generated automatically</value>
     <comment>The format-able message the diagnostic displays.</comment>
@@ -133,12 +137,20 @@
     <value>Entity must use source-generated parameterless constructor</value>
     <comment>The title of the diagnostic.</comment>
   </data>
+  <data name="EntityInstantiationAnalyzerTitle" xml:space="preserve">
+    <value>Entity instantiation must use parameterized constructor</value>
+    <comment>The title of the diagnostic.</comment>
+  </data>
   <data name="EntityPartialAnalyzerDescription" xml:space="preserve">
     <value>All classes that inherit from Entity must be marked as partial.</value>
     <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
   <data name="EntityConstructorAnalyzerDescription" xml:space="preserve">
     <value>Entities should not define their own parameterless constructors as they are generated automatically.</value>
+    <comment>An optional longer localizable description of the diagnostic.</comment>
+  </data>
+  <data name="EntityInstantiationAnalyzerDescription" xml:space="preserve">
+    <value>Entities should be created using parameterized constructors to ensure proper initialization.</value>
     <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
 </root>

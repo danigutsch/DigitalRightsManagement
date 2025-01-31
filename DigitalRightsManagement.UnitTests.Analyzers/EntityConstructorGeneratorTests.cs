@@ -3,25 +3,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Shouldly;
 using System.Collections.Immutable;
+using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers;
 
 public class EntityConstructorGeneratorTests
 {
-    private const string EntityBaseClass = """
-                        namespace DigitalRightsManagement.Common.DDD
-                        {
-                            using System;
-
-                            public abstract class Entity
-                            {
-                                public Guid Id { get; init; }
-                                protected Entity(Guid id) => Id = id;
-                                protected Entity() { }
-                            }
-                        }
-                        """;
-
     [Fact]
     public void Generates_Protected_Constructor_For_Non_Sealed_Entity()
     {
