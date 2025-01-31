@@ -6,6 +6,9 @@ using System.Collections.Immutable;
 
 namespace DigitalRightsManagement.Analyzers;
 
+/// <summary>
+/// Analyzes entity classes to ensure they are declared as partial.
+/// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class EntityPartialAnalyzer : DiagnosticAnalyzer
 {
@@ -21,8 +24,10 @@ public sealed class EntityPartialAnalyzer : DiagnosticAnalyzer
 
     private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
 
+    /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
+    /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(
@@ -32,6 +37,10 @@ public sealed class EntityPartialAnalyzer : DiagnosticAnalyzer
         context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
     }
 
+    /// <summary>
+    /// Analyzes the syntax node to find entity classes that are not declared as partial.
+    /// </summary>
+    /// <param name="context">The syntax node analysis context.</param>
     private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var classDeclaration = (ClassDeclarationSyntax)context.Node;

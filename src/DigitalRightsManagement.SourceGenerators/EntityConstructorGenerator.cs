@@ -6,9 +6,16 @@ using System.Text;
 
 namespace DigitalRightsManagement.SourceGenerators;
 
+/// <summary>
+/// A source generator that generates constructors for classes inheriting from the Entity base class.
+/// </summary>
 [Generator]
 public class EntityConstructorGenerator : IIncrementalGenerator
 {
+    /// <summary>
+    /// Initializes the generator and registers the syntax provider.
+    /// </summary>
+    /// <param name="context">The initialization context.</param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var classDeclarations = context.SyntaxProvider
@@ -22,6 +29,11 @@ public class EntityConstructorGenerator : IIncrementalGenerator
             static (spc, source) => Execute(source!, spc));
     }
 
+    /// <summary>
+    /// Determines if the given syntax node is a target for generation.
+    /// </summary>
+    /// <param name="node">The syntax node.</param>
+    /// <returns>True if the node is a class declaration with a base type; otherwise, false.</returns>
     private static bool IsSyntaxTargetForGeneration(SyntaxNode node)
     {
         if (node is not ClassDeclarationSyntax classDeclaration)
@@ -32,6 +44,11 @@ public class EntityConstructorGenerator : IIncrementalGenerator
         return classDeclaration.BaseList?.Types.Count > 0;
     }
 
+    /// <summary>
+    /// Gets the semantic target for generation.
+    /// </summary>
+    /// <param name="context">The generator syntax context.</param>
+    /// <returns>The class declaration syntax if the class inherits from the Entity base class; otherwise, null.</returns>
     private static ClassDeclarationSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
     {
         var classDeclaration = (ClassDeclarationSyntax)context.Node;
@@ -54,6 +71,11 @@ public class EntityConstructorGenerator : IIncrementalGenerator
         return null;
     }
 
+    /// <summary>
+    /// Executes the source generation for the given class declaration.
+    /// </summary>
+    /// <param name="classDeclaration">The class declaration syntax.</param>
+    /// <param name="context">The source production context.</param>
     private static void Execute(ClassDeclarationSyntax classDeclaration, SourceProductionContext context)
     {
         var namespaceName = GetNamespace(classDeclaration);
@@ -78,6 +100,11 @@ public class EntityConstructorGenerator : IIncrementalGenerator
         context.AddSource($"{className}.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
+    /// <summary>
+    /// Gets the namespace for the given class declaration.
+    /// </summary>
+    /// <param name="classDeclaration">The class declaration syntax.</param>
+    /// <returns>The namespace as a string.</returns>
     private static string GetNamespace(ClassDeclarationSyntax classDeclaration)
     {
         var namespaceName = string.Empty;
