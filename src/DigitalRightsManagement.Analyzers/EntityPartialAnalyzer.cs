@@ -1,13 +1,13 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis;
 using System.Collections.Immutable;
 
 namespace DigitalRightsManagement.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class EntityPartialAnalyzer : DiagnosticAnalyzer
+public sealed class EntityPartialAnalyzer : DiagnosticAnalyzer
 {
     public const string DiagnosticId = "DRM001";
 
