@@ -40,6 +40,11 @@ public sealed class Price : ValueObject
         return Result.Success();
     }
 
+    public override string ToString()
+    {
+        return $"{nameof(Price)} {{ {nameof(Amount)} = {Amount:N2}, {nameof(Currency)} = {Currency} }}";
+    }
+
     protected override IEnumerable<object?> GetEqualityComponents()
     {
         yield return Amount;
