@@ -157,7 +157,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
         // Arrange
         var manager = AgentFactory.Seeded(user => user.Products.Count > 0 && user.Role == AgentRoles.Manager);
         var productId = manager.Products[0];
-        var worker = AgentFactory.Seeded(AgentRoles.Worker);
+        var worker = AgentFactory.Seeded(worker => !worker.Products.Contains(productId));
 
         var assignWorkerDto = new AssignWorkerDto(worker.Id);
 
