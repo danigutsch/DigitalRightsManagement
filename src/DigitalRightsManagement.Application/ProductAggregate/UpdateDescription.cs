@@ -15,26 +15,22 @@ public sealed record UpdateDescriptionCommand(Guid ProductId, string NewDescript
     {
         public async Task<Result> Handle(UpdateDescriptionCommand command, CancellationToken cancellationToken)
         {
+            var newDescriptionResult = Description.From(command.NewDescription);
+            if (!newDescriptionResult.TryGetValue(out var newDescription))
+            {
+                return newDescriptionResult.Map();
+            }
+
             var agentResult = await currentAgentProvider.Get(cancellationToken);
-            if (!agentResult.IsSuccess)
+            if (!agentResult.TryGetValue(out var agent))
             {
                 return agentResult.Map();
             }
 
-            var agent = agentResult.Value;
-
-            var productResult = await productRepository.GetById(command.ProductId, cancellationToken);
-            if (!productResult.IsSuccess)
-            {
-                return productResult.Map();
-            }
-
-            var product = productResult.Value;
-
-
-            return await product.UpdateDescription(agent.Id, command.NewDescription)
+            return await productRepository.GetById(command.ProductId, cancellationToken)
+                .BindAsync(product => product.UpdateDescription(agent.Id, newDescription)
                 .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
-                .MapAsync(_ => Result.Success());
+                .MapAsync(_ => Result.Success()));
         }
     }
 }

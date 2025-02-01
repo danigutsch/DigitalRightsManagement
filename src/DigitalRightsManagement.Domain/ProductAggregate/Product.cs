@@ -7,7 +7,7 @@ namespace DigitalRightsManagement.Domain.ProductAggregate;
 public sealed partial class Product : AggregateRoot
 {
     public ProductName Name { get; private set; }
-    public string Description { get; private set; }
+    public Description Description { get; private set; }
     public Price Price { get; private set; }
     public Guid AgentId { get; private init; }
     public ProductStatus Status { get; private set; } = ProductStatus.Development;
@@ -15,23 +15,18 @@ public sealed partial class Product : AggregateRoot
     private readonly List<Guid> _assignedWorkers = [];
     public IReadOnlyList<Guid> AssignedWorkers => _assignedWorkers.AsReadOnly();
 
-    private Product(ProductName name, string description, Price price, Guid createdBy, Guid? id = null) : base(id ?? Guid.CreateVersion7())
+    private Product(ProductName name, Description description, Price price, Guid createdBy, Guid? id = null) : base(id ?? Guid.CreateVersion7())
     {
         Name = name;
-        Description = description.Trim();
+        Description = description;
         Price = price;
         AgentId = createdBy;
 
         QueueDomainEvent(new ProductCreated(Id, createdBy, name, description, price));
     }
 
-    public static Result<Product> Create(ProductName name, string description, Price price, Guid manager, Guid? id = null)
+    public static Result<Product> Create(ProductName name, Description description, Price price, Guid manager, Guid? id = null)
     {
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            return Errors.Products.InvalidDescription();
-        }
-
         if (manager == Guid.Empty)
         {
             return Errors.Products.EmptyCreatorId();
@@ -88,17 +83,12 @@ public sealed partial class Product : AggregateRoot
         return Result.Success();
     }
 
-    public Result UpdateDescription(Guid agentId, string newDescription)
+    public Result UpdateDescription(Guid agentId, Description newDescription)
     {
         var ownerValidation = ValidateOwner(agentId);
         if (!ownerValidation.IsSuccess)
         {
             return ownerValidation;
-        }
-
-        if (string.IsNullOrWhiteSpace(newDescription))
-        {
-            return Errors.Products.InvalidDescription();
         }
 
         var oldDescription = Description;

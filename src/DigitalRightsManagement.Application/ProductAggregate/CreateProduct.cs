@@ -6,7 +6,7 @@ using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
 using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
-using Validated = (DigitalRightsManagement.Domain.ProductAggregate.ProductName Name, DigitalRightsManagement.Domain.ProductAggregate.Price Price);
+using Validated = (DigitalRightsManagement.Domain.ProductAggregate.ProductName Name, DigitalRightsManagement.Domain.ProductAggregate.Description Description, DigitalRightsManagement.Domain.ProductAggregate.Price Price);
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
@@ -18,7 +18,7 @@ public sealed record CreateProductCommand(string Name, string Description, decim
         public async Task<Result<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
             var validationResult = Validate(command);
-            if (validationResult.TryGetValue(out var validated))
+            if (!validationResult.TryGetValue(out var validated))
             {
                 return validationResult.Map();
             }
@@ -29,7 +29,7 @@ public sealed record CreateProductCommand(string Name, string Description, decim
                 return agentResult.Map();
             }
 
-            return await Product.Create(validated.Name, command.Description, validated.Price, agent.Id)
+            return await Product.Create(validated.Name, validated.Description, validated.Price, agent.Id)
                 .Tap(productRepository.Add)
                 .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
                 .MapAsync(product => product.Id);
@@ -38,14 +38,28 @@ public sealed record CreateProductCommand(string Name, string Description, decim
         private static Result<Validated> Validate(CreateProductCommand command)
         {
             var name = ProductName.From(command.Name);
+            var description = Domain.ProductAggregate.Description.From(command.Description);
             var price = Price.Create(command.PriceAmount, command.Currency);
 
-            if (name.IsInvalid() || price.IsInvalid())
+            var combined = ValidationCombiner.Combine(name, description, price);
+
+            if (!combined.IsSuccess)
             {
-                return Result.Invalid(name.ValidationErrors.Concat(price.ValidationErrors));
+                return combined;
             }
 
-            return (name.Value, price.Value);
+            return (name.Value, description.Value, price.Value);
         }
+    }
+}
+
+public static class ValidationCombiner
+{
+    public static Result Combine(params IResult[] results)
+    {
+        ValidationError[] errors = [.. results.SelectMany(result => result.ValidationErrors)];
+        return errors.Length > 0
+            ? Result.Invalid(errors)
+            : Result.Success();
     }
 }

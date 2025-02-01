@@ -65,7 +65,7 @@ public static class SeedData
     [
         CreateProductWithWorkers(
             ProductName.From("Product1").Value,
-            "Description1",
+            Description.From("Description1").Value,
             Price.Create(10, Currency.Dollar).Value,
             Guid.Parse("08c7acee-0f8c-4e70-9f72-c59db53ae0be"),
             Guid.Parse("2a1b2bc7-339a-47aa-9ba3-a2cf2e6aaf2c"),
@@ -75,7 +75,7 @@ public static class SeedData
             ]),
         CreateProductWithWorkers(
             ProductName.From("Product2").Value,
-            "Description2",
+            Description.From("Description2").Value,
             Price.Create(20, Currency.Dollar).Value,
             Guid.Parse("3d792f3d-8764-49c1-ae2b-40444ffbb2f9"),
             Guid.Parse("474c01ab-eeff-48ff-8199-9eb4b6595033"),
@@ -86,7 +86,7 @@ public static class SeedData
             ]),
         CreateProductWithWorkers(
             ProductName.From("Product3").Value,
-            "Description3",
+            Description.From("Description3").Value,
             Price.Create(30, Currency.Dollar).Value,
             Guid.Parse("58bf001c-bb9a-41fd-8917-c6eaf110af90"),
             Guid.Parse("6517c639-7083-46e8-a0a7-65308f0c0f6a"),
@@ -96,7 +96,7 @@ public static class SeedData
             ]),
         CreateProductWithWorkers(
             ProductName.From("Product4").Value,
-            "Description4",
+            Description.From("Description4").Value,
             Price.Create(40, Currency.Dollar).Value,
             Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"),
             Guid.Parse("7b6b5c25-99f2-497e-bde1-c06d8ebfd542"),
@@ -107,7 +107,7 @@ public static class SeedData
             ]),
         CreateProductWithWorkers(
             ProductName.From("Product5").Value,
-            "Description5",
+            Description.From("Description5").Value,
             Price.Create(50, Currency.Dollar).Value,
             Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"),
             Guid.Parse("2683e1c1-c872-497a-adfd-29d6d07c3efa"),
@@ -119,7 +119,7 @@ public static class SeedData
     ];
     private static Product CreateProductWithWorkers(
         ProductName name,
-        string description,
+        Description description,
         Price price,
         Guid createdBy,
         Guid id,

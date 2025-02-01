@@ -19,7 +19,10 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasMaxLength(ProductName.MaxLength);
 
         builder.Property(p => p.Description)
-            .HasMaxLength(200);
+            .HasConversion(
+                description => description.Value,
+                s => Description.From(s))
+            .HasMaxLength(Description.MaxLength);
 
         builder.ComplexProperty(
             p => p.Price,

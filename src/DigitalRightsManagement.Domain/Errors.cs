@@ -27,11 +27,20 @@ public static class Errors
             }
         }
 
-        public static Result InvalidDescription()
+        public static class Description
         {
-            const string code = "product.description.invalid";
-            const string message = "Invalid description.";
-            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+            public static Result Empty()
+            {
+                const string code = "product.description.empty";
+                const string message = "The description can not be empty.";
+                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+            }
+            public static Result InvalidLength(int minLength, int maxLength, int actualLength)
+            {
+                const string code = "product.description.invalid-length";
+                var message = $"The description must be between {minLength} and {maxLength} characters. Was: {actualLength}.";
+                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+            }
         }
 
         public static Result InvalidPrice(decimal price)
