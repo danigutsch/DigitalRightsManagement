@@ -18,7 +18,16 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Description)
             .HasMaxLength(200);
 
-        builder.OwnsOne(p => p.Price);
+        builder.ComplexProperty(
+            p => p.Price,
+            p =>
+            {
+                p.Property(x => x.Amount)
+                    .HasColumnName("Price_Amount");
+
+                p.Property(x => x.Currency)
+                    .HasColumnName("Price_Currency");
+            });
 
         builder.Property(p => p.AgentId);
 
