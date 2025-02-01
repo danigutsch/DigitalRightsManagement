@@ -58,7 +58,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
 
         var product = await DbContext.Products.FindAsync(createdProductId);
         product.ShouldNotBeNull();
-        product.Name.ShouldBe(productName);
+        product.Name.ShouldBeEquivalentTo(productName);
         product.Description.ShouldBe(productDescription);
         product.Price.Amount.ShouldBe(productPrice);
         product.Price.Currency.ShouldBe(productCurrency);

@@ -64,7 +64,7 @@ public static class SeedData
     public static IReadOnlyList<Product> Products { get; } =
     [
         CreateProductWithWorkers(
-            "Product1",
+            ProductName.From("Product1").Value,
             "Description1",
             Price.Create(10, Currency.Dollar).Value,
             Guid.Parse("08c7acee-0f8c-4e70-9f72-c59db53ae0be"),
@@ -74,7 +74,7 @@ public static class SeedData
                 Guid.Parse("2ea745cc-7476-4e39-a2c1-048c9fd304f4")
             ]),
         CreateProductWithWorkers(
-            "Product2",
+            ProductName.From("Product2").Value,
             "Description2",
             Price.Create(20, Currency.Dollar).Value,
             Guid.Parse("3d792f3d-8764-49c1-ae2b-40444ffbb2f9"),
@@ -85,7 +85,7 @@ public static class SeedData
                 Guid.Parse("6a0e67e9-153e-4eea-a751-77f7043e32ef")
             ]),
         CreateProductWithWorkers(
-            "Product3",
+            ProductName.From("Product3").Value,
             "Description3",
             Price.Create(30, Currency.Dollar).Value,
             Guid.Parse("58bf001c-bb9a-41fd-8917-c6eaf110af90"),
@@ -95,7 +95,7 @@ public static class SeedData
                 Guid.Parse("d7efb26d-393c-4d5e-bfb6-12b3152f2994")
             ]),
         CreateProductWithWorkers(
-            "Product4",
+            ProductName.From("Product4").Value,
             "Description4",
             Price.Create(40, Currency.Dollar).Value,
             Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"),
@@ -106,7 +106,7 @@ public static class SeedData
                 Guid.Parse("6cf44570-c980-4db9-b31b-c3cc77bba53a")
             ]),
         CreateProductWithWorkers(
-            "Product5",
+            ProductName.From("Product5").Value,
             "Description5",
             Price.Create(50, Currency.Dollar).Value,
             Guid.Parse("cd9f1577-06b4-4f13-8901-3c97f04ada30"),
@@ -118,7 +118,7 @@ public static class SeedData
             ])
     ];
     private static Product CreateProductWithWorkers(
-        string name,
+        ProductName name,
         string description,
         Price price,
         Guid createdBy,

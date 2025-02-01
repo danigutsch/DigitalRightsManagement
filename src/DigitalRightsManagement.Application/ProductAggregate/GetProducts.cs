@@ -20,7 +20,7 @@ public sealed record GetProductsQuery : IQuery<ProductDto[]>
         private static ProductDto[] MapToDto(IReadOnlyList<Product> products) =>
         [.. products.Select(product =>
             new ProductDto(
-                product.Name,
+                product.Name.Value,
                 product.Description,
                 product.Price.Amount,
                 product.Price.Currency)

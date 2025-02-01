@@ -13,7 +13,10 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
             .ValueGeneratedNever();
 
         builder.Property(p => p.Name)
-            .HasMaxLength(50);
+            .HasConversion(
+                name => name.Value,
+                s => ProductName.From(s))
+            .HasMaxLength(ProductName.MaxLength);
 
         builder.Property(p => p.Description)
             .HasMaxLength(200);

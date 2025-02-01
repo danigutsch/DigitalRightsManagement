@@ -10,11 +10,21 @@ public static class Errors
 {
     public static class Products
     {
-        public static Result InvalidName()
+        public static class Name
         {
-            const string code = "product.name.invalid";
-            const string message = "Invalid name.";
-            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+            public static Result Empty()
+            {
+                const string code = "product.name.empty";
+                const string message = "The name can not be empty.";
+                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+            }
+
+            public static Result InvalidLength(int minLength, int maxLength, int actualLength)
+            {
+                const string code = "product.name.invalid-length";
+                var message = $"The name must be between {minLength} and {maxLength} characters. Was: {actualLength}.";
+                return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+            }
         }
 
         public static Result InvalidDescription()

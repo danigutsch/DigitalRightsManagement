@@ -6,29 +6,46 @@ using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Common.Messaging;
 using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
+using Validated = (DigitalRightsManagement.Domain.ProductAggregate.ProductName Name, DigitalRightsManagement.Domain.ProductAggregate.Price Price);
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
 [Authorize(AgentRoles.Manager)]
-public sealed record CreateProductCommand(string Name, string Description, decimal Price, Currency Currency) : ICommand<Guid>
+public sealed record CreateProductCommand(string Name, string Description, decimal PriceAmount, Currency Currency) : ICommand<Guid>
 {
     internal sealed class CreateProductCommandHandler(ICurrentAgentProvider currentAgentProvider, IProductRepository productRepository) : ICommandHandler<CreateProductCommand, Guid>
     {
         public async Task<Result<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
+            var validationResult = Validate(command);
+            if (validationResult.TryGetValue(out var validated))
+            {
+                return validationResult.Map();
+            }
+
             var agentResult = await currentAgentProvider.Get(cancellationToken);
-            if (!agentResult.IsSuccess)
+            if (!agentResult.TryGetValue(out var agent))
             {
                 return agentResult.Map();
             }
 
-            var agent = agentResult.Value;
-
-            return await Domain.ProductAggregate.Price.Create(command.Price, command.Currency)
-                .Bind(price => Product.Create(command.Name, command.Description, price, agent.Id))
+            return await Product.Create(validated.Name, command.Description, validated.Price, agent.Id)
                 .Tap(productRepository.Add)
                 .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
                 .MapAsync(product => product.Id);
+        }
+
+        private static Result<Validated> Validate(CreateProductCommand command)
+        {
+            var name = ProductName.From(command.Name);
+            var price = Price.Create(command.PriceAmount, command.Currency);
+
+            if (name.IsInvalid() || price.IsInvalid())
+            {
+                return Result.Invalid(name.ValidationErrors.Concat(price.ValidationErrors));
+            }
+
+            return (name.Value, price.Value);
         }
     }
 }
