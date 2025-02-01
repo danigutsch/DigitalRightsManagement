@@ -16,6 +16,17 @@ public sealed class Price : ValueObject
 
     public static Result<Price> Create(decimal value, Currency currency)
     {
+        var validation = Validate(value, currency);
+        if (!validation.IsSuccess)
+        {
+            return validation;
+        }
+
+        return new Price(value, currency);
+    }
+
+    private static Result Validate(decimal value, Currency currency)
+    {
         if (value < 0)
         {
             return Errors.Products.InvalidPrice(value);
@@ -26,7 +37,7 @@ public sealed class Price : ValueObject
             return Errors.Products.InvalidCurrency(currency);
         }
 
-        return new Price(value, currency);
+        return Result.Success();
     }
 
     protected override IEnumerable<object?> GetEqualityComponents()
