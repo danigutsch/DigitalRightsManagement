@@ -33,11 +33,12 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         // Act
-        var result = Product.Create(emptyName, _validProduct.Description, _validProduct.Price, Guid.NewGuid());
+        var result = ProductName.From(emptyName)
+            .Bind(name => Product.Create(name, _validProduct.Description, _validProduct.Price, Guid.NewGuid()));
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
-        result.ValidationErrors.ShouldHaveSingleItem().ErrorCode.ShouldContain("name");
+        result.ValidationErrors.ShouldContain(error => error.ErrorMessage.Contains("name"));
     }
 
     [Theory, ClassData(typeof(EmptyStringTestData))]

@@ -6,7 +6,7 @@ namespace DigitalRightsManagement.Domain.ProductAggregate;
 
 public sealed partial class Product : AggregateRoot
 {
-    public string Name { get; private set; }
+    public ProductName Name { get; private set; }
     public string Description { get; private set; }
     public Price Price { get; private set; }
     public Guid AgentId { get; private init; }
@@ -15,9 +15,9 @@ public sealed partial class Product : AggregateRoot
     private readonly List<Guid> _assignedWorkers = [];
     public IReadOnlyList<Guid> AssignedWorkers => _assignedWorkers.AsReadOnly();
 
-    private Product(string name, string description, Price price, Guid createdBy, Guid? id = null) : base(id ?? Guid.CreateVersion7())
+    private Product(ProductName name, string description, Price price, Guid createdBy, Guid? id = null) : base(id ?? Guid.CreateVersion7())
     {
-        Name = name.Trim();
+        Name = name;
         Description = description.Trim();
         Price = price;
         AgentId = createdBy;
@@ -25,13 +25,8 @@ public sealed partial class Product : AggregateRoot
         QueueDomainEvent(new ProductCreated(Id, createdBy, name, description, price));
     }
 
-    public static Result<Product> Create(string name, string description, Price price, Guid manager, Guid? id = null)
+    public static Result<Product> Create(ProductName name, string description, Price price, Guid manager, Guid? id = null)
     {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            return Errors.Products.InvalidName();
-        }
-
         if (string.IsNullOrWhiteSpace(description))
         {
             return Errors.Products.InvalidDescription();

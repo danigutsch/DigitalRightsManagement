@@ -1,4 +1,5 @@
-﻿using Ardalis.Result;
+﻿using System.Diagnostics.CodeAnalysis;
+using Ardalis.Result;
 
 namespace DigitalRightsManagement.Common.DDD;
 
@@ -143,5 +144,17 @@ public static class ResultExtensions
                 $"Result {result.Status} conversion is not supported."
             ),
         };
+    }
+
+    public static bool TryGetValue<T>(this Result<T> result, [NotNullWhen(true)] out T? value)
+    {
+        if (result.IsSuccess)
+        {
+            value = result.Value!;
+            return true;
+        }
+
+        value = default;
+        return false;
     }
 }

@@ -7,16 +7,16 @@ public static class ProductFactory
 {
     private static readonly Faker<Product> Faker = new Faker<Product>()
         .CustomInstantiator(f => Product.Create(
-            f.Commerce.ProductName(),
+            ProductName.From(f.Commerce.ProductName()),
             f.Commerce.ProductDescription(),
             Price.Create(
                 f.Random.Decimal(0, 100),
-                f.PickRandom<Currency>()), 
+                f.PickRandom<Currency>()),
             Guid.NewGuid(),
             Guid.NewGuid()));
 
     public static Product InDevelopment(
-        string? name = null,
+        ProductName? name = null,
         string? description = null,
         Price? price = null,
         Guid? manager = null,
@@ -34,7 +34,7 @@ public static class ProductFactory
     }
 
     public static Product Published(
-        string? name = null,
+        ProductName? name = null,
         string? description = null,
         Price? price = null,
         Guid? manager = null,
@@ -46,7 +46,7 @@ public static class ProductFactory
     }
 
     public static Product Obsolete(
-        string? name = null,
+        ProductName? name = null,
         string? description = null,
         Price? price = null,
         Guid? manager = null,
