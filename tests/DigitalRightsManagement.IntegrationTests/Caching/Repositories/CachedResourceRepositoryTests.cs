@@ -6,6 +6,7 @@ using DigitalRightsManagement.MigrationService;
 using DigitalRightsManagement.Tests.Shared;
 using Microsoft.Extensions.Caching.Distributed;
 using Shouldly;
+using Xunit.Abstractions;
 
 namespace DigitalRightsManagement.IntegrationTests.Caching.Repositories;
 
@@ -15,7 +16,7 @@ public sealed class CachedResourceRepositoryTests : ApiIntegrationTestsBase
     private readonly IDistributedCache _cache;
     private readonly IResourceRepository _resourceRepository;
 
-    public CachedResourceRepositoryTests(ApiFixture fixture) : base(fixture)
+    public CachedResourceRepositoryTests(ITestOutputHelper outputHelper, ApiFixture fixture) : base(outputHelper, fixture)
     {
         _scope = Fixture.Services.CreateScope();
         _cache = _scope.ServiceProvider.GetRequiredService<IDistributedCache>();

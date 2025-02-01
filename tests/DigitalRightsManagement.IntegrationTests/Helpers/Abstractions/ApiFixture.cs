@@ -34,7 +34,6 @@ public sealed class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         _app = appBuilder.Build();
     }
 
-
     protected override IHost CreateHost(IHostBuilder builder)
     {
         builder.ConfigureHostConfiguration(config =>

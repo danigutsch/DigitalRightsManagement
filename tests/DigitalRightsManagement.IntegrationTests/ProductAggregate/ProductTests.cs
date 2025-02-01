@@ -8,10 +8,11 @@ using DigitalRightsManagement.Tests.Shared.Factories;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 using System.Net.Http.Json;
+using Xunit.Abstractions;
 
 namespace DigitalRightsManagement.IntegrationTests.ProductAggregate;
 
-public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(fixture)
+public sealed class ProductTests(ITestOutputHelper outputHelper, ApiFixture fixture) : ApiIntegrationTestsBase(outputHelper, fixture)
 {
     [Fact]
     public async Task Get_Products_Happy_Path()

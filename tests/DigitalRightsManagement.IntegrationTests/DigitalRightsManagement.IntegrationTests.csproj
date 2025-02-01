@@ -20,7 +20,6 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="MartinCostello.Logging.XUnit" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 		<PackageReference Include="Microsoft.AspNetCore.TestHost" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />

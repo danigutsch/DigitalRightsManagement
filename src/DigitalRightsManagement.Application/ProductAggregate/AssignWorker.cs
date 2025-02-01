@@ -21,20 +21,16 @@ public sealed record AssignWorkerCommand(Guid ProductId, Guid WorkerId) : IComma
         public async Task<Result> Handle(AssignWorkerCommand command, CancellationToken cancellationToken)
         {
             var currentAgentResult = await currentUserProvider.Get(cancellationToken);
-            if (!currentAgentResult.IsSuccess)
+            if (!currentAgentResult.TryGetValue(out var currentAgent))
             {
                 return currentAgentResult.Map();
             }
 
-            var currentAgent = currentAgentResult.Value;
-
             var workerResult = await userRepository.GetById(command.WorkerId, cancellationToken);
-            if (!workerResult.IsSuccess)
+            if (!workerResult.TryGetValue(out var worker))
             {
                 return workerResult.Map();
             }
-
-            var worker = workerResult.Value;
 
             if (worker.Role != AgentRoles.Worker)
             {
