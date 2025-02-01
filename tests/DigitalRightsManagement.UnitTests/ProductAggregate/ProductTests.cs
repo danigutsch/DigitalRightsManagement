@@ -46,11 +46,12 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         // Act
-        var result = Product.Create(_validProduct.Name, emptyDescription, _validProduct.Price, Guid.NewGuid());
+        var result = Description.From(emptyDescription)
+            .Bind(description => Product.Create(_validProduct.Name, description, _validProduct.Price, Guid.NewGuid()));
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
-        result.ValidationErrors.ShouldHaveSingleItem().ErrorCode.ShouldContain("description");
+        result.ValidationErrors.ShouldContain(error => error.ErrorMessage.Contains("description"));
     }
 
     [Theory]
@@ -360,11 +361,12 @@ public sealed class ProductTests : UnitTestBase
         const string newDescription = "new description";
 
         // Act
-        var result = product.UpdateDescription(product.AgentId, newDescription);
+        var result = Description.From(newDescription)
+            .Bind(description => product.UpdateDescription(product.AgentId, description));
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        product.Description.ShouldBe(newDescription);
+        product.Description.Value.ShouldBeEquivalentTo(newDescription);
     }
 
     [Fact]
@@ -373,12 +375,15 @@ public sealed class ProductTests : UnitTestBase
         // Arrange
         var product = ProductFactory.InDevelopment();
         var randomAgentId = Guid.NewGuid();
+        const string newDescription = "new description";
 
         // Act
-        var result = product.UpdateDescription(randomAgentId, string.Empty);
+        var result = Description.From(newDescription)
+            .Bind(description => product.UpdateDescription(randomAgentId, description));
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
+        product.Description.Value.ShouldNotBe(newDescription);
     }
 
     [Fact]
@@ -390,7 +395,8 @@ public sealed class ProductTests : UnitTestBase
         var emptyAgentId = Guid.Empty;
 
         // Act
-        var result = product.UpdateDescription(emptyAgentId, newDescription);
+        var result = Description.From(newDescription)
+            .Bind(description => product.UpdateDescription(emptyAgentId, description));
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
@@ -404,7 +410,8 @@ public sealed class ProductTests : UnitTestBase
         const string newDescription = "new description";
 
         // Act
-        product.UpdateDescription(product.AgentId, newDescription);
+        Description.From(newDescription)
+            .Bind(description => product.UpdateDescription(product.AgentId, description));
 
         // Assert
         product.DomainEvents.OfType<DescriptionUpdated>().ShouldHaveSingleItem();
@@ -417,7 +424,8 @@ public sealed class ProductTests : UnitTestBase
         var product = ProductFactory.InDevelopment();
 
         // Act
-        var result = product.UpdateDescription(product.AgentId, newDescription);
+        var result = Description.From(newDescription)
+            .Bind(description => product.UpdateDescription(product.AgentId, description));
 
         // Assert
         result.IsInvalid().ShouldBeTrue();

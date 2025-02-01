@@ -21,7 +21,7 @@ public sealed record GetProductsQuery : IQuery<ProductDto[]>
         [.. products.Select(product =>
             new ProductDto(
                 product.Name.Value,
-                product.Description,
+                product.Description.Value,
                 product.Price.Amount,
                 product.Price.Currency)
         )];

@@ -28,7 +28,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
 
         var productNames = await DbContext.Products
             .Where(p => p.AgentId == managerWithProducts.Id)
-            .Select(p => p.Name)
+            .Select(p => p.Name.Value)
             .ToArrayAsync();
 
         products.ShouldNotBeEmpty();
@@ -58,8 +58,8 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
 
         var product = await DbContext.Products.FindAsync(createdProductId);
         product.ShouldNotBeNull();
-        product.Name.ShouldBeEquivalentTo(productName);
-        product.Description.ShouldBe(productDescription);
+        product.Name.Value.ShouldBe(productName);
+        product.Description.Value.ShouldBe(productDescription);
         product.Price.Amount.ShouldBe(productPrice);
         product.Price.Currency.ShouldBe(productCurrency);
 
@@ -112,7 +112,7 @@ public sealed class ProductTests(ApiFixture fixture) : ApiIntegrationTestsBase(f
 
         var updatedProduct = await DbContext.Products.FindAsync(productId);
         updatedProduct.ShouldNotBeNull();
-        updatedProduct.Description.ShouldBe(newDescription);
+        updatedProduct.Description.Value.ShouldBeEquivalentTo(newDescription);
     }
 
     [Fact]
