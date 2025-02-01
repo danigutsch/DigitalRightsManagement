@@ -11,7 +11,12 @@ public readonly record struct ProductName
 
     private ProductName(string value) => Value = value;
 
-    public static Result<ProductName> From(string value) => Validate(value).Map(s => new ProductName(s));
+    public static Result<ProductName> From(string value) =>
+        Normalize(value)
+            .Bind(Validate)
+            .Map(s => new ProductName(s));
+
+    private static Result<string> Normalize(string input) => input.Trim();
 
     private static Result<string> Validate(string value)
     {
@@ -24,16 +29,16 @@ public readonly record struct ProductName
             : Result.Invalid(errors);
     }
 
-    private static void Validate(string value, List<ValidationError> errors)
+    private static void Validate(string input, List<ValidationError> errors)
     {
-        if (string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrWhiteSpace(input))
         {
             errors.AddRange(Errors.Products.Name.Empty().ValidationErrors);
         }
 
-        if (value.Length is < MinLength or > MaxLength)
+        if (input.Length is < MinLength or > MaxLength)
         {
-            errors.AddRange(Errors.Products.Name.InvalidLength(MinLength, MaxLength, value.Length).ValidationErrors);
+            errors.AddRange(Errors.Products.Name.InvalidLength(MinLength, MaxLength, input.Length).ValidationErrors);
         }
     }
 }
