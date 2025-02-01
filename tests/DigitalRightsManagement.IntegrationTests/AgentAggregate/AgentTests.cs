@@ -5,10 +5,11 @@ using DigitalRightsManagement.IntegrationTests.Helpers.Abstractions;
 using DigitalRightsManagement.Tests.Shared.Factories;
 using Shouldly;
 using System.Net.Http.Json;
+using Xunit.Abstractions;
 
 namespace DigitalRightsManagement.IntegrationTests.AgentAggregate;
 
-public sealed class AgentTests(ApiFixture fixture) : ApiIntegrationTestsBase(fixture)
+public sealed class AgentTests(ITestOutputHelper outputHelper, ApiFixture fixture) : ApiIntegrationTestsBase(outputHelper, fixture)
 {
     [Fact]
     public async Task Get_Current_Agent_Returns_Success()

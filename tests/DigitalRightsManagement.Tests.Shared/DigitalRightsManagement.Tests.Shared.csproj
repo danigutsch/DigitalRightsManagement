@@ -2,6 +2,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Bogus" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 		<PackageReference Include="xunit.extensibility.core" />
 	</ItemGroup>
 

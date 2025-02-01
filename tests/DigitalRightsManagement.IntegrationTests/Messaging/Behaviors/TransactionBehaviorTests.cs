@@ -8,6 +8,7 @@ using DigitalRightsManagement.Tests.Shared.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shouldly;
+using Xunit.Abstractions;
 
 namespace DigitalRightsManagement.IntegrationTests.Messaging.Behaviors;
 
@@ -17,7 +18,7 @@ public sealed class TransactionBehaviorTests : ApiIntegrationTestsBase
     private readonly ManagementDbContext _transactionDbContext;
     private readonly TransactionBehavior<TestRequest, Result> _behavior;
 
-    public TransactionBehaviorTests(ApiFixture fixture) : base(fixture)
+    public TransactionBehaviorTests(ITestOutputHelper outputHelper, ApiFixture fixture) : base(outputHelper, fixture)
     {
         _scope = fixture.Services.CreateScope();
         _transactionDbContext = _scope.ServiceProvider.GetRequiredService<ManagementDbContext>();

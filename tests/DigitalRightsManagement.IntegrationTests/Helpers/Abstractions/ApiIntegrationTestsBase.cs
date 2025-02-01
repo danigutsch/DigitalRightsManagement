@@ -4,6 +4,9 @@ using DigitalRightsManagement.Infrastructure.Persistence;
 using DigitalRightsManagement.Infrastructure.Persistence.DbManagement;
 using DigitalRightsManagement.IntegrationTests.Helpers.HttpAuthHandlers;
 using DigitalRightsManagement.MigrationService;
+using DigitalRightsManagement.Tests.Shared.Logging;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Xunit.Abstractions;
 
 namespace DigitalRightsManagement.IntegrationTests.Helpers.Abstractions;
 
@@ -13,13 +16,13 @@ public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IAsyn
 
     protected readonly Faker Faker = new();
 
-    protected readonly ApiFixture Fixture;
+    protected readonly WebApplicationFactory<Program> Fixture;
 
     internal ManagementDbContext DbContext { get; }
 
-    protected ApiIntegrationTestsBase(ApiFixture fixture)
+    protected ApiIntegrationTestsBase(ITestOutputHelper outputHelper, ApiFixture fixture)
     {
-        Fixture = fixture;
+        Fixture = fixture.WithTestLogging(outputHelper);
         _scope = Fixture.Services.CreateScope();
 
         DbContext = _scope.ServiceProvider.GetRequiredService<ManagementDbContext>();
@@ -31,6 +34,7 @@ public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IAsyn
         var client = Fixture.CreateDefaultClient(handler);
         return client;
     }
+
     public async Task InitializeAsync()
     {
         using var scope = Fixture.Services.CreateScope();
@@ -46,7 +50,7 @@ public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IAsyn
             .ConfigureAwait(false);
     }
 
-    public Task DisposeAsync() => Task.CompletedTask;
+    public async Task DisposeAsync() => await Fixture.DisposeAsync().ConfigureAwait(false);
 
     public void Dispose()
     {
@@ -54,5 +58,10 @@ public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IAsyn
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing) => _scope.Dispose();
+    protected virtual void Dispose(bool disposing)
+    {
+        Fixture.Dispose();
+
+        _scope.Dispose();
+    }
 }
