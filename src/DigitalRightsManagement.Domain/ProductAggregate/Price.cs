@@ -38,10 +38,6 @@ public readonly record struct Price
 
         return Result.Success();
     }
-
-    public override int GetHashCode() => HashCode.Combine(Amount, (int)Currency);
-    public static bool operator ==(Price? left, Price? right) => Equals(left, right);
-    public static bool operator !=(Price? left, Price? right) => !Equals(left, right);
 }
 
 public enum Currency
