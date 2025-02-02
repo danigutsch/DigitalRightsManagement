@@ -24,12 +24,12 @@ public readonly record struct ProductId
     {
         if (string.IsNullOrWhiteSpace(id))
         {
-            return Errors.Products.EmptyId();
+            return Errors.Products.Id.EmptyId();
         }
 
         if (!Guid.TryParse(id, out var guid))
         {
-            return Errors.Products.InvalidId(id);
+            return Errors.Products.Id.InvalidId(id);
         }
 
         return From(guid);

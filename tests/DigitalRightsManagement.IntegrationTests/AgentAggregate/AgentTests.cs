@@ -26,7 +26,7 @@ public sealed class AgentTests(ITestOutputHelper outputHelper, ApiFixture fixtur
         agentDto.ShouldNotBeNull();
         agentDto.Id.ShouldBe(agent.Id.Value);
         agentDto.Username.ShouldBe(agent.Username);
-        agentDto.Email.ShouldBe(agent.Email);
+        agentDto.Email.ShouldBe(agent.Email.Value);
         agentDto.Role.ShouldBe(agent.Role);
     }
 
@@ -68,6 +68,6 @@ public sealed class AgentTests(ITestOutputHelper outputHelper, ApiFixture fixtur
 
         agent = await DbContext.Agents.FindAsync(agent.Id);
         agent.ShouldNotBeNull();
-        agent.Email.ShouldBe(newEmail);
+        agent.Email.Value.ShouldBe(newEmail);
     }
 }

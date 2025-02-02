@@ -38,7 +38,7 @@ public sealed partial class Product : AggregateRoot<ProductId>
 
         if (_assignedWorkers.Contains(workerId))
         {
-            return Errors.Products.WorkerAlreadyAssigned(Id, workerId);
+            return Errors.Products.Assignment.WorkerAlreadyAssigned(Id, workerId);
         }
 
         _assignedWorkers.Add(workerId);
@@ -92,9 +92,9 @@ public sealed partial class Product : AggregateRoot<ProductId>
         switch (Status)
         {
             case ProductStatus.Obsolete:
-                return Errors.Products.InvalidStatusChange(Status, ProductStatus.Published);
+                return Errors.Products.Status.InvalidStatusChange(Status, ProductStatus.Published);
             case ProductStatus.Published:
-                return Errors.Products.AlreadyInStatus(Status);
+                return Errors.Products.Status.AlreadyInStatus(Status);
         }
 
         Status = ProductStatus.Published;
@@ -114,7 +114,7 @@ public sealed partial class Product : AggregateRoot<ProductId>
 
         if (Status == ProductStatus.Obsolete)
         {
-            return Errors.Products.AlreadyInStatus(Status);
+            return Errors.Products.Status.AlreadyInStatus(Status);
         }
 
         Status = ProductStatus.Obsolete;
@@ -128,7 +128,7 @@ public sealed partial class Product : AggregateRoot<ProductId>
     {
         if (agentId != AgentId)
         {
-            return Errors.Products.InvalidManager(agentId, AgentId);
+            return Errors.Products.Assignment.InvalidManager(agentId, AgentId);
         }
 
         return Result.Success();
@@ -144,7 +144,7 @@ public sealed partial class Product : AggregateRoot<ProductId>
 
         if (!_assignedWorkers.Contains(workerId))
         {
-            return Errors.Products.WorkerNotAssigned(Id, workerId);
+            return Errors.Products.Assignment.WorkerNotAssigned(Id, workerId);
         }
 
         _assignedWorkers.Remove(workerId);

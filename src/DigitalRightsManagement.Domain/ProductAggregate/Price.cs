@@ -28,12 +28,12 @@ public readonly record struct Price
     {
         if (value < 0)
         {
-            return Errors.Products.InvalidPrice(value);
+            return Errors.Products.Price.Negative(value);
         }
 
         if (!Enum.IsDefined(currency))
         {
-            return Errors.Products.InvalidCurrency(currency);
+            return Errors.Products.Price.UnknownCurrency(currency);
         }
 
         return Result.Success();
