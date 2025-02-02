@@ -12,7 +12,7 @@ public sealed class CSharpCodeFixTest<TAnalyzer, TCodeFix> : CSharpCodeFixTest<T
 {
     public CSharpCodeFixTest()
     {
-        TestState.AdditionalReferences.Add(typeof(Entity).Assembly);
+        TestState.AdditionalReferences.Add(typeof(IAggregateRoot).Assembly);
         SolutionTransforms.Add((solution, projectId) =>
         {
             var project = solution.GetProject(projectId);

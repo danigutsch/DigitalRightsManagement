@@ -1,25 +1,18 @@
 ﻿namespace DigitalRightsManagement.Common.DDD;
 
-public abstract class Entity
+public abstract class Entity<TId> where TId : struct
 {
-    public Guid Id { get; init; }
+    public TId Id { get; init; }
 
     public override bool Equals(object? obj)
     {
-        if (obj is null || obj.GetType() != GetType())
-        {
-            return false;
-        }
-
-        return ((Entity)obj).Id == Id;
+        return obj is Entity<TId> entity &&
+               entity.Id.Equals(Id);
     }
 
-    public override int GetHashCode()
-    {
-        return Id.GetHashCode();
-    }
+    public override int GetHashCode() => HashCode.Combine(Id, typeof(TId));
 
-    protected Entity(Guid id) => Id = id;
+    protected Entity(TId id) => Id = id;
 
     protected Entity() { } // Do not use
 }

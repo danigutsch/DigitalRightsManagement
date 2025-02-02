@@ -4,7 +4,7 @@ using DigitalRightsManagement.Domain.AgentAggregate.Events;
 
 namespace DigitalRightsManagement.Domain.AgentAggregate;
 
-public sealed partial class Agent : AggregateRoot
+public sealed partial class Agent : AggregateRoot<Guid>
 {
     public string Username { get; private set; }
     public string Email { get; private set; }

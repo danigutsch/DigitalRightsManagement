@@ -22,7 +22,7 @@ internal static class AnalyzerVerifier<TAnalyzer>
     {
         var test = new CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>
         {
-            TestState = { AdditionalReferences = { typeof(Entity).Assembly } },
+            TestState = { AdditionalReferences = { typeof(IAggregateRoot).Assembly } },
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
             CompilerDiagnostics = CompilerDiagnostics.Errors,
             TestBehaviors = TestBehaviors.SkipGeneratedCodeCheck

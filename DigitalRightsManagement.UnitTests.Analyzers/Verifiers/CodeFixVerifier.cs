@@ -26,7 +26,7 @@ internal static class CodeFixVerifier<TAnalyzer, TCodeFix>
         {
             TestState =
             {
-                AdditionalReferences = { typeof(Entity).Assembly }
+                AdditionalReferences = { typeof(IAggregateRoot).Assembly }
             },
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90
         };
@@ -50,7 +50,7 @@ internal static class CodeFixVerifier<TAnalyzer, TCodeFix>
         {
             TestState =
             {
-                AdditionalReferences = { typeof(Entity).Assembly }
+                AdditionalReferences = { typeof(IAggregateRoot).Assembly }
             },
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
             FixedCode = fixedSource

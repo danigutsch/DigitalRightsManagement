@@ -62,7 +62,7 @@ public static class InfrastructureDependencyInjection
             .AddEntityFrameworkStores<ManagementIdentityDbContext>();
 
         // We only need the services for the ManagementDbContext
-        builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<AggregateRoot>());
+        builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<IAggregateRoot>());
 
         return builder;
     }

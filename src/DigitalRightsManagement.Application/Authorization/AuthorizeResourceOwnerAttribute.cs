@@ -10,7 +10,7 @@ public abstract class AuthorizeResourceOwnerAttribute(string resourceIdPropertyP
 
 [AttributeUsage(AttributeTargets.Class)]
 public sealed class AuthorizeResourceOwnerAttribute<TResource>(string resourceIdPropertyPath) : AuthorizeResourceOwnerAttribute(resourceIdPropertyPath)
-    where TResource : AggregateRoot
+    where TResource : IAggregateRoot
 {
     public AuthorizeResourceOwnerAttribute() : this($"{typeof(TResource).Name}Id") { }
 }

@@ -156,9 +156,9 @@ public sealed class ProductTests(ITestOutputHelper outputHelper, ApiFixture fixt
     public async Task Assign_Worker_Happy_Path()
     {
         // Arrange
-        var manager = AgentFactory.Seeded(user => user.Products.Count > 0 && user.Role == AgentRoles.Manager);
+        var manager = AgentFactory.Seeded(agent => agent.Products.Count > 0 && agent.Role == AgentRoles.Manager);
         var productId = manager.Products[0];
-        var worker = AgentFactory.Seeded(worker => !worker.Products.Contains(productId));
+        var worker = AgentFactory.Seeded(agent => !agent.Products.Contains(productId) && agent.Role == AgentRoles.Worker);
 
         var assignWorkerDto = new AssignWorkerDto(worker.Id);
 
