@@ -17,7 +17,10 @@ internal sealed class AgentConfiguration : IEntityTypeConfiguration<Agent>
             .HasMaxLength(50);
 
         builder.Property(u => u.Email)
-            .HasMaxLength(100);
+            .HasMaxLength(100)
+            .HasConversion(
+                email => email.Value,
+                s => EmailAddress.From(s));
 
         builder.Property(u => u.Role)
             .HasConversion<string>();

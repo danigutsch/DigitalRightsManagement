@@ -41,12 +41,12 @@ public sealed class AgentTests : UnitTestBase
     {
         // Arrange
         // Act
-        var result = Agent.Create(_agent.Username, invalidEmail, _agent.Role);
+        var result = EmailAddress.From(invalidEmail)
+            .Bind(email => Agent.Create(_agent.Username, email, _agent.Role));
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
-        result.ValidationErrors.ShouldHaveSingleItem()
-            .ErrorCode.ShouldContain("email");
+        result.ValidationErrors.ShouldAllBe(ve => ve.ErrorCode.Contains("email"));
     }
 
     [Fact]
@@ -89,21 +89,6 @@ public sealed class AgentTests : UnitTestBase
         result.IsSuccess.ShouldBeTrue();
         result.Value.DomainEvents.ShouldHaveSingleItem()
             .ShouldBeOfType<AgentCreated>();
-    }
-
-    [Theory, ClassData(typeof(InvalidEmailTestData))]
-    public void Cannot_Update_With_Invalid_Email(string invalidEmail)
-    {
-        // Arrange
-        var agent = AgentFactory.Create();
-
-        // Act
-        var result = agent.ChangeEmail(invalidEmail);
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
-        result.ValidationErrors.ShouldHaveSingleItem()
-            .ErrorCode.ShouldContain("email");
     }
 
     [Fact]

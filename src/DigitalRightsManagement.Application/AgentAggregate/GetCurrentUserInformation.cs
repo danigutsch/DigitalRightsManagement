@@ -16,7 +16,7 @@ public sealed record GetCurrentAgentInformationQuery : IQuery<AgentDto>
                 .MapAsync(agent => new AgentDto(
                     agent.Id.Value,
                     agent.Username,
-                    agent.Email,
+                    agent.Email.Value,
                     agent.Role,
                     [.. agent.Products.Select(p => p.Value)]));
         }
