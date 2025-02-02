@@ -63,7 +63,7 @@ public sealed class ResourceOwnerAuthorizationBehaviorTests
         // Arrange
         var resourceId = Guid.NewGuid();
         var request = new TestResourceRequest(resourceId);
-        var agent = Agent.Create("test", EmailAddress.From("test@test.com"), AgentRoles.Worker).Value;
+        var agent = Agent.Create(Username.From("testUsername"), EmailAddress.From("test@test.com"), AgentRoles.Worker).Value;
         _agentProvider.NextResult = Result.Success(agent);
         _ownershipService.IsOwner = false;
 
@@ -83,7 +83,7 @@ public sealed class ResourceOwnerAuthorizationBehaviorTests
         // Arrange
         var resourceId = Guid.NewGuid();
         var request = new TestResourceRequest(resourceId);
-        var agent = Agent.Create("test", EmailAddress.From("test@test.com"), AgentRoles.Worker).Value;
+        var agent = Agent.Create(Username.From("testUsername"), EmailAddress.From("test@test.com"), AgentRoles.Worker).Value;
         _agentProvider.NextResult = Result.Success(agent);
         _ownershipService.IsOwner = true;
 

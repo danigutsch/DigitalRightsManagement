@@ -14,10 +14,13 @@ internal sealed class AgentConfiguration : IEntityTypeConfiguration<Agent>
             .ValueGeneratedNever();
 
         builder.Property(u => u.Username)
-            .HasMaxLength(50);
+            .HasMaxLength(Username.MaxLength)
+            .HasConversion(
+                email => email.Value,
+                s => Username.From(s));
 
         builder.Property(u => u.Email)
-            .HasMaxLength(100)
+            .HasMaxLength(EmailAddress.MaxLength)
             .HasConversion(
                 email => email.Value,
                 s => EmailAddress.From(s));

@@ -25,7 +25,7 @@ public sealed class AgentTests(ITestOutputHelper outputHelper, ApiFixture fixtur
         var agentDto = await response.Content.ReadFromJsonAsync<AgentDto>();
         agentDto.ShouldNotBeNull();
         agentDto.Id.ShouldBe(agent.Id.Value);
-        agentDto.Username.ShouldBe(agent.Username);
+        agentDto.Username.ShouldBe(agent.Username.Value);
         agentDto.Email.ShouldBe(agent.Email.Value);
         agentDto.Role.ShouldBe(agent.Role);
     }

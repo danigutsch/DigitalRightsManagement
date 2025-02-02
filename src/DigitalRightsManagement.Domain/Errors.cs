@@ -225,6 +225,20 @@ public static class Errors
             var message = $"The email can not be longer than {maxLength} characters.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
+
+        public static Result EmptyUsername()
+        {
+            const string code = "agent.username.empty";
+            const string message = "The username can not be empty.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result InvalidUsernameLength(int minLength, int maxLength, int actualLength)
+        {
+            const string code = "agent.username.invalid-length";
+            var message = $"The username must be between {minLength} and {maxLength} characters. Was: {actualLength}.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
     }
 
     public static class Identity

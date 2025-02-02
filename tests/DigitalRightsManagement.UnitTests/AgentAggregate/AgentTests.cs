@@ -27,7 +27,8 @@ public sealed class AgentTests : UnitTestBase
     {
         // Arrange
         // Act
-        var result = Agent.Create(emptyUsername, _agent.Email, _agent.Role);
+        var result = Username.From(emptyUsername)
+            .Bind(username => Agent.Create(username, _agent.Email, _agent.Role));
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
