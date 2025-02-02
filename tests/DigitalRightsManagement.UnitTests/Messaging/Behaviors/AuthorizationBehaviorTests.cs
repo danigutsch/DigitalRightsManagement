@@ -42,7 +42,7 @@ public class AuthorizationBehaviorTests
     {
         // Arrange
         var request = new AuthorizedRequestWithoutRole();
-        var agent = Agent.Create("test", EmailAddress.From("test@test.com"), AgentRoles.Worker).Value;
+        var agent = Agent.Create(Username.From("testUsername"), EmailAddress.From("test@test.com"), AgentRoles.Worker).Value;
         _agentProvider.NextResult = Result.Success(agent);
 
         // Act
@@ -77,7 +77,7 @@ public class AuthorizationBehaviorTests
     {
         // Arrange
         var request = new RequestWithAuthorizeAttribute();
-        var agent = Agent.Create("test", EmailAddress.From("test@test.com"), AgentRoles.Worker).Value;
+        var agent = Agent.Create(Username.From("testUsername"), EmailAddress.From("test@test.com"), AgentRoles.Worker).Value;
         _agentProvider.NextResult = Result.Success(agent);
 
         // Act
@@ -95,7 +95,7 @@ public class AuthorizationBehaviorTests
     {
         // Arrange
         var request = new RequestWithAuthorizeAttribute();
-        var agent = Agent.Create("test", EmailAddress.From("test@test.com"), AgentRoles.Manager).Value;
+        var agent = Agent.Create(Username.From("testUsername"), EmailAddress.From("test@test.com"), AgentRoles.Manager).Value;
         _agentProvider.NextResult = Result.Success(agent);
 
         // Act

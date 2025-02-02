@@ -15,7 +15,7 @@ public sealed record GetCurrentAgentInformationQuery : IQuery<AgentDto>
             return await currentAgentProvider.Get(cancellationToken)
                 .MapAsync(agent => new AgentDto(
                     agent.Id.Value,
-                    agent.Username,
+                    agent.Username.Value,
                     agent.Email.Value,
                     agent.Role,
                     [.. agent.Products.Select(p => p.Value)]));

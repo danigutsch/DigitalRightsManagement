@@ -7,29 +7,24 @@ namespace DigitalRightsManagement.Domain.AgentAggregate;
 
 public sealed partial class Agent : AggregateRoot<AgentId>
 {
-    public string Username { get; private set; }
+    public Username Username { get; private set; }
     public EmailAddress Email { get; private set; }
     public AgentRoles Role { get; private set; }
 
     private readonly List<ProductId> _products = [];
     public IReadOnlyList<ProductId> Products => _products.AsReadOnly();
 
-    private Agent(string username, EmailAddress email, AgentRoles role, AgentId? id = null) : base(id ?? AgentId.Create())
+    private Agent(Username username, EmailAddress email, AgentRoles role, AgentId? id = null) : base(id ?? AgentId.Create())
     {
-        Username = username.Trim();
+        Username = username;
         Email = email;
         Role = role;
 
         QueueDomainEvent(new AgentCreated(Id, username, email, role));
     }
 
-    public static Result<Agent> Create(string username, EmailAddress email, AgentRoles role, AgentId? id = null)
+    public static Result<Agent> Create(Username username, EmailAddress email, AgentRoles role, AgentId? id = null)
     {
-        if (string.IsNullOrWhiteSpace(username))
-        {
-            return Errors.Agents.InvalidUsername();
-        }
-
         if (!Enum.IsDefined(role))
         {
             return Errors.Agents.UnknownRole();
@@ -115,6 +110,7 @@ public sealed partial class Agent : AggregateRoot<AgentId>
         }
 
         _products.Remove(productId);
+
         QueueDomainEvent(new ProductRemoved(Id, productId));
 
         return Result.Success();

@@ -30,7 +30,7 @@ public abstract class ApiIntegrationTestsBase : IClassFixture<ApiFixture>, IAsyn
 
     protected HttpClient GetHttpClient(Agent agent)
     {
-        var handler = new BasicAuthHandler(agent.Username, SeedData.Passwords[agent.Id]);
+        var handler = new BasicAuthHandler(agent.Username.Value, SeedData.Passwords[agent.Id]);
         var client = Fixture.CreateDefaultClient(handler);
         return client;
     }

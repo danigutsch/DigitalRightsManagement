@@ -8,12 +8,12 @@ public static class AgentFactory
 {
     private static readonly Faker<Agent> Faker = new Faker<Agent>()
         .CustomInstantiator(f => Agent.Create(
-            f.Person.UserName,
-            EmailAddress.From(f.Internet.Email()),
+            Username.From(f.Person.UserName).Value,
+            EmailAddress.From(f.Internet.Email()).Value,
             f.PickRandom<AgentRoles>()));
 
     public static Agent Create(
-        string? username = null,
+        Username? username = null,
         EmailAddress? email = null,
         AgentRoles? role = null,
         AgentId? id = null)
