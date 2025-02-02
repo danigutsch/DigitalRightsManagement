@@ -10,17 +10,17 @@ using Xunit.Abstractions;
 
 namespace DigitalRightsManagement.IntegrationTests.Caching.Repositories;
 
-public sealed class CachedResourceRepositoryTests : ApiIntegrationTestsBase
+public sealed class CachedOwnershipServiceTests : ApiIntegrationTestsBase
 {
     private readonly IServiceScope _scope;
     private readonly IDistributedCache _cache;
-    private readonly IResourceRepository _resourceRepository;
+    private readonly IOwnershipService _ownershipService;
 
-    public CachedResourceRepositoryTests(ITestOutputHelper outputHelper, ApiFixture fixture) : base(outputHelper, fixture)
+    public CachedOwnershipServiceTests(ITestOutputHelper outputHelper, ApiFixture fixture) : base(outputHelper, fixture)
     {
         _scope = Fixture.Services.CreateScope();
         _cache = _scope.ServiceProvider.GetRequiredService<IDistributedCache>();
-        _resourceRepository = _scope.ServiceProvider.GetRequiredService<IResourceRepository>();
+        _ownershipService = _scope.ServiceProvider.GetRequiredService<IOwnershipService>();
     }
 
     [Fact]
@@ -30,15 +30,15 @@ public sealed class CachedResourceRepositoryTests : ApiIntegrationTestsBase
         var product = SeedData.Products.Random();
 
         // Act
-        _ = await _resourceRepository.IsResourceOwner(product.AgentId, typeof(Product), [product.Id], CancellationToken.None);
+        _ = await _ownershipService.IsResourceOwner(product.AgentId.Value, typeof(Product), [product.Id.Value], CancellationToken.None);
 
         // Assert
-        var cacheKey = CachedResourceRepository.GetCacheKey(product.AgentId, typeof(Product), [product.Id]);
+        var cacheKey = CachedOwnershipService.GetCacheKey(product.AgentId.Value, typeof(Product), [product.Id.Value]);
         var cached = await _cache.GetAsync(cacheKey);
         cached.ShouldNotBeNull();
 
         // Act
-        _ = await _resourceRepository.IsResourceOwner(product.AgentId, typeof(Product), [product.Id], CancellationToken.None);
+        _ = await _ownershipService.IsResourceOwner(product.AgentId.Value, typeof(Product), [product.Id.Value], CancellationToken.None);
 
         // Assert
         var cachedAgain = await _cache.GetAsync(cacheKey);
@@ -55,18 +55,18 @@ public sealed class CachedResourceRepositoryTests : ApiIntegrationTestsBase
             .Random();
 
         var ownerId = productGroupings.Key;
-        Guid[] resourceIds = [.. productGroupings.Select(p => p.Id)];
+        Guid[] resourceIds = [.. productGroupings.Select(p => p.Id.Value)];
 
         // Act
-        _ = await _resourceRepository.IsResourceOwner(ownerId, typeof(Product), resourceIds, CancellationToken.None);
+        _ = await _ownershipService.IsResourceOwner(ownerId.Value, typeof(Product), resourceIds, CancellationToken.None);
 
         // Assert
-        var cacheKey = CachedResourceRepository.GetCacheKey(ownerId, typeof(Product), resourceIds);
+        var cacheKey = CachedOwnershipService.GetCacheKey(ownerId.Value, typeof(Product), resourceIds);
         var cached = await _cache.GetAsync(cacheKey);
         cached.ShouldNotBeNull();
 
         // Act
-        _ = await _resourceRepository.IsResourceOwner(ownerId, typeof(Product), resourceIds, CancellationToken.None);
+        _ = await _ownershipService.IsResourceOwner(ownerId.Value, typeof(Product), resourceIds, CancellationToken.None);
 
         // Assert
         var cachedAgain = await _cache.GetAsync(cacheKey);

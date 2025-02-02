@@ -13,7 +13,7 @@ public readonly record struct Price
         Currency = currency;
     }
 
-    public static Result<Price> Create(decimal value, Currency currency)
+    public static Result<Price> From(decimal value, Currency currency)
     {
         var validation = Validate(value, currency);
         if (!validation.IsSuccess)

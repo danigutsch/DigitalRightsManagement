@@ -57,7 +57,7 @@ public sealed class ProductTests(ITestOutputHelper outputHelper, ApiFixture fixt
         var createdProductId = await response.Content.ReadFromJsonAsync<Guid>();
         createdProductId.ShouldNotBe(Guid.Empty);
 
-        var product = await DbContext.Products.FindAsync(createdProductId);
+        var product = await DbContext.Products.FindAsync(ProductId.From(createdProductId));
         product.ShouldNotBeNull();
         product.Name.Value.ShouldBe(productName);
         product.Description.Value.ShouldBe(productDescription);
@@ -66,7 +66,7 @@ public sealed class ProductTests(ITestOutputHelper outputHelper, ApiFixture fixt
 
         manager = await DbContext.Agents.FindAsync(manager.Id);
         manager.ShouldNotBeNull();
-        manager.Products.ShouldContain(productId => productId == createdProductId);
+        manager.Products.ShouldContain(productId => productId.Value == createdProductId);
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public sealed class ProductTests(ITestOutputHelper outputHelper, ApiFixture fixt
         var productId = manager.Products[0];
         var worker = AgentFactory.Seeded(agent => !agent.Products.Contains(productId) && agent.Role == AgentRoles.Worker);
 
-        var assignWorkerDto = new AssignWorkerDto(worker.Id);
+        var assignWorkerDto = new AssignWorkerDto(worker.Id.Value);
 
         // Act
         var response = await GetHttpClient(manager)

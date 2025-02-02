@@ -2,4 +2,4 @@
 
 namespace DigitalRightsManagement.Domain.AgentAggregate.Events;
 
-public sealed record AgentPromoted(Guid AdminId, Guid ManagerId, AgentRoles OldRole, AgentRoles NewRole) : DomainEvent;
+public sealed record AgentPromoted(AgentId AdminId, AgentId ManagerId, AgentRoles OldRole, AgentRoles NewRole) : DomainEvent;

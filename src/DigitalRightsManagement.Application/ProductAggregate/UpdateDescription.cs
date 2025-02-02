@@ -8,17 +8,18 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-[AuthorizeResourceOwner<Product>]
-public sealed record UpdateDescriptionCommand(Guid ProductId, string NewDescription) : ICommand
+[AuthorizeResourceOwner<Product>("Id")]
+public sealed record UpdateDescriptionCommand(Guid Id, string NewDescription) : ICommand
 {
     internal sealed class UpdateDescriptionCommandHandler(ICurrentAgentProvider currentAgentProvider, IProductRepository productRepository) : ICommandHandler<UpdateDescriptionCommand>
     {
         public async Task<Result> Handle(UpdateDescriptionCommand command, CancellationToken cancellationToken)
         {
-            var newDescriptionResult = Description.From(command.NewDescription);
-            if (!newDescriptionResult.TryGetValue(out var newDescription))
+            var productId = ProductId.From(command.Id);
+            var descriptionResult = Description.From(command.NewDescription);
+            if (!descriptionResult.TryGetValue(out var description))
             {
-                return newDescriptionResult.Map();
+                return descriptionResult.Map();
             }
 
             var agentResult = await currentAgentProvider.Get(cancellationToken);
@@ -27,8 +28,8 @@ public sealed record UpdateDescriptionCommand(Guid ProductId, string NewDescript
                 return agentResult.Map();
             }
 
-            return await productRepository.GetById(command.ProductId, cancellationToken)
-                .BindAsync(product => product.UpdateDescription(agent.Id, newDescription)
+            return await productRepository.GetById(productId, cancellationToken)
+                .BindAsync(product => product.UpdateDescription(agent.Id, description)
                 .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
                 .MapAsync(_ => Result.Success()));
         }

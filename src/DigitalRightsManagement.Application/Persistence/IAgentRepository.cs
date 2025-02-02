@@ -6,5 +6,5 @@ namespace DigitalRightsManagement.Application.Persistence;
 public interface IAgentRepository : IRepository<Agent>
 {
     void Add(Agent agent);
-    Task<Result<Agent>> GetById(Guid id, CancellationToken cancellationToken);
+    Task<Result<Agent>> GetById(AgentId id, CancellationToken cancellationToken);
 }

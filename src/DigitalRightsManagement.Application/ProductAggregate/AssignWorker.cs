@@ -20,13 +20,16 @@ public sealed record AssignWorkerCommand(Guid ProductId, Guid WorkerId) : IComma
     {
         public async Task<Result> Handle(AssignWorkerCommand command, CancellationToken cancellationToken)
         {
+            var productId = Domain.ProductAggregate.ProductId.From(command.ProductId);
+            var workerId = AgentId.From(command.WorkerId);
+
             var currentAgentResult = await currentUserProvider.Get(cancellationToken);
             if (!currentAgentResult.TryGetValue(out var currentAgent))
             {
                 return currentAgentResult.Map();
             }
 
-            var workerResult = await userRepository.GetById(command.WorkerId, cancellationToken);
+            var workerResult = await userRepository.GetById(workerId, cancellationToken);
             if (!workerResult.TryGetValue(out var worker))
             {
                 return workerResult.Map();
@@ -37,7 +40,7 @@ public sealed record AssignWorkerCommand(Guid ProductId, Guid WorkerId) : IComma
                 return Errors.Agents.InvalidWorkerRole(worker.Id, worker.Role);
             }
 
-            return await productRepository.GetById(command.ProductId, cancellationToken)
+            return await productRepository.GetById(productId, cancellationToken)
                 .BindAsync(product => product.AssignWorker(currentAgent.Id, worker.Id))
                 .Tap(() => productRepository.UnitOfWork.SaveEntities(cancellationToken));
         }

@@ -34,7 +34,7 @@ internal sealed class IdentityDbManager(ManagementIdentityDbContext dbContext, U
         {
             var authUser = new ManagementIdentityUser
             {
-                DomainUserId = agent.Id,
+                DomainUserId = agent.Id.Value,
                 UserName = agent.Username,
                 Email = agent.Email,
                 EmailConfirmed = true

@@ -2,4 +2,4 @@
 
 namespace DigitalRightsManagement.Domain.AgentAggregate.Events;
 
-public sealed record EmailUpdated(Guid Id, string NewEmail) : DomainEvent;
+public sealed record EmailUpdated(AgentId Id, string NewEmail) : DomainEvent;

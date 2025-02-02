@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Tests.Shared.Factories;
@@ -9,18 +10,19 @@ public static class ProductFactory
         .CustomInstantiator(f => Product.Create(
             ProductName.From(f.Commerce.ProductName()).Value,
             Description.From(f.Commerce.ProductDescription()).Value,
-            Price.Create(
+            Price.From(
                 f.Random.Decimal(0, 100),
                 f.PickRandom<Currency>()).Value,
-            Guid.NewGuid(),
-            Guid.NewGuid()));
+            AgentId.From(Guid.NewGuid()),
+            ProductId.From(Guid.NewGuid())
+            ).Value);
 
     public static Product InDevelopment(
         ProductName? name = null,
         Description? description = null,
         Price? price = null,
-        Guid? manager = null,
-        Guid? id = null)
+        AgentId? manager = null,
+        ProductId? id = null)
     {
         var product = Faker.Generate();
 
@@ -37,8 +39,8 @@ public static class ProductFactory
         ProductName? name = null,
         Description? description = null,
         Price? price = null,
-        Guid? manager = null,
-        Guid? id = null)
+        AgentId? manager = null,
+        ProductId? id = null)
     {
         var product = InDevelopment(name, description, price, manager, id);
         product.Publish(product.AgentId);
@@ -49,8 +51,8 @@ public static class ProductFactory
         ProductName? name = null,
         Description? description = null,
         Price? price = null,
-        Guid? manager = null,
-        Guid? id = null)
+        AgentId? manager = null,
+        ProductId? id = null)
     {
         var product = Published(name, description, price, manager, id);
         product.Obsolete(product.AgentId);

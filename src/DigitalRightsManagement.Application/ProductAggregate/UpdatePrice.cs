@@ -8,13 +8,15 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-[AuthorizeResourceOwner<Product>]
-public sealed record UpdatePriceCommand(Guid ProductId, decimal NewPrice, Currency Currency, string Reason) : ICommand
+[AuthorizeResourceOwner<Product>("Id")]
+public sealed record UpdatePriceCommand(Guid Id, decimal NewPrice, Currency Currency, string Reason) : ICommand
 {
     internal sealed class UpdatePriceCommandHandler(ICurrentAgentProvider currentAgentProvider, IProductRepository productRepository) : ICommandHandler<UpdatePriceCommand>
     {
         public async Task<Result> Handle(UpdatePriceCommand command, CancellationToken cancellationToken)
         {
+            var productId = ProductId.From(command.Id);
+
             var agentResult = await currentAgentProvider.Get(cancellationToken);
             if (!agentResult.IsSuccess)
             {
@@ -23,7 +25,7 @@ public sealed record UpdatePriceCommand(Guid ProductId, decimal NewPrice, Curren
 
             var agent = agentResult.Value;
 
-            var productResult = await productRepository.GetById(command.ProductId, cancellationToken);
+            var productResult = await productRepository.GetById(productId, cancellationToken);
             if (!productResult.IsSuccess)
             {
                 return productResult.Map();
@@ -31,7 +33,7 @@ public sealed record UpdatePriceCommand(Guid ProductId, decimal NewPrice, Curren
 
             var product = productResult.Value;
 
-            return await Price.Create(command.NewPrice, command.Currency)
+            return await Price.From(command.NewPrice, command.Currency)
                 .Tap(price => product.UpdatePrice(agent.Id, price, command.Reason))
                 .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
                 .MapAsync(_ => Result.Success());

@@ -1,4 +1,5 @@
 ﻿using DigitalRightsManagement.Domain.ProductAggregate;
+using DigitalRightsManagement.Infrastructure.Persistence.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -41,7 +42,9 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasConversion<string>();
 
         builder.PrimitiveCollection(p => p.AssignedWorkers)
-            .HasField("_assignedWorkers");
+            .HasField("_assignedWorkers")
+            .ElementType()
+            .HasConversion<AgentIdConverter>();
 
         builder.Ignore(p => p.DomainEvents);
     }

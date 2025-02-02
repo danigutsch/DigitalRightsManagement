@@ -16,7 +16,7 @@ public static class AgentFactory
         string? username = null,
         string? email = null,
         AgentRoles? role = null,
-        Guid? id = null)
+        AgentId? id = null)
     {
         var agent = Faker.Generate();
 

@@ -12,7 +12,7 @@ namespace DigitalRightsManagement.UnitTests.Messaging.Behaviors;
 public sealed class ResourceOwnerAuthorizationBehaviorTests
 {
     private readonly TestCurrentAgentProvider _agentProvider;
-    private readonly TestResourceRepository _resourceRepository;
+    private readonly TestOwnershipService _ownershipService;
     private readonly ResourceOwnerAuthorizationBehavior<BaseRequest, Result> _behavior;
 
     public ResourceOwnerAuthorizationBehaviorTests()
@@ -20,8 +20,8 @@ public sealed class ResourceOwnerAuthorizationBehaviorTests
         ILogger<ResourceOwnerAuthorizationBehavior<BaseRequest, Result>> logger = NullLogger<ResourceOwnerAuthorizationBehavior<BaseRequest, Result>>.Instance;
 
         _agentProvider = new TestCurrentAgentProvider();
-        _resourceRepository = new TestResourceRepository();
-        _behavior = new ResourceOwnerAuthorizationBehavior<BaseRequest, Result>(_agentProvider, _resourceRepository, logger);
+        _ownershipService = new TestOwnershipService();
+        _behavior = new ResourceOwnerAuthorizationBehavior<BaseRequest, Result>(_agentProvider, _ownershipService, logger);
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public sealed class ResourceOwnerAuthorizationBehaviorTests
         var request = new TestResourceRequest(resourceId);
         var agent = Agent.Create("test", "test@test.com", AgentRoles.Worker).Value;
         _agentProvider.NextResult = Result.Success(agent);
-        _resourceRepository.IsOwner = false;
+        _ownershipService.IsOwner = false;
 
         // Act
         var result = await _behavior.Handle(
@@ -85,7 +85,7 @@ public sealed class ResourceOwnerAuthorizationBehaviorTests
         var request = new TestResourceRequest(resourceId);
         var agent = Agent.Create("test", "test@test.com", AgentRoles.Worker).Value;
         _agentProvider.NextResult = Result.Success(agent);
-        _resourceRepository.IsOwner = true;
+        _ownershipService.IsOwner = true;
 
         // Act
         var result = await _behavior.Handle(
