@@ -6,6 +6,8 @@ var builder = Host.CreateApplicationBuilder(args);
 
 builder.AddServiceDefaults();
 
+builder.Logging.SetMinimumLevel(LogLevel.Warning);
+
 builder.AddMigrationInfrastructure();
 
 builder.Services.AddHostedService<DbInitializer>();

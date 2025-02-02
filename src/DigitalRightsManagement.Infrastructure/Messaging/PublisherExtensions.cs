@@ -8,7 +8,7 @@ internal static class PublisherExtensions
 {
     public static async Task PublishDomainEvents(this IPublisher publisher, ManagementDbContext dbContext, CancellationToken cancellationToken)
     {
-        DomainEvent[] domainEvents = [.. dbContext.ChangeTracker.Entries<AggregateRoot>()
+        DomainEvent[] domainEvents = [.. dbContext.ChangeTracker.Entries<IAggregateRoot>()
             .SelectMany(e => e.Entity.PopDomainEvents())];
 
         foreach (var domainEvent in domainEvents)

@@ -4,7 +4,7 @@ using DigitalRightsManagement.Domain.ProductAggregate.Events;
 
 namespace DigitalRightsManagement.Domain.ProductAggregate;
 
-public sealed partial class Product : AggregateRoot
+public sealed partial class Product : AggregateRoot<Guid>
 {
     public ProductName Name { get; private set; }
     public Description Description { get; private set; }

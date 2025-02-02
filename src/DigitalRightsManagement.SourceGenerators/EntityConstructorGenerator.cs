@@ -81,6 +81,9 @@ public class EntityConstructorGenerator : IIncrementalGenerator
         var namespaceName = GetNamespace(classDeclaration);
         var className = classDeclaration.Identifier.Text;
         var isSealed = classDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.SealedKeyword));
+        var generics = classDeclaration.TypeParameterList?.Parameters;
+
+        var genericTypes = generics != null ? $"<{string.Join(", ", generics)}>" : string.Empty;
 
         var accessibility = isSealed ? "private" : "protected";
 
@@ -90,7 +93,7 @@ public class EntityConstructorGenerator : IIncrementalGenerator
                        #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor
                        namespace {{namespaceName}}
                        {
-                           partial class {{className}}
+                           partial class {{className}}{{genericTypes}}
                            {
                                {{accessibility}} {{className}}() { }
                            }

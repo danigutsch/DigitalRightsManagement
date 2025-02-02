@@ -1,8 +1,14 @@
 ﻿namespace DigitalRightsManagement.Common.DDD;
 
-public partial class AggregateRoot : Entity
+public interface IAggregateRoot
 {
-    protected AggregateRoot(Guid id) : base(id) { }
+    IReadOnlyList<DomainEvent> DomainEvents { get; }
+    DomainEvent[] PopDomainEvents();
+}
+
+public partial class AggregateRoot<TId> : Entity<TId>, IAggregateRoot where TId : struct
+{
+    protected AggregateRoot(TId id) : base(id) { }
 
     private readonly List<DomainEvent> _domainEvents = [];
 
