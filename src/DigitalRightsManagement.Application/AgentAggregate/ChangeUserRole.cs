@@ -23,7 +23,7 @@ public sealed record ChangeAgentRoleCommand(Guid TargetId, AgentRoles DesiredRol
 
             var currentAgent = currentAgentResult.Value;
 
-            return await agentRepository.GetById(command.TargetId, cancellationToken)
+            return await agentRepository.GetById(AgentId.From(command.TargetId), cancellationToken)
                 .BindAsync(agent => agent.ChangeRole(currentAgent, command.DesiredRole))
                 .Tap(() => agentRepository.UnitOfWork.SaveEntities(cancellationToken));
         }

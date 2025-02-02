@@ -11,7 +11,7 @@ internal sealed class ProductRepository(ManagementDbContext context) : IProductR
     public IUnitOfWork UnitOfWork => context;
 
     public void Add(Product product) => context.Products.Add(product);
-    public async Task<Result<Product>> GetById(Guid id, CancellationToken ct)
+    public async Task<Result<Product>> GetById(ProductId id, CancellationToken ct)
     {
         var product = await context.Products.FindAsync([id], ct);
         if (product is null)
@@ -22,7 +22,7 @@ internal sealed class ProductRepository(ManagementDbContext context) : IProductR
         return product;
     }
 
-    public async Task<Result<IReadOnlyList<Product>>> GetById(IEnumerable<Guid> ids, CancellationToken ct) =>
+    public async Task<Result<IReadOnlyList<Product>>> GetById(IEnumerable<ProductId> ids, CancellationToken ct) =>
         await context.Products
             .Where(p => ids.Contains(p.Id))
             .ToListAsync(ct);

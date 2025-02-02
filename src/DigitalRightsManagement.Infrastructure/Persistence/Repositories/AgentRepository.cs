@@ -11,7 +11,7 @@ internal sealed class AgentRepository(ManagementDbContext context) : IAgentRepos
 
     public void Add(Agent agent) => context.Agents.Add(agent);
 
-    public async Task<Result<Agent>> GetById(Guid id, CancellationToken cancellationToken)
+    public async Task<Result<Agent>> GetById(AgentId id, CancellationToken cancellationToken)
     {
         var agent = await context.Agents.FindAsync([id], cancellationToken: cancellationToken);
         if (agent is null)

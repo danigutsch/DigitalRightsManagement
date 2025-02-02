@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Ardalis.Result;
+﻿using Ardalis.Result;
 
 namespace DigitalRightsManagement.Domain.ProductAggregate;
 

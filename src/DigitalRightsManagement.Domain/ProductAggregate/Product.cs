@@ -1,21 +1,22 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Common.DDD;
+using DigitalRightsManagement.Domain.AgentAggregate;
 using DigitalRightsManagement.Domain.ProductAggregate.Events;
 
 namespace DigitalRightsManagement.Domain.ProductAggregate;
 
-public sealed partial class Product : AggregateRoot<Guid>
+public sealed partial class Product : AggregateRoot<ProductId>
 {
     public ProductName Name { get; private set; }
     public Description Description { get; private set; }
     public Price Price { get; private set; }
-    public Guid AgentId { get; private init; }
+    public AgentId AgentId { get; private init; }
     public ProductStatus Status { get; private set; } = ProductStatus.Development;
 
-    private readonly List<Guid> _assignedWorkers = [];
-    public IReadOnlyList<Guid> AssignedWorkers => _assignedWorkers.AsReadOnly();
+    private readonly List<AgentId> _assignedWorkers = [];
+    public IReadOnlyList<AgentId> AssignedWorkers => _assignedWorkers.AsReadOnly();
 
-    private Product(ProductName name, Description description, Price price, Guid createdBy, Guid? id = null) : base(id ?? Guid.CreateVersion7())
+    private Product(ProductName name, Description description, Price price, AgentId createdBy, ProductId? id = null) : base(id ?? ProductId.Create())
     {
         Name = name;
         Description = description;
@@ -25,34 +26,14 @@ public sealed partial class Product : AggregateRoot<Guid>
         QueueDomainEvent(new ProductCreated(Id, createdBy, name, description, price));
     }
 
-    public static Result<Product> Create(ProductName name, Description description, Price price, Guid manager, Guid? id = null)
-    {
-        if (manager == Guid.Empty)
-        {
-            return Errors.Products.EmptyCreatorId();
-        }
+    public static Result<Product> Create(ProductName name, Description description, Price price, AgentId manager, ProductId? id = null) => new Product(name, description, price, manager, id);
 
-        if (id is not null && id == Guid.Empty)
-        {
-            return Errors.Products.EmptyId();
-        }
-
-        var product = new Product(name, description, price, manager, id);
-
-        return product;
-    }
-
-    public Result AssignWorker(Guid userId, Guid workerId)
+    public Result AssignWorker(AgentId userId, AgentId workerId)
     {
         var ownerValidation = ValidateOwner(userId);
         if (!ownerValidation.IsSuccess)
         {
             return ownerValidation;
-        }
-
-        if (workerId == Guid.Empty)
-        {
-            return Errors.Agents.EmptyId();
         }
 
         if (_assignedWorkers.Contains(workerId))
@@ -66,7 +47,7 @@ public sealed partial class Product : AggregateRoot<Guid>
         return Result.Success();
     }
 
-    public Result UpdatePrice(Guid agentId, Price newPrice, string reason)
+    public Result UpdatePrice(AgentId agentId, Price newPrice, string reason)
     {
         var ownerValidation = ValidateOwner(agentId);
         if (!ownerValidation.IsSuccess)
@@ -83,7 +64,7 @@ public sealed partial class Product : AggregateRoot<Guid>
         return Result.Success();
     }
 
-    public Result UpdateDescription(Guid agentId, Description newDescription)
+    public Result UpdateDescription(AgentId agentId, Description newDescription)
     {
         var ownerValidation = ValidateOwner(agentId);
         if (!ownerValidation.IsSuccess)
@@ -100,7 +81,7 @@ public sealed partial class Product : AggregateRoot<Guid>
         return Result.Success();
     }
 
-    public Result Publish(Guid agentId)
+    public Result Publish(AgentId agentId)
     {
         var ownerValidation = ValidateOwner(agentId);
         if (!ownerValidation.IsSuccess)
@@ -123,7 +104,7 @@ public sealed partial class Product : AggregateRoot<Guid>
         return Result.Success();
     }
 
-    public Result Obsolete(Guid agentId)
+    public Result Obsolete(AgentId agentId)
     {
         var ownerValidation = ValidateOwner(agentId);
         if (!ownerValidation.IsSuccess)
@@ -143,13 +124,8 @@ public sealed partial class Product : AggregateRoot<Guid>
         return Result.Success();
     }
 
-    private Result ValidateOwner(Guid agentId)
+    private Result ValidateOwner(AgentId agentId)
     {
-        if (agentId == Guid.Empty)
-        {
-            return Errors.Agents.EmptyId();
-        }
-
         if (agentId != AgentId)
         {
             return Errors.Products.InvalidManager(agentId, AgentId);
@@ -158,17 +134,12 @@ public sealed partial class Product : AggregateRoot<Guid>
         return Result.Success();
     }
 
-    public Result UnassignWorker(Guid userId, Guid workerId)
+    public Result UnassignWorker(AgentId agentId, AgentId workerId)
     {
-        var ownerValidation = ValidateOwner(userId);
+        var ownerValidation = ValidateOwner(agentId);
         if (!ownerValidation.IsSuccess)
         {
             return ownerValidation;
-        }
-
-        if (workerId == Guid.Empty)
-        {
-            return Errors.Agents.EmptyId();
         }
 
         if (!_assignedWorkers.Contains(workerId))
@@ -177,7 +148,7 @@ public sealed partial class Product : AggregateRoot<Guid>
         }
 
         _assignedWorkers.Remove(workerId);
-        QueueDomainEvent(new WorkerUnassigned(Id, userId, workerId));
+        QueueDomainEvent(new WorkerUnassigned(Id, agentId, workerId));
 
         return Result.Success();
     }

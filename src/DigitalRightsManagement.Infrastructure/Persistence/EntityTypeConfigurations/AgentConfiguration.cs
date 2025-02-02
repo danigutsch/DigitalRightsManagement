@@ -1,4 +1,5 @@
 ﻿using DigitalRightsManagement.Domain.AgentAggregate;
+using DigitalRightsManagement.Infrastructure.Persistence.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -21,8 +22,10 @@ internal sealed class AgentConfiguration : IEntityTypeConfiguration<Agent>
         builder.Property(u => u.Role)
             .HasConversion<string>();
 
-        builder.PrimitiveCollection(u => u.Products)
-            .HasField("_products");
+        builder.PrimitiveCollection(p => p.Products)
+            .HasField("_products")
+            .ElementType()
+            .HasConversion<ProductIdConverter>();
 
         builder.Ignore(u => u.DomainEvents);
     }

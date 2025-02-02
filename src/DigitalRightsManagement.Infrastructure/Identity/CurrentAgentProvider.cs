@@ -20,13 +20,11 @@ internal sealed class CurrentAgentProvider(IHttpContextAccessor httpContextAcces
             return Errors.Identity.InvalidAuthCredentials();
         }
 
-        if (!Guid.TryParse(agentIdString, out var agentId))
+        if (!Guid.TryParse(agentIdString, out var guid))
         {
             return Errors.Identity.InvalidClaim();
         }
 
-        var agent = await agentRepository.GetById(agentId, ct);
-
-        return agent;
+        return await agentRepository.GetById(AgentId.From(guid), ct);
     }
 }

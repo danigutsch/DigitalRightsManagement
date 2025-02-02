@@ -18,13 +18,8 @@ public sealed class AgentTests : UnitTestBase
         // Arrange
         var emptyId = Guid.Empty;
 
-        // Act
-        var result = Agent.Create(_agent.Username, _agent.Email, _agent.Role, emptyId);
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
-        result.ValidationErrors.ShouldHaveSingleItem()
-            .ErrorCode.ShouldContain("id");
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => AgentId.From(emptyId));
     }
 
     [Theory, ClassData(typeof(EmptyStringTestData))]

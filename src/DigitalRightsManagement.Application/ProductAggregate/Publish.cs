@@ -8,8 +8,8 @@ using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Application.ProductAggregate;
 
-[AuthorizeResourceOwner<Product>]
-public sealed record PublishProductCommand(Guid ProductId) : ICommand
+[AuthorizeResourceOwner<Product>("Id")]
+public sealed record PublishProductCommand(Guid Id) : ICommand
 {
     internal sealed class PublishProductCommandHandler(ICurrentAgentProvider currentAgentProvider, IProductRepository productRepository) : ICommandHandler<PublishProductCommand>
     {
@@ -23,7 +23,7 @@ public sealed record PublishProductCommand(Guid ProductId) : ICommand
 
             var agent = agentResult.Value;
 
-            return await productRepository.GetById(command.ProductId, cancellationToken)
+            return await productRepository.GetById(ProductId.From(command.Id), cancellationToken)
                 .BindAsync(product => product.Publish(agent.Id))
                 .Tap(() => productRepository.UnitOfWork.SaveEntities(cancellationToken));
         }

@@ -14,11 +14,11 @@ public sealed record GetCurrentAgentInformationQuery : IQuery<AgentDto>
         {
             return await currentAgentProvider.Get(cancellationToken)
                 .MapAsync(agent => new AgentDto(
-                    agent.Id,
+                    agent.Id.Value,
                     agent.Username,
                     agent.Email,
                     agent.Role,
-                    [.. agent.Products]));
+                    [.. agent.Products.Select(p => p.Value)]));
         }
     }
 }

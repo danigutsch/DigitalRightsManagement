@@ -1,19 +1,20 @@
 ﻿using Ardalis.Result;
 using DigitalRightsManagement.Common.DDD;
 using DigitalRightsManagement.Domain.AgentAggregate.Events;
+using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Domain.AgentAggregate;
 
-public sealed partial class Agent : AggregateRoot<Guid>
+public sealed partial class Agent : AggregateRoot<AgentId>
 {
     public string Username { get; private set; }
     public string Email { get; private set; }
     public AgentRoles Role { get; private set; }
 
-    private readonly List<Guid> _products = [];
-    public IReadOnlyList<Guid> Products => _products.AsReadOnly();
+    private readonly List<ProductId> _products = [];
+    public IReadOnlyList<ProductId> Products => _products.AsReadOnly();
 
-    private Agent(string username, string email, AgentRoles role, Guid? id = null) : base(id ?? Guid.CreateVersion7())
+    private Agent(string username, string email, AgentRoles role, AgentId? id = null) : base(id ?? AgentId.Create())
     {
         Username = username.Trim();
         Email = email.Trim();
@@ -22,7 +23,7 @@ public sealed partial class Agent : AggregateRoot<Guid>
         QueueDomainEvent(new AgentCreated(Id, username, email, role));
     }
 
-    public static Result<Agent> Create(string username, string email, AgentRoles role, Guid? id = null)
+    public static Result<Agent> Create(string username, string email, AgentRoles role, AgentId? id = null)
     {
         if (string.IsNullOrWhiteSpace(username))
         {
@@ -38,11 +39,6 @@ public sealed partial class Agent : AggregateRoot<Guid>
         if (!Enum.IsDefined(role))
         {
             return Errors.Agents.UnknownRole();
-        }
-
-        if (id is not null && id == Guid.Empty)
-        {
-            return Errors.Agents.EmptyId();
         }
 
         var agent = new Agent(username, email, role, id);
@@ -74,7 +70,7 @@ public sealed partial class Agent : AggregateRoot<Guid>
         return Result.Success();
     }
 
-    public Result AddProduct(Guid productId)
+    public Result AddProduct(ProductId productId)
     {
         if (Role != AgentRoles.Manager && Role != AgentRoles.Worker)
         {
@@ -93,14 +89,14 @@ public sealed partial class Agent : AggregateRoot<Guid>
         return Result.Success();
     }
 
-    public Result AddProducts(IEnumerable<Guid> productsIds)
+    public Result AddProducts(IEnumerable<ProductId> productsIds)
     {
         if (Role != AgentRoles.Manager && Role != AgentRoles.Worker)
         {
             return Errors.Agents.UnauthorizedToOwnProduct(Id);
         }
 
-        Guid[] newProductIds = [..productsIds.Except(Products)];
+        ProductId[] newProductIds = [..productsIds.Except(Products)];
 
         if (newProductIds.Length == 0)
         {
@@ -117,11 +113,11 @@ public sealed partial class Agent : AggregateRoot<Guid>
         return Result.Success();
     }
 
-    public Result RemoveProduct(Guid productId)
+    public Result RemoveProduct(ProductId productId)
     {
         if (!_products.Contains(productId))
         {
-            return Result.Success(); // Already removed
+            return Result.Success();
         }
 
         _products.Remove(productId);

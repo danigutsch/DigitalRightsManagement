@@ -11,7 +11,7 @@ namespace DigitalRightsManagement.Infrastructure.Messaging.Behaviors;
 
 internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
     ICurrentAgentProvider currentAgentProvider,
-    IResourceRepository resourceRepository,
+    IOwnershipService ownershipService,
     ILogger<ResourceOwnerAuthorizationBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
@@ -44,11 +44,10 @@ internal sealed class ResourceOwnerAuthorizationBehavior<TRequest, TResponse>(
         }
 
         var resourceType = attribute.GetType().GetGenericArguments()[0];
-        var isOwner = await resourceRepository.IsResourceOwner(agent.Id, resourceType, resourceIds, cancellationToken);
+        var isOwner = await ownershipService.IsResourceOwner(agent.Id.Value, resourceType, resourceIds, cancellationToken);
 
         if (!isOwner)
         {
-            logger.UnauthorizedResourceAccess(typeof(TRequest).Name, agent.Id);
             return (TResponse)(IResult)Result.Unauthorized();
         }
 
@@ -103,7 +102,4 @@ internal static partial class ResourceOwnerAuthorizationBehaviorLogger
 {
     [LoggerMessage(LogLevel.Warning, "Invalid resource ID for request {Request}")]
     public static partial void InvalidResourceId(this ILogger logger, string request);
-
-    [LoggerMessage(LogLevel.Warning, "Agent {AgentId} attempted unauthorized resource access via {Request}")]
-    public static partial void UnauthorizedResourceAccess(this ILogger logger, string request, Guid agentId);
 }

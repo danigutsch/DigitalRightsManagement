@@ -57,13 +57,6 @@ public static class Errors
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
-        public static Result EmptyCreatorId()
-        {
-            const string code = "product.created-by.empty";
-            const string message = "The creator ID can not be empty.";
-            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
-        }
-
         public static Result InvalidStatusChange(ProductStatus currentStatus, ProductStatus desiredStatus)
         {
             const string code = "product.status.invalid-change";
@@ -78,7 +71,7 @@ public static class Errors
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
-        public static Result InvalidManager(Guid agentId, Guid manager)
+        public static Result InvalidManager(AgentId agentId, AgentId manager)
         {
             const string code = "product.manager.invalid";
             var message = $"The agent [{agentId}] is not the manager of the product. Manager: [{manager}].";
@@ -92,38 +85,45 @@ public static class Errors
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
-        public static Result AlreadyAssigned(Guid agentId, Guid productId)
+        public static Result AlreadyAssigned(AgentId agentId, ProductId productId)
         {
             const string code = "product.already-assigned";
             var message = $"The agent [{agentId}] is already assigned the product [{productId}].";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
-        public static Result AlreadyAssigned(Guid agentId)
+        public static Result AlreadyAssigned(AgentId agentId)
         {
             const string code = "product.already-owned";
             var message = $"The agent [{agentId}] is already assigned all the products.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
-        public static Result NotFound(Guid productId)
+        public static Result NotFound(ProductId productId)
         {
             const string code = "product.not-found";
             var message = $"The product [{productId}] was not found.";
             return Result.NotFound(code, message);
         }
 
-        public static Result WorkerAlreadyAssigned(Guid productId, Guid workerId)
+        public static Result WorkerAlreadyAssigned(ProductId productId, AgentId workerId)
         {
             const string code = "product.worker.already-assigned";
             var message = $"The worker [{workerId}] is already assigned to product [{productId}].";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
-        public static Result WorkerNotAssigned(Guid productId, Guid workerId)
+        public static Result WorkerNotAssigned(ProductId productId, AgentId workerId)
         {
             const string code = "product.worker.not-assigned";
             var message = $"The worker [{workerId}] is not assigned to product [{productId}].";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result InvalidId(string id)
+        {
+            const string code = "product.id.invalid";
+            var message = $"Invalid product ID: {id}.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
     }
@@ -158,21 +158,21 @@ public static class Errors
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
 
-        public static Result UnauthorizedToPromote(Guid promoterId, Guid promoteeId, AgentRoles desiredRole)
+        public static Result UnauthorizedToPromote(AgentId promoterId, AgentId promoteeId, AgentRoles desiredRole)
         {
             const string code = "agent.unauthorized.promote";
             var message = $"Agent [{promoterId}] can not promote [{promoteeId}] to role {desiredRole}.";
             return Result.Unauthorized(code, message);
         }
 
-        public static Result AlreadyInRole(Guid agentId, AgentRoles desiredRole)
+        public static Result AlreadyInRole(AgentId agentId, AgentRoles desiredRole)
         {
             const string code = "agent.role.already-in-role";
             var message = $"The agent [{agentId}] is already in role {desiredRole}.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Warning));
         }
 
-        public static Result UnauthorizedToOwnProduct(Guid id)
+        public static Result UnauthorizedToOwnProduct(AgentId id)
         {
             const string code = "agent.unauthorized.own-product";
             var message = $"The can not [{id}] own a product.";
@@ -193,10 +193,17 @@ public static class Errors
             return Result.Unauthorized(code, message);
         }
 
-        public static Result InvalidWorkerRole(Guid userId, AgentRoles role)
+        public static Result InvalidWorkerRole(AgentId agentId, AgentRoles role)
         {
             const string code = "user.role.invalid-worker";
-            var message = $"The user [{userId}] with role {role} cannot be assigned as a worker.";
+            var message = $"The user [{agentId}] with role {role} cannot be assigned as a worker.";
+            return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
+        }
+
+        public static Result InvalidId(string id)
+        {
+            const string code = "agent.id.invalid";
+            var message = $"Invalid agent ID: {id}.";
             return Result.Invalid(new ValidationError(code, message, code, ValidationSeverity.Error));
         }
     }

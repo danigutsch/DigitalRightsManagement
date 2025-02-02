@@ -1,5 +1,6 @@
 ﻿using DigitalRightsManagement.Common.DDD;
+using DigitalRightsManagement.Domain.AgentAggregate;
 
 namespace DigitalRightsManagement.Domain.ProductAggregate.Events;
 
-public sealed record WorkerAssigned(Guid ProductId, Guid AssignedBy, Guid WorkerId) : DomainEvent;
+public sealed record WorkerAssigned(ProductId ProductId, AgentId AssignedBy, AgentId WorkerId) : DomainEvent;

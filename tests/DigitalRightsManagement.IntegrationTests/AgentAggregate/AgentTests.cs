@@ -24,7 +24,7 @@ public sealed class AgentTests(ITestOutputHelper outputHelper, ApiFixture fixtur
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var agentDto = await response.Content.ReadFromJsonAsync<AgentDto>();
         agentDto.ShouldNotBeNull();
-        agentDto.Id.ShouldBe(agent.Id);
+        agentDto.Id.ShouldBe(agent.Id.Value);
         agentDto.Username.ShouldBe(agent.Username);
         agentDto.Email.ShouldBe(agent.Email);
         agentDto.Role.ShouldBe(agent.Role);
@@ -38,7 +38,7 @@ public sealed class AgentTests(ITestOutputHelper outputHelper, ApiFixture fixtur
         var target = AgentFactory.Seeded(AgentRoles.Worker);
         const AgentRoles desiredRole = AgentRoles.Admin;
 
-        var changeRoleDto = new ChangeRoleDto(target.Id, desiredRole);
+        var changeRoleDto = new ChangeRoleDto(target.Id.Value, desiredRole);
 
         // Act
         var response = await GetHttpClient(admin).PostAsJsonAsync("agents/change-role", changeRoleDto);

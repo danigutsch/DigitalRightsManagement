@@ -32,14 +32,14 @@ public sealed record CreateProductCommand(string Name, string Description, decim
             return await Product.Create(validated.Name, validated.Description, validated.Price, agent.Id)
                 .Tap(productRepository.Add)
                 .Tap(_ => productRepository.UnitOfWork.SaveEntities(cancellationToken))
-                .MapAsync(product => product.Id);
+                .MapAsync(product => product.Id.Value);
         }
 
         private static Result<Validated> Validate(CreateProductCommand command)
         {
             var name = ProductName.From(command.Name);
             var description = Domain.ProductAggregate.Description.From(command.Description);
-            var price = Price.Create(command.PriceAmount, command.Currency);
+            var price = Price.From(command.PriceAmount, command.Currency);
 
             var combined = ValidationCombiner.Combine(name, description, price);
 

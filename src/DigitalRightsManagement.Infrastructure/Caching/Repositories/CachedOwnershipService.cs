@@ -4,10 +4,7 @@ using System.Security.Cryptography;
 
 namespace DigitalRightsManagement.Infrastructure.Caching.Repositories;
 
-internal sealed class CachedResourceRepository(
-    IResourceRepository inner,
-    IDistributedCache cache)
-    : IResourceRepository
+internal sealed class CachedOwnershipService(IOwnershipService inner, IDistributedCache cache) : IOwnershipService
 {
     private const string CacheKeyPrefix = "ownership:";
 

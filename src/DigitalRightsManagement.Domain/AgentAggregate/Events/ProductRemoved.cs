@@ -1,5 +1,6 @@
 ﻿using DigitalRightsManagement.Common.DDD;
+using DigitalRightsManagement.Domain.ProductAggregate;
 
 namespace DigitalRightsManagement.Domain.AgentAggregate.Events;
 
-public sealed record ProductRemoved(Guid Id, Guid ProductId) : DomainEvent;
+public sealed record ProductRemoved(AgentId Id, ProductId ProductId) : DomainEvent;

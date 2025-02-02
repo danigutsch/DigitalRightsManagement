@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace DigitalRightsManagement.Infrastructure;
 
@@ -37,13 +38,14 @@ public static class InfrastructureDependencyInjection
         services
             .AddScoped<IAgentRepository, AgentRepository>()
             .AddScoped<IProductRepository, ProductRepository>()
-            .AddScoped<IResourceRepository>(provider =>
+            .AddScoped<IOwnershipService>(provider =>
             {
                 var dbContext = provider.GetRequiredService<ManagementDbContext>();
-                var resourceRepository = new ResourceRepository(dbContext);
+                var logger = provider.GetRequiredService<ILogger<OwnershipService>>();
+                var resourceRepository = new OwnershipService(dbContext, logger);
                 var cache = provider.GetRequiredService<IDistributedCache>();
 
-                return new CachedResourceRepository(resourceRepository, cache);
+                return new CachedOwnershipService(resourceRepository, cache);
             });
 
         return services.AddScoped<IManagementQueries, ManagementQueries>();

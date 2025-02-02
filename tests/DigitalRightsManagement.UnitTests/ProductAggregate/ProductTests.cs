@@ -19,13 +19,8 @@ public sealed class ProductTests : UnitTestBase
         // Arrange
         var emptyId = Guid.Empty;
 
-        // Act
-        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, Guid.NewGuid(), emptyId);
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
-        result.ValidationErrors.ShouldHaveSingleItem()
-            .ErrorCode.ShouldContain("id");
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => ProductId.From(emptyId));
     }
 
     [Theory, ClassData(typeof(EmptyStringTestData))]
@@ -34,7 +29,7 @@ public sealed class ProductTests : UnitTestBase
         // Arrange
         // Act
         var result = ProductName.From(emptyName)
-            .Bind(name => Product.Create(name, _validProduct.Description, _validProduct.Price, Guid.NewGuid()));
+            .Bind(name => Product.Create(name, _validProduct.Description, _validProduct.Price, AgentId.Create()));
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
@@ -47,7 +42,7 @@ public sealed class ProductTests : UnitTestBase
         // Arrange
         // Act
         var result = Description.From(emptyDescription)
-            .Bind(description => Product.Create(_validProduct.Name, description, _validProduct.Price, Guid.NewGuid()));
+            .Bind(description => Product.Create(_validProduct.Name, description, _validProduct.Price, AgentId.Create()));
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
@@ -61,7 +56,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         // Act
-        var result = Price.Create(negativePrice, _validProduct.Price.Currency);
+        var result = Price.From(negativePrice, _validProduct.Price.Currency);
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
@@ -76,27 +71,12 @@ public sealed class ProductTests : UnitTestBase
         const Currency unknownCurrency = (Currency)999;
 
         // Act
-        var result = Price.Create(1.00m, unknownCurrency);
+        var result = Price.From(1.00m, unknownCurrency);
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
         result.ValidationErrors.ShouldHaveSingleItem()
             .ErrorCode.ShouldContain("price");
-    }
-
-    [Fact]
-    public void Can_Not_Create_With_Empty_Creator_Id()
-    {
-        // Arrange
-        var emptyGuid = Guid.Empty;
-
-        // Act
-        var result = Product.Create(_validProduct.Name, _validProduct.Description, _validProduct.Price, emptyGuid);
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
-        result.ValidationErrors.ShouldHaveSingleItem()
-            .ErrorCode.ShouldContain("created-by");
     }
 
     [Fact]
@@ -106,7 +86,7 @@ public sealed class ProductTests : UnitTestBase
         const decimal zeroPrice = 0m;
 
         // Act
-        var priceResult = Price.Create(zeroPrice, _validProduct.Price.Currency);
+        var priceResult = Price.From(zeroPrice, _validProduct.Price.Currency);
 
         // Assert
         priceResult.IsSuccess.ShouldBeTrue();
@@ -156,7 +136,7 @@ public sealed class ProductTests : UnitTestBase
         // Arrange
         var manager = AgentFactory.Create(role: AgentRoles.Manager);
         var product = ProductFactory.InDevelopment(manager: manager.Id);
-        var newPrice = Price.Create(2m, Currency.Euro).Value;
+        var newPrice = Price.From(2m, Currency.Euro).Value;
 
         // Act
         product.UpdatePrice(manager.Id, newPrice, "reason");
@@ -166,26 +146,12 @@ public sealed class ProductTests : UnitTestBase
     }
 
     [Fact]
-    public void Can_Not_Update_Price_With_Empty_Agent_Id()
-    {
-        // Arrange
-        var product = ProductFactory.InDevelopment();
-        var newPrice = Price.Create(2m, Currency.Euro).Value;
-
-        // Act
-        var result = product.UpdatePrice(Guid.Empty, newPrice, "reason");
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
-    }
-
-    [Fact]
     public void Can_Not_Update_Without_Owner_Id()
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var newPrice = Price.Create(2m, Currency.Euro).Value;
-        var randomAgentId = Guid.NewGuid();
+        var newPrice = Price.From(2m, Currency.Euro).Value;
+        var randomAgentId = AgentId.Create();
 
         // Act
         var result = product.UpdatePrice(randomAgentId, newPrice, "reason");
@@ -200,7 +166,7 @@ public sealed class ProductTests : UnitTestBase
         // Arrange
         var manager = AgentFactory.Create(role: AgentRoles.Manager);
         var product = ProductFactory.InDevelopment(manager: manager.Id);
-        var newPrice = Price.Create(2m, Currency.Euro).Value;
+        var newPrice = Price.From(2m, Currency.Euro).Value;
 
         // Act
         product.UpdatePrice(manager.Id, newPrice, "reason");
@@ -261,19 +227,6 @@ public sealed class ProductTests : UnitTestBase
     }
 
     [Fact]
-    public void Can_Not_Publish_With_Empty_Agent_Id()
-    {
-        // Arrange
-        var product = ProductFactory.InDevelopment();
-
-        // Act
-        var result = product.Publish(Guid.Empty);
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
-    }
-
-    [Fact]
     public void Publish_Queues_Event()
     {
         // Arrange
@@ -328,19 +281,6 @@ public sealed class ProductTests : UnitTestBase
     }
 
     [Fact]
-    public void Can_Not_Obsolete_With_Empty_Agent_Id()
-    {
-        // Arrange
-        var product = ProductFactory.InDevelopment();
-
-        // Act
-        var result = product.Obsolete(Guid.Empty);
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
-    }
-
-    [Fact]
     public void Obsolete_Queues_Event()
     {
         // Arrange
@@ -374,32 +314,15 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var randomAgentId = Guid.NewGuid();
-        const string newDescription = "new description";
+        var randomAgentId = AgentId.Create();
+        var newDescription = Description.From("new description").Value;
 
         // Act
-        var result = Description.From(newDescription)
-            .Bind(description => product.UpdateDescription(randomAgentId, description));
+        var result = product.UpdateDescription(randomAgentId, newDescription);
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
-        product.Description.Value.ShouldNotBe(newDescription);
-    }
-
-    [Fact]
-    public void Can_Not_Update_Description_With_Empty_Agent_Id()
-    {
-        // Arrange
-        var product = ProductFactory.InDevelopment();
-        const string newDescription = "new description";
-        var emptyAgentId = Guid.Empty;
-
-        // Act
-        var result = Description.From(newDescription)
-            .Bind(description => product.UpdateDescription(emptyAgentId, description));
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
+        product.Description.ShouldNotBe(newDescription);
     }
 
     [Fact]
@@ -417,26 +340,12 @@ public sealed class ProductTests : UnitTestBase
         product.DomainEvents.OfType<DescriptionUpdated>().ShouldHaveSingleItem();
     }
 
-    [Theory, ClassData(typeof(EmptyStringTestData))]
-    public void Cannot_Update_With_Empty_Description(string newDescription)
-    {
-        // Arrange
-        var product = ProductFactory.InDevelopment();
-
-        // Act
-        var result = Description.From(newDescription)
-            .Bind(description => product.UpdateDescription(product.AgentId, description));
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
-    }
-
     [Fact]
     public void Can_Assign_Worker()
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var workerId = Guid.NewGuid();
+        var workerId = AgentId.Create();
 
         // Act
         var result = product.AssignWorker(product.AgentId, workerId);
@@ -447,27 +356,11 @@ public sealed class ProductTests : UnitTestBase
     }
 
     [Fact]
-    public void Cannot_Assign_Empty_Worker_Id()
-    {
-        // Arrange
-        var product = ProductFactory.InDevelopment();
-        var emptyWorkerId = Guid.Empty;
-
-        // Act
-        var result = product.AssignWorker(product.AgentId, emptyWorkerId);
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
-        result.ValidationErrors.ShouldHaveSingleItem()
-            .ErrorCode.ShouldContain("empty");
-    }
-
-    [Fact]
     public void Cannot_Assign_Same_Worker_Twice()
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var workerId = Guid.NewGuid();
+        var workerId = AgentId.Create();
 
         // Act
         var result = product.AssignWorker(product.AgentId, workerId);
@@ -489,8 +382,8 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var workerId = Guid.NewGuid();
-        var randomUserId = Guid.NewGuid();
+        var workerId = AgentId.Create();
+        var randomUserId = AgentId.Create();
 
         // Act
         var result = product.AssignWorker(randomUserId, workerId);
@@ -506,7 +399,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var workerId = Guid.NewGuid();
+        var workerId = AgentId.Create();
 
         // Act
         var result = product.AssignWorker(product.AgentId, workerId);
@@ -521,7 +414,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var workerId = Guid.NewGuid();
+        var workerId = AgentId.Create();
         product.AssignWorker(product.AgentId, workerId);
 
         // Act
@@ -537,7 +430,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var workerId = Guid.NewGuid();
+        var workerId = AgentId.Create();
 
         // Act
         var result = product.UnassignWorker(product.AgentId, workerId);
@@ -549,31 +442,15 @@ public sealed class ProductTests : UnitTestBase
     }
 
     [Fact]
-    public void Cannot_Unassign_With_Empty_Worker_Id()
-    {
-        // Arrange
-        var product = ProductFactory.InDevelopment();
-        var emptyWorkerId = Guid.Empty;
-
-        // Act
-        var result = product.UnassignWorker(product.AgentId, emptyWorkerId);
-
-        // Assert
-        result.IsInvalid().ShouldBeTrue();
-        result.ValidationErrors.ShouldHaveSingleItem()
-            .ErrorCode.ShouldContain("empty");
-    }
-
-    [Fact]
     public void Only_Owner_Can_Unassign_Worker()
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var workerId = Guid.NewGuid();
-        var randomUserId = Guid.NewGuid();
+        var workerId = AgentId.Create();
+        var randomAgentId = AgentId.Create();
 
         // Act
-        var result = product.UnassignWorker(randomUserId, workerId);
+        var result = product.UnassignWorker(randomAgentId, workerId);
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
@@ -586,7 +463,7 @@ public sealed class ProductTests : UnitTestBase
     {
         // Arrange
         var product = ProductFactory.InDevelopment();
-        var workerId = Guid.NewGuid();
+        var workerId = AgentId.Create();
         product.AssignWorker(product.AgentId, workerId);
 
         // Act
