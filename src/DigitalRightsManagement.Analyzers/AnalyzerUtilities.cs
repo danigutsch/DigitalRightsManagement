@@ -13,14 +13,8 @@ public static class AnalyzerUtilities
     /// Determines if a given class inherits from the Entity base class.
     /// </summary>
     public static bool InheritsFromEntity(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration)
-    {
-        if (semanticModel.GetDeclaredSymbol(classDeclaration) is not INamedTypeSymbol typeSymbol)
-        {
-            return false;
-        }
-
-        return InheritsFromEntity(typeSymbol);
-    }
+        => semanticModel.GetDeclaredSymbol(classDeclaration) is INamedTypeSymbol typeSymbol &&
+           InheritsFromEntity(typeSymbol);
 
     /// <summary>
     /// Determines if a given type symbol inherits from the Entity base class.
@@ -42,9 +36,7 @@ public static class AnalyzerUtilities
     /// Creates a localized string using the resource manager.
     /// </summary>
     public static LocalizableString CreateLocalizableString(string resourceName)
-    {
-        return new LocalizableResourceString(resourceName, Resources.ResourceManager, typeof(Resources));
-    }
+        => new LocalizableResourceString(resourceName, Resources.ResourceManager, typeof(Resources));
 
     /// <summary>
     /// Reports a diagnostic in a consistent manner.
