@@ -14,17 +14,9 @@ public sealed class EntityInstantiationAnalyzer : DiagnosticAnalyzer
 {
     public const string DiagnosticId = "DRM003";
 
-    private static readonly LocalizableString Title =
-        new LocalizableResourceString(nameof(Resources.EntityInstantiationAnalyzerTitle),
-            Resources.ResourceManager, typeof(Resources));
-
-    private static readonly LocalizableString MessageFormat =
-        new LocalizableResourceString(nameof(Resources.EntityInstantiationAnalyzerMessageFormat),
-            Resources.ResourceManager, typeof(Resources));
-
-    private static readonly LocalizableString Description =
-        new LocalizableResourceString(nameof(Resources.EntityInstantiationAnalyzerDescription),
-            Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString Title = CreateLocalizableString(nameof(Resources.EntityInstantiationAnalyzerTitle));
+    private static readonly LocalizableString MessageFormat = CreateLocalizableString(nameof(Resources.EntityInstantiationAnalyzerMessageFormat));
+    private static readonly LocalizableString Description = CreateLocalizableString(nameof(Resources.EntityInstantiationAnalyzerDescription));
 
     private const string Category = "Usage";
 
@@ -37,24 +29,21 @@ public sealed class EntityInstantiationAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true,
         description: Description);
 
-    /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
-    /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ObjectCreationExpression);
+        context.RegisterSyntaxNodeAction(AnalyzeObjectCreation, SyntaxKind.ObjectCreationExpression);
     }
 
-    /// <summary>
-    /// Analyzes the syntax node to find entity instantiations with parameterless constructors.
-    /// </summary>
-    /// <param name="context">The syntax node analysis context.</param>
-    private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    private static void AnalyzeObjectCreation(SyntaxNodeAnalysisContext context)
     {
-        var objectCreation = (ObjectCreationExpressionSyntax)context.Node;
+        if (context.Node is not ObjectCreationExpressionSyntax objectCreation)
+        {
+            return;
+        }
 
         if (objectCreation.ArgumentList?.Arguments.Count > 0)
         {
@@ -66,21 +55,23 @@ public sealed class EntityInstantiationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var baseType = typeSymbol.BaseType;
-        while (baseType != null)
+        if (!InheritsFromEntity(typeSymbol))
         {
-            if (baseType.Name == "Entity" &&
-                baseType.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD")
-            {
-                var diagnostic = Diagnostic.Create(
-                    Rule,
-                    objectCreation.GetLocation(),
-                    typeSymbol.Name);
-
-                context.ReportDiagnostic(diagnostic);
-                return;
-            }
-            baseType = baseType.BaseType;
+            return;
         }
+
+        context.ReportDiagnostic(Diagnostic.Create(Rule, objectCreation.GetLocation(), typeSymbol.Name));
     }
+
+    private static bool InheritsFromEntity(INamedTypeSymbol typeSymbol)
+    {
+        for (var baseType = typeSymbol.BaseType; baseType is not null; baseType = baseType.BaseType)
+        {
+            if (baseType.Name == "Entity" && baseType.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD")
+                return true;
+        }
+        return false;
+    }
+
+    private static LocalizableResourceString CreateLocalizableString(string resourceName) => new(resourceName, Resources.ResourceManager, typeof(Resources));
 }
