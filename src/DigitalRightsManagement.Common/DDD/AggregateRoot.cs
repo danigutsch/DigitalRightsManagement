@@ -10,6 +10,8 @@ public partial class AggregateRoot<TId> : Entity<TId>, IAggregateRoot where TId 
 {
     protected AggregateRoot(TId id) : base(id) { }
 
+    protected AggregateRoot() { } // Do not use
+
     private readonly List<DomainEvent> _domainEvents = [];
 
     public IReadOnlyList<DomainEvent> DomainEvents => _domainEvents;
