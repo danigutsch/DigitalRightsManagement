@@ -61,6 +61,6 @@ public sealed class EntityInstantiationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        context.ReportDiagnostic(Diagnostic.Create(Rule, objectCreation.GetLocation(), typeSymbol.Name));
+        ReportDiagnostic(context, Rule, objectCreation.GetLocation(), typeSymbol.Name);
     }
 }

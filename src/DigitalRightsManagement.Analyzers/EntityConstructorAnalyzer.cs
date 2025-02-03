@@ -55,7 +55,7 @@ public sealed class EntityConstructorAnalyzer : DiagnosticAnalyzer
         {
             if (constructor.ParameterList.Parameters.Count == 0)
             {
-                context.ReportDiagnostic(Diagnostic.Create(Rule, constructor.Identifier.GetLocation(), classDeclaration.Identifier.Text));
+                ReportDiagnostic(context, Rule, constructor.Identifier.GetLocation(), classDeclaration.Identifier.Text);
             }
         }
     }
