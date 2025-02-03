@@ -20,7 +20,7 @@ namespace DigitalRightsManagement.SourceGenerators
 
                                   namespace DigitalRightsManagement.Common.DDD;
 
-                                  [AttributeUsage(AttributeTargets.Struct)]
+                                  [System.AttributeUsage(System.AttributeTargets.Struct)]
                                   public sealed class ValueObjectAttribute<T> : System.Attribute where T : notnull
                                   {
                                       public string? ErrorNamespace { get; init; }
