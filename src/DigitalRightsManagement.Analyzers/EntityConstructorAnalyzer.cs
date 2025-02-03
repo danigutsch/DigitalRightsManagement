@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
+using static DigitalRightsManagement.Analyzers.AnalyzerUtilities;
 
 namespace DigitalRightsManagement.Analyzers;
 
@@ -58,26 +59,4 @@ public sealed class EntityConstructorAnalyzer : DiagnosticAnalyzer
             }
         }
     }
-
-    private static bool InheritsFromEntity(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration)
-    {
-        if (semanticModel.GetDeclaredSymbol(classDeclaration) is not { } typeSymbol)
-        {
-            return false;
-        }
-
-        for (var baseType = typeSymbol.BaseType; baseType is not null; baseType = baseType.BaseType)
-        {
-            if (baseType.Name == "Entity" &&
-                baseType.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD")
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static LocalizableResourceString CreateLocalizableString(string resourceName)
-        => new(resourceName, Resources.ResourceManager, typeof(Resources));
 }
