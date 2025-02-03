@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.Testing;
 using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
 using VerifyCs = DigitalRightsManagement.UnitTests.Analyzers.Verifiers.AnalyzerVerifier<DigitalRightsManagement.Analyzers.EntityPartialAnalyzer>;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.Analyzers;
 
 public class EntityPartialAnalyzerTests
 {

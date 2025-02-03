@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
 using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.CodeFixes;
 
 #pragma warning disable S2699
 

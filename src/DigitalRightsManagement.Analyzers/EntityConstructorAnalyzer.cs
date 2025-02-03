@@ -10,7 +10,7 @@ namespace DigitalRightsManagement.Analyzers;
 /// Analyzes entity classes to ensure they do not have parameterless constructors.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class EntityConstructorAnalyzer : DiagnosticAnalyzer
+public sealed class EntityConstructorAnalyzer : DiagnosticAnalyzer
 {
     public const string DiagnosticId = "DRM002";
 
