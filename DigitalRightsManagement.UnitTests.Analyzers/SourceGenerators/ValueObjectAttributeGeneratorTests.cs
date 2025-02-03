@@ -6,7 +6,7 @@ using System.Collections.Immutable;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.SourceGenerators;
 
-public class ValueObjectAttributeGeneratorTests
+public sealed class ValueObjectAttributeGeneratorTests
 {
     [Fact]
     public void Generates_ValueObject_Attribute()
