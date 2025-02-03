@@ -1,45 +1,71 @@
-﻿using DigitalRightsManagement.Analyzers;
-using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
+﻿using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
+using static DigitalRightsManagement.UnitTests.Analyzers.Analyzers.DiagnosticTestHelper;
 using VerifyCs = DigitalRightsManagement.UnitTests.Analyzers.Verifiers.AnalyzerVerifier<DigitalRightsManagement.Analyzers.EntityConstructorAnalyzer>;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Analyzers;
 
-public sealed class EntityConstructorAnalyzerTests
+public class EntityConstructorAnalyzerTests
 {
-    [Theory]
-    [InlineData("""
-        using System;
-        using DigitalRightsManagement.Common.DDD;
-        
-        namespace TestNamespace;
-        public partial class TestEntity : Entity
-        {
-            protected TestEntity() { }
-        }
-        """, 7, 15, "TestEntity")]
-    public async Task Reports_Manual_Parameterless_Constructor(string source, int line, int column, string entityName)
+    [Fact]
+    public async Task Reports_Manual_Parameterless_Constructor()
     {
-        var expected = DiagnosticTestHelper.ExpectedDiagnostic(EntityConstructorAnalyzer.DiagnosticId, line, column, entityName);
+        const string source = """
+                              using System;
+                              using DigitalRightsManagement.Common.DDD;
+
+                              namespace TestNamespace;
+                              public partial class TestEntity : Entity
+                              {
+                                  protected TestEntity() { }
+                              }
+                              """;
+
+        var expected = ExpectedDiagnostic("DRM002", 7, 15, "TestEntity");
         await VerifyCs.VerifyAnalyzerAsync([source, EntityBaseClass], expected);
     }
 
-    [Theory]
-    [InlineData("""
-        using System;
-        using DigitalRightsManagement.Common.DDD;
-        
-        namespace TestNamespace;
-        public partial class TestEntity : Entity
-        {
-            public TestEntity(Guid id) : base(id) { }
-        }
-        """)]
-    [InlineData("""
-        namespace TestNamespace;
-        public class TestClass
-        {
-            public TestClass() { }
-        }
-        """)]
-    public async Task No_Diagnostic_For_Valid_Cases(string source) => await VerifyCs.VerifyAnalyzerAsync([source, EntityBaseClass]);
+    [Fact]
+    public async Task No_Diagnostic_For_Parameterized_Constructor()
+    {
+        const string source = """
+                              using System;
+                              using DigitalRightsManagement.Common.DDD;
+
+                              namespace TestNamespace;
+                              public partial class TestEntity : Entity
+                              {
+                                  public TestEntity(Guid id) : base(id) { }
+                              }
+                              """;
+
+        await VerifyCs.VerifyAnalyzerAsync([source, EntityBaseClass]);
+    }
+
+    [Fact]
+    public async Task No_Diagnostic_For_Non_Entity()
+    {
+        const string source = """
+                              namespace TestNamespace;
+                              public class TestClass
+                              {
+                                  public TestClass() { }
+                              }
+                              """;
+
+        await VerifyCs.VerifyAnalyzerAsync([source, EntityBaseClass]);
+    }
+
+    [Fact]
+    public async Task No_Diagnostic_For_Entity_Without_Constructor()
+    {
+        const string source = """
+                              using System;
+                              using DigitalRightsManagement.Common.DDD;
+
+                              namespace TestNamespace;
+                              public partial class TestEntity : Entity { }
+                              """;
+
+        await VerifyCs.VerifyAnalyzerAsync([source, EntityBaseClass]);
+    }
 }
