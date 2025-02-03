@@ -33,7 +33,6 @@ public class EntityConstructorGeneratorTests
                         {
                             protected TestEntity() { }
                         }
-
                         """;
 
         var (diagnostics, output) = GetGeneratedOutput(source);
@@ -69,7 +68,6 @@ public class EntityConstructorGeneratorTests
                         {
                             private TestEntity() { }
                         }
-
                         """;
 
         var (diagnostics, output) = GetGeneratedOutput(source);
@@ -123,7 +121,6 @@ public class EntityConstructorGeneratorTests
                         {
                             protected TestEntity() { }
                         }
-
                         """;
 
         var (diagnostics, output) = GetGeneratedOutput(source);
@@ -158,7 +155,6 @@ public class EntityConstructorGeneratorTests
                         {
                             protected TestEntity() { }
                         }
-
                         """;
 
         var (diagnostics, output) = GetGeneratedOutput(source);
