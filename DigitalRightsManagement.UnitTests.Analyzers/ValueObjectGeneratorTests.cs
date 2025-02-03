@@ -108,12 +108,21 @@ public class ValueObjectGeneratorTests
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
         driver = driver.RunGenerators(compilation);
 
-        var result = driver.GetRunResult();
-        var generatedFiles = result.Results.SelectMany(r => r.GeneratedSources)
+        var runResult = driver.GetRunResult();
+        var generatedFiles = runResult.Results.SelectMany(r => r.GeneratedSources)
             .Select(f => (f.HintName, f.SourceText.ToString()))
             .ToList();
 
-        return (compilation.GetDiagnostics(), generatedFiles);
+        // Extract generated syntax trees and combine with original compilation
+        var generatedSyntaxTrees = runResult.Results
+            .SelectMany(r => r.GeneratedSources)
+            .Select(s => s.SyntaxTree)
+            .ToArray();
+
+        var newCompilation = compilation.AddSyntaxTrees(generatedSyntaxTrees);
+        var diagnostics = newCompilation.GetDiagnostics();
+
+        return (diagnostics, generatedFiles);
     }
 
     private static CSharpCompilation CreateCompilation(string? source = null)
