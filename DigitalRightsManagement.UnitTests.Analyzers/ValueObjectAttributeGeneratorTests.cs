@@ -6,7 +6,7 @@ using System.Collections.Immutable;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers;
 
-public class ValueObjectGeneratorTests
+public class ValueObjectAttributeGeneratorTests
 {
     [Fact]
     public void Generates_ValueObject_Attribute()
@@ -31,7 +31,7 @@ public class ValueObjectGeneratorTests
         filename.ShouldBe("ValueObjectAttribute.g.cs");
         content.ShouldContain("public sealed class ValueObjectAttribute<T>");
         content.ShouldContain("namespace DigitalRightsManagement.Common.DDD");
-        content.ShouldContain("[AttributeUsage(AttributeTargets.Struct)]");
+        content.ShouldContain("[System.AttributeUsage(System.AttributeTargets.Struct)]");
         content.ShouldContain("public string? ErrorNamespace { get; init; }");
     }
 
@@ -83,6 +83,8 @@ public class ValueObjectGeneratorTests
     {
         // Arrange
         const string source = """
+            #nullable enable
+            
             using DigitalRightsManagement.Common.DDD;
 
             namespace TestNamespace
@@ -97,8 +99,8 @@ public class ValueObjectGeneratorTests
 
         // Assert
         diagnostics.ShouldNotBeEmpty();
-        // CS8983: A type parameter cannot be made nullable in this context
-        diagnostics.ShouldContain(d => d.Id == "CS8983");
+        // CS8714: The type 'string?' cannot be used as type parameter 'T' in the generic type or method 'ValueObjectAttribute<T>'. Nullability of type argument 'string?' doesn't match 'notnull' constraint.
+        diagnostics.ShouldContain(d => d.Id == "CS8714");
     }
 
     private static (ImmutableArray<Diagnostic> Diagnostics, List<(string filename, string content)> Output) CompileWithGenerator(string source)
