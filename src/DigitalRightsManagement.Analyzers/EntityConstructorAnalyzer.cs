@@ -10,27 +10,13 @@ namespace DigitalRightsManagement.Analyzers;
 /// Analyzes entity classes to ensure they do not have parameterless constructors.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class EntityConstructorAnalyzer : DiagnosticAnalyzer
+public sealed class EntityConstructorAnalyzer : DiagnosticAnalyzer
 {
     public const string DiagnosticId = "DRM002";
 
-    private static readonly LocalizableString Title =
-        new LocalizableResourceString(
-            nameof(Resources.EntityConstructorAnalyzerTitle),
-            Resources.ResourceManager,
-            typeof(Resources));
-
-    private static readonly LocalizableString MessageFormat =
-        new LocalizableResourceString(
-            nameof(Resources.EntityConstructorAnalyzerMessageFormat),
-            Resources.ResourceManager,
-            typeof(Resources));
-
-    private static readonly LocalizableString Description =
-        new LocalizableResourceString(
-            nameof(Resources.EntityConstructorAnalyzerDescription),
-            Resources.ResourceManager,
-            typeof(Resources));
+    private static readonly LocalizableString Title = CreateLocalizableString(nameof(Resources.EntityConstructorAnalyzerTitle));
+    private static readonly LocalizableString MessageFormat = CreateLocalizableString(nameof(Resources.EntityConstructorAnalyzerMessageFormat));
+    private static readonly LocalizableString Description = CreateLocalizableString(nameof(Resources.EntityConstructorAnalyzerDescription));
 
     private const string Category = "Design";
 
@@ -43,47 +29,23 @@ public class EntityConstructorAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true,
         description: Description);
 
-    /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
-    /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
+        context.RegisterSyntaxNodeAction(AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
     }
 
-    /// <summary>
-    /// Analyzes the syntax node to find entity classes with parameterless constructors.
-    /// </summary>
-    /// <param name="context">The syntax node analysis context.</param>
-    private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
     {
-        var classDeclaration = (ClassDeclarationSyntax)context.Node;
-
-        // Check if this is an Entity-derived class
-        var symbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);
-        if (symbol?.BaseType is null)
+        if (context.Node is not ClassDeclarationSyntax classDeclaration)
         {
             return;
         }
 
-        var baseType = symbol.BaseType;
-        var isEntity = false;
-
-        while (baseType is not null)
-        {
-            if (baseType.Name == "Entity" &&
-                baseType.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD")
-            {
-                isEntity = true;
-                break;
-            }
-            baseType = baseType.BaseType;
-        }
-
-        if (!isEntity)
+        if (!InheritsFromEntity(context.SemanticModel, classDeclaration))
         {
             return;
         }
@@ -92,13 +54,30 @@ public class EntityConstructorAnalyzer : DiagnosticAnalyzer
         {
             if (constructor.ParameterList.Parameters.Count == 0)
             {
-                var diagnostic = Diagnostic.Create(
-                    Rule,
-                    constructor.Identifier.GetLocation(),
-                    classDeclaration.Identifier.Text);
-
-                context.ReportDiagnostic(diagnostic);
+                context.ReportDiagnostic(Diagnostic.Create(Rule, constructor.Identifier.GetLocation(), classDeclaration.Identifier.Text));
             }
         }
     }
+
+    private static bool InheritsFromEntity(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration)
+    {
+        if (semanticModel.GetDeclaredSymbol(classDeclaration) is not { } typeSymbol)
+        {
+            return false;
+        }
+
+        for (var baseType = typeSymbol.BaseType; baseType is not null; baseType = baseType.BaseType)
+        {
+            if (baseType.Name == "Entity" &&
+                baseType.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD")
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static LocalizableResourceString CreateLocalizableString(string resourceName)
+        => new(resourceName, Resources.ResourceManager, typeof(Resources));
 }
