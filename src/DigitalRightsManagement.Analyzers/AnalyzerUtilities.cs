@@ -1,5 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace DigitalRightsManagement.Analyzers;
 
@@ -40,5 +41,14 @@ public static class AnalyzerUtilities
     /// <summary>
     /// Creates a localized string using the resource manager.
     /// </summary>
-    public static LocalizableResourceString CreateLocalizableString(string resourceName) => new LocalizableResourceString(resourceName, Resources.ResourceManager, typeof(Resources));
+    public static LocalizableString CreateLocalizableString(string resourceName)
+    {
+        return new LocalizableResourceString(resourceName, Resources.ResourceManager, typeof(Resources));
+    }
+
+    /// <summary>
+    /// Reports a diagnostic in a consistent manner.
+    /// </summary>
+    public static void ReportDiagnostic(SyntaxNodeAnalysisContext context, DiagnosticDescriptor rule, Location location, params object[] args)
+        => context.ReportDiagnostic(Diagnostic.Create(rule, location, args));
 }

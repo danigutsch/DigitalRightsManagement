@@ -56,6 +56,6 @@ public sealed class EntityPartialAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        context.ReportDiagnostic(Diagnostic.Create(Rule, classDeclaration.Identifier.GetLocation(), classDeclaration.Identifier.Text));
+        ReportDiagnostic(context, Rule, classDeclaration.Identifier.GetLocation(), classDeclaration.Identifier.Text);
     }
 }
