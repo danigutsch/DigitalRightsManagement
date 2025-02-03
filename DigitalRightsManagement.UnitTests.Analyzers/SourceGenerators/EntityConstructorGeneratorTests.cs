@@ -5,7 +5,7 @@ using Shouldly;
 using System.Collections.Immutable;
 using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.SourceGenerators;
 
 public class EntityConstructorGeneratorTests
 {

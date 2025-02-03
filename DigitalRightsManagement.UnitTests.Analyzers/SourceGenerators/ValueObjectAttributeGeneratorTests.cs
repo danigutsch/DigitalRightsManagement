@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Shouldly;
 using System.Collections.Immutable;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.SourceGenerators;
 
 public class ValueObjectAttributeGeneratorTests
 {
