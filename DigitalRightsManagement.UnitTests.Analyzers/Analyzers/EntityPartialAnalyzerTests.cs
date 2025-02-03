@@ -6,7 +6,7 @@ using VerifyCs = DigitalRightsManagement.UnitTests.Analyzers.Verifiers.AnalyzerV
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Analyzers;
 
-public class EntityPartialAnalyzerTests
+public sealed class EntityPartialAnalyzerTests
 {
     [Fact]
     public async Task Reports_Non_Partial_Entity()

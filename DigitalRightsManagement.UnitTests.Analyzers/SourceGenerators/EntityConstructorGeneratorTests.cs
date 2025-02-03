@@ -7,7 +7,7 @@ using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.SourceGenerators;
 
-public class EntityConstructorGeneratorTests
+public sealed class EntityConstructorGeneratorTests
 {
     [Fact]
     public void Generates_Protected_Constructor_For_Non_Sealed_Entity()
