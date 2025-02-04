@@ -1,5 +1,6 @@
 ﻿using DigitalRightsManagement.Analyzers;
 using DigitalRightsManagement.CodeFixes;
+using DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
 using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
