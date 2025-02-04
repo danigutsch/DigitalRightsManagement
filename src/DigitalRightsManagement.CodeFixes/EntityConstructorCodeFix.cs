@@ -17,17 +17,27 @@ public sealed class EntityConstructorCodeFix : CodeFixProvider
 {
     public override ImmutableArray<string> FixableDiagnosticIds => [EntityConstructorAnalyzer.DiagnosticId];
 
+    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-        var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+        var diagnostic = context.Diagnostics[0];
+        var diagnosticSpan = diagnostic.Location.SourceSpan;
+
+        // Get the syntax root only once
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false);
+
+        var constructor = root?.FindToken(diagnosticSpan.Start).Parent?
+            .AncestorsAndSelf()
+            .OfType<ConstructorDeclarationSyntax>()
+            .FirstOrDefault();
+
         if (root is null)
         {
             return;
         }
-
-        var diagnostic = context.Diagnostics.First();
-        var diagnosticSpan = diagnostic.Location.SourceSpan;
-        var constructor = root.FindToken(diagnosticSpan.Start).Parent?.AncestorsAndSelf().OfType<ConstructorDeclarationSyntax>().First();
 
         if (constructor?.Parent is not ClassDeclarationSyntax classDeclaration)
         {
@@ -41,24 +51,17 @@ public sealed class EntityConstructorCodeFix : CodeFixProvider
         context.RegisterCodeFix(
             CodeAction.Create(
                 title,
-                ct => RemoveConstructorAsync(context.Document, constructor, ct),
+                _ => RemoveConstructorAsync(context.Document, root, constructor),
                 equivalenceKey: title),
             diagnostic);
     }
 
-    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
-
-    private static async Task<Document> RemoveConstructorAsync(Document document, ConstructorDeclarationSyntax constructor, CancellationToken cancellationToken)
+    private static Task<Document> RemoveConstructorAsync(
+        Document document,
+        SyntaxNode root,
+        ConstructorDeclarationSyntax constructor)
     {
-        var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
-        if (root is null)
-        {
-            return document;
-        }
-
         var newRoot = root.RemoveNode(constructor, SyntaxRemoveOptions.KeepNoTrivia);
-        return newRoot is null
-            ? document
-            : document.WithSyntaxRoot(newRoot);
+        return Task.FromResult(newRoot is null ? document : document.WithSyntaxRoot(newRoot));
     }
 }
