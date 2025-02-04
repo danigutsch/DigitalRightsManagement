@@ -6,9 +6,6 @@ using System.Text;
 
 namespace DigitalRightsManagement.SourceGenerators;
 
-/// <summary>
-/// A source generator that generates constructors for classes inheriting from the Entity base class.
-/// </summary>
 [Generator]
 public sealed class EntityConstructorGenerator : IIncrementalGenerator
 {
@@ -16,31 +13,36 @@ public sealed class EntityConstructorGenerator : IIncrementalGenerator
     {
         var classDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (s, _) => s is ClassDeclarationSyntax c && c.BaseList?.Types.Count > 0,
-                static (ctx, _) => GetEntityClass(ctx))
+                predicate: static (node, _) =>
+                {
+                    return node is ClassDeclarationSyntax { BaseList: not null } classDecl &&
+                           classDecl.BaseList.Types.Any(t => t.Type is SimpleNameSyntax { Identifier.Text: "Entity" });
+                },
+                transform: static (context, cancellationToken) =>
+                {
+                    var classDeclaration = (ClassDeclarationSyntax)context.Node;
+                    var symbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration, cancellationToken);
+                    if (symbol is null)
+                    {
+                        return null;
+                    }
+
+                    var baseType = symbol.BaseType;
+                    while (baseType is not null)
+                    {
+                        if (baseType.Name == "Entity" &&
+                            baseType.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD")
+                        {
+                            return classDeclaration;
+                        }
+                        baseType = baseType.BaseType;
+                    }
+
+                    return null;
+                })
             .Where(static m => m is not null);
 
         context.RegisterSourceOutput(classDeclarations, static (spc, source) => Execute(source!, spc));
-    }
-
-    private static ClassDeclarationSyntax? GetEntityClass(GeneratorSyntaxContext context)
-    {
-        if (context.Node is not ClassDeclarationSyntax classDeclaration)
-            return null;
-
-        return InheritsFromEntity(context.SemanticModel, classDeclaration) ? classDeclaration : null;
-    }
-
-    private static bool InheritsFromEntity(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration)
-    {
-        var symbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-        while (symbol?.BaseType is { } baseType)
-        {
-            if (baseType.Name == "Entity" && baseType.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD")
-                return true;
-            symbol = baseType;
-        }
-        return false;
     }
 
     private static void Execute(ClassDeclarationSyntax classDeclaration, SourceProductionContext context)
@@ -61,20 +63,24 @@ public sealed class EntityConstructorGenerator : IIncrementalGenerator
     private static string GetNamespace(ClassDeclarationSyntax classDeclaration)
     {
         var namespaceDeclaration = classDeclaration.Ancestors().OfType<BaseNamespaceDeclarationSyntax>().FirstOrDefault();
-        return namespaceDeclaration?.Name.ToString() ?? "UnknownNamespace";
+        return namespaceDeclaration?.Name.ToString() ?? string.Empty;
     }
 
     private static string GenerateConstructorSource(string namespaceName, string className, string genericTypes, string constructorAccessModifier)
     {
+        var namespaceDeclaration = string.IsNullOrEmpty(namespaceName)
+            ? string.Empty
+#pragma warning disable RS1035
+            : $"namespace {namespaceName};{Environment.NewLine}{Environment.NewLine}";
+#pragma warning restore RS1035
+
         return $$"""
-            {{SourceGeneratorUtilities.GetGeneratedHeader(className)}}
-            
-            namespace {{namespaceName}};
-            
-            partial class {{className}}{{genericTypes}}
-            {
-                {{constructorAccessModifier}} {{className}}() { }
-            }
-            """;
+                 {{SourceGeneratorUtilities.GetGeneratedHeader(className)}}
+                 {{namespaceDeclaration}}
+                 partial class {{className}}{{genericTypes}}
+                 {
+                     {{constructorAccessModifier}} {{className}}() { }
+                 }
+                 """;
     }
 }
