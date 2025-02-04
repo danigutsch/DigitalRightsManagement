@@ -2,14 +2,12 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using static DigitalRightsManagement.Analyzers.AnalyzerUtilities;
 
 namespace DigitalRightsManagement.Analyzers;
 
-/// <summary>
-/// Analyzes entity classes to ensure they do not have parameterless constructors.
-/// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class EntityConstructorAnalyzer : DiagnosticAnalyzer
 {
@@ -36,27 +34,53 @@ public sealed class EntityConstructorAnalyzer : DiagnosticAnalyzer
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration, SyntaxKind.ConstructorDeclaration);
+
+        context.RegisterCompilationStartAction(compilationContext =>
+        {
+            var entityCache = new ConcurrentDictionary<INamedTypeSymbol, bool>(SymbolEqualityComparer.Default);
+
+            compilationContext.RegisterSyntaxNodeAction(
+                analysisContext => AnalyzeConstructor(analysisContext, entityCache),
+                SyntaxKind.ConstructorDeclaration);
+        });
     }
 
-    private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
+    private static void AnalyzeConstructor(SyntaxNodeAnalysisContext context, ConcurrentDictionary<INamedTypeSymbol, bool> entityCache)
     {
-        if (context.Node is not ClassDeclarationSyntax classDeclaration)
+        if (context.Node is not ConstructorDeclarationSyntax constructor ||
+            constructor.ParameterList.Parameters.Count > 0 ||
+            constructor.Parent is not ClassDeclarationSyntax classDeclaration)
         {
             return;
         }
 
-        if (!InheritsFromEntity(context.SemanticModel, classDeclaration))
+        var typeSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);
+        if (typeSymbol is null)
         {
             return;
         }
 
-        foreach (var constructor in classDeclaration.Members.OfType<ConstructorDeclarationSyntax>())
+        if (!IsEntity(typeSymbol, entityCache))
         {
-            if (constructor.ParameterList.Parameters.Count == 0)
+            return;
+        }
+
+        ReportDiagnostic(context, Rule, constructor.Identifier.GetLocation(), classDeclaration.Identifier.Text);
+    }
+
+    private static bool IsEntity(INamedTypeSymbol typeSymbol, ConcurrentDictionary<INamedTypeSymbol, bool> cache)
+    {
+        return cache.GetOrAdd(typeSymbol, symbol =>
+        {
+            for (var baseType = symbol.BaseType; baseType is not null; baseType = baseType.BaseType)
             {
-                ReportDiagnostic(context, Rule, constructor.Identifier.GetLocation(), classDeclaration.Identifier.Text);
+                if (baseType.Name == "Entity" &&
+                    baseType.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD")
+                {
+                    return true;
+                }
             }
-        }
+            return false;
+        });
     }
 }
