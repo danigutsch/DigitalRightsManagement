@@ -38,7 +38,7 @@ public sealed class EntityConstructorCodeFixTests
             }
             """;
 
-        var test = new CSharpCodeFixTest<EntityConstructorAnalyzer, EntityConstructorCodeFix>
+        var test = new CodeFixTest<EntityConstructorAnalyzer, EntityConstructorCodeFix>
         {
             TestCode = source,
             FixedState =
@@ -87,7 +87,7 @@ public sealed class EntityConstructorCodeFixTests
             }
             """;
 
-        var test = new CSharpCodeFixTest<EntityConstructorAnalyzer, EntityConstructorCodeFix>
+        var test = new CodeFixTest<EntityConstructorAnalyzer, EntityConstructorCodeFix>
         {
             TestCode = source,
             FixedState =
@@ -143,7 +143,7 @@ public sealed class EntityConstructorCodeFixTests
             }
             """;
 
-        var test = new CSharpCodeFixTest<EntityConstructorAnalyzer, EntityConstructorCodeFix>
+        var test = new CodeFixTest<EntityConstructorAnalyzer, EntityConstructorCodeFix>
         {
             TestCode = source,
             FixedState =
@@ -194,7 +194,7 @@ public sealed class EntityConstructorCodeFixTests
             }
             """;
 
-        var test = new CSharpCodeFixTest<EntityConstructorAnalyzer, EntityConstructorCodeFix>
+        var test = new CodeFixTest<EntityConstructorAnalyzer, EntityConstructorCodeFix>
         {
             TestCode = source,
             FixedState =

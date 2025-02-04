@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.Testing;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
 
-public static class CSharpVerifierHelper
+public static class VerifierHelper
 {
     /// <summary>
     /// By default, the compiler reports diagnostics for nullable reference types at

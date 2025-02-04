@@ -6,11 +6,11 @@ using Microsoft.CodeAnalysis.Testing;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
 
-public sealed class CSharpCodeFixTest<TAnalyzer, TCodeFix> : CSharpCodeFixTest<TAnalyzer, TCodeFix, DefaultVerifier>
+public sealed class CodeFixTest<TAnalyzer, TCodeFix> : CSharpCodeFixTest<TAnalyzer, TCodeFix, DefaultVerifier>
     where TAnalyzer : DiagnosticAnalyzer, new()
     where TCodeFix : CodeFixProvider, new()
 {
-    public CSharpCodeFixTest()
+    public CodeFixTest()
     {
         TestState.AdditionalReferences.Add(typeof(IAggregateRoot).Assembly);
         SolutionTransforms.Add((solution, projectId) =>
