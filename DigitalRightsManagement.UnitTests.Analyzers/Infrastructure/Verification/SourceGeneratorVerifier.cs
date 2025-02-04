@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using GeneratorResult = (System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics, System.Collections.Generic.List<(string Filename, string Content)> GeneratedFiles);
 
-namespace DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification;
 
 public static class SourceGeneratorVerifier
 {

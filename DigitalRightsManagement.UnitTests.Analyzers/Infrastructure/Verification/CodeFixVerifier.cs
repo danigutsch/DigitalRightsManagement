@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification;
 
 internal static class CodeFixVerifier<TAnalyzer, TCodeFix>
     where TAnalyzer : DiagnosticAnalyzer, new()

@@ -1,8 +1,8 @@
-﻿using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
-using static DigitalRightsManagement.UnitTests.Analyzers.Analyzers.DiagnosticTestHelper;
-using VerifyCs = DigitalRightsManagement.UnitTests.Analyzers.Verifiers.AnalyzerVerifier<DigitalRightsManagement.Analyzers.EntityConstructorAnalyzer>;
+﻿using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
+using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.DiagnosticTestHelper;
+using VerifyCs = DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification.AnalyzerVerifier<DigitalRightsManagement.Analyzers.EntityConstructorAnalyzer>;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers.Analyzers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.Analysis;
 
 public class EntityConstructorAnalyzerTests
 {

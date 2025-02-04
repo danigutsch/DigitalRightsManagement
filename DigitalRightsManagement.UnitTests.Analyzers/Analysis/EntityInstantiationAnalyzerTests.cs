@@ -1,10 +1,10 @@
 ﻿using DigitalRightsManagement.Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
-using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
-using VerifyCs = DigitalRightsManagement.UnitTests.Analyzers.Verifiers.AnalyzerVerifier<DigitalRightsManagement.Analyzers.EntityInstantiationAnalyzer>;
+using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
+using VerifyCs = DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification.AnalyzerVerifier<DigitalRightsManagement.Analyzers.EntityInstantiationAnalyzer>;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers.Analyzers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.Analysis;
 
 public sealed class EntityInstantiationAnalyzerTests
 {
