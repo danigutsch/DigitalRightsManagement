@@ -36,7 +36,7 @@ public sealed class EntityConstructorAnalyzer : DiagnosticAnalyzer
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
+        context.RegisterSyntaxNodeAction(AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration, SyntaxKind.ConstructorDeclaration);
     }
 
     private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
