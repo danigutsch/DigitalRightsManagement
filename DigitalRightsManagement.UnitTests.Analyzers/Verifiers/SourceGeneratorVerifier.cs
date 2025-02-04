@@ -6,6 +6,12 @@ namespace DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
 
 public static class SourceGeneratorVerifier
 {
+    /// <summary>
+    /// Verifies the source generator by running it on the provided sources.
+    /// </summary>
+    /// <typeparam name="TGenerator">The type of the source generator to verify.</typeparam>
+    /// <param name="sources">The source code to run the generator on.</param>
+    /// <returns>A tuple containing the diagnostics and the generated files.</returns>
     public static GeneratorResult Verify<TGenerator>(string[] sources) where TGenerator : IIncrementalGenerator, new()
     {
         var generator = new TGenerator();
@@ -32,12 +38,22 @@ public static class SourceGeneratorVerifier
         return new GeneratorResult(newCompilation.GetDiagnostics(), generatedFiles);
     }
 
+    /// <summary>
+    /// Gets the metadata references for the current AppDomain.
+    /// </summary>
+    /// <returns>An enumerable of metadata references.</returns>
     private static IEnumerable<MetadataReference> GetReferences() =>
         AppDomain.CurrentDomain.GetAssemblies()
             .Where(assembly => !assembly.IsDynamic)
             .Where(assembly => !assembly.FullName!.Contains("DigitalRightsManagement.Common", StringComparison.Ordinal))
             .Select(assembly => MetadataReference.CreateFromFile(assembly.Location));
 
+    /// <summary>
+    /// Creates a C# compilation for the provided sources and references.
+    /// </summary>
+    /// <param name="sources">The source code to compile.</param>
+    /// <param name="references">The metadata references to include in the compilation.</param>
+    /// <returns>A C# compilation.</returns>
     private static CSharpCompilation CreateCompilation(
         string[] sources,
         IEnumerable<MetadataReference> references) =>
