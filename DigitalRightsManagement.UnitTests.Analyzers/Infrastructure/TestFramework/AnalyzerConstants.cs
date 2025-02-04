@@ -1,4 +1,4 @@
-﻿namespace DigitalRightsManagement.UnitTests.Analyzers;
+﻿namespace DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework;
 
 public static class AnalyzerConstants
 {

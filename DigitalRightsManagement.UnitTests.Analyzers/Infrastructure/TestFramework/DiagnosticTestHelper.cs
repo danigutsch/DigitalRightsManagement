@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers.Analyzers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework;
 
 /// <summary>
 /// Provides helper methods for creating expected diagnostic results in tests.

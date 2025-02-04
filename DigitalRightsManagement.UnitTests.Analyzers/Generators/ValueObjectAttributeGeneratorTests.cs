@@ -1,8 +1,8 @@
 ﻿using DigitalRightsManagement.SourceGenerators;
-using DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
+using DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification;
 using Shouldly;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers.SourceGenerators;
+namespace DigitalRightsManagement.UnitTests.Analyzers.Generators;
 
 public sealed class ValueObjectAttributeGeneratorTests
 {

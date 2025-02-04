@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification;
 
 /// <summary>
 /// Provides methods to verify diagnostic analyzers.

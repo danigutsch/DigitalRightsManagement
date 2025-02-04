@@ -1,9 +1,8 @@
 ﻿using DigitalRightsManagement.Analyzers;
 using DigitalRightsManagement.CodeFixes;
-using DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
-using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
+using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.CodeFixes;
 

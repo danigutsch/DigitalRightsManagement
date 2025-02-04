@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
+namespace DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework;
 
 /// <summary>
 /// Represents a test for code fixes, inheriting from <see cref="CSharpCodeFixTest{TAnalyzer, TCodeFix, DefaultVerifier}"/>.

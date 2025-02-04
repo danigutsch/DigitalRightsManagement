@@ -1,9 +1,9 @@
 ﻿using DigitalRightsManagement.SourceGenerators;
-using DigitalRightsManagement.UnitTests.Analyzers.Verifiers;
+using DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification;
 using Shouldly;
-using static DigitalRightsManagement.UnitTests.Analyzers.AnalyzerConstants;
+using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
 
-namespace DigitalRightsManagement.UnitTests.Analyzers.SourceGenerators;
+namespace DigitalRightsManagement.UnitTests.Analyzers.Generators;
 
 public sealed class EntityConstructorGeneratorTests
 {
