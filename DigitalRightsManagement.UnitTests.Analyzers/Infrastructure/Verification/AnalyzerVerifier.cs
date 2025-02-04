@@ -9,10 +9,13 @@ namespace DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verificatio
 /// <summary>
 /// Provides methods to verify diagnostic analyzers.
 /// </summary>
-/// <typeparam name="TAnalyzer">The type of the diagnostic analyzer.</typeparam>
-internal static class AnalyzerVerifier<TAnalyzer>
-    where TAnalyzer : DiagnosticAnalyzer, new()
+internal static class AnalyzerVerifier
 {
+    public static DiagnosticResult ExpectedDiagnostic(string diagnosticId, int line, int column, string entityName)
+        => new DiagnosticResult(diagnosticId, DiagnosticSeverity.Error)
+            .WithSpan(line, column, line, column + entityName.Length)
+            .WithArguments(entityName);
+
     /// <summary>
     /// Creates a <see cref="DiagnosticResult"/> with the specified diagnostic ID and error severity.
     /// </summary>
@@ -35,17 +38,22 @@ internal static class AnalyzerVerifier<TAnalyzer>
     /// </summary>
     /// <param name="source">The source code to analyze.</param>
     /// <param name="expected">The expected diagnostics.</param>
+    /// <typeparam name="TAnalyzer">The type of the diagnostic analyzer.</typeparam>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public static Task VerifyAnalyzerAsync(string source, params DiagnosticResult[] expected)
-        => VerifyAnalyzerAsync([source], expected);
+    public static Task VerifyAnalyzerAsync<TAnalyzer>(string source, params DiagnosticResult[] expected)
+        where TAnalyzer : DiagnosticAnalyzer, new()
+        => VerifyAnalyzerAsync<TAnalyzer>([source], expected);
+
 
     /// <summary>
     /// Verifies the analyzer against the specified source codes and expected diagnostics.
     /// </summary>
     /// <param name="sources">The source codes to analyze.</param>
     /// <param name="expected">The expected diagnostics.</param>
+    /// <typeparam name="TAnalyzer">The type of the diagnostic analyzer.</typeparam>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public static async Task VerifyAnalyzerAsync(string[] sources, params DiagnosticResult[] expected)
+    public static async Task VerifyAnalyzerAsync<TAnalyzer>(string[] sources, params DiagnosticResult[] expected)
+        where TAnalyzer : DiagnosticAnalyzer, new()
     {
         var test = new CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>
         {

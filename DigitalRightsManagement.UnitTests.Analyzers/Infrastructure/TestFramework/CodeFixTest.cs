@@ -31,8 +31,8 @@ public sealed class CodeFixTest<TAnalyzer, TCodeFix> : CSharpCodeFixTest<TAnalyz
 
             var parseOptions = project.ParseOptions;
             return parseOptions is null
-                ? solution :
-                solution.WithProjectParseOptions(projectId, parseOptions);
+                ? solution
+                : solution.WithProjectParseOptions(projectId, parseOptions);
         });
     }
 }

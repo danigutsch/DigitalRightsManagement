@@ -1,6 +1,6 @@
-﻿using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
-using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.DiagnosticTestHelper;
-using VerifyCs = DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification.AnalyzerVerifier<DigitalRightsManagement.Analyzers.EntityConstructorAnalyzer>;
+﻿using DigitalRightsManagement.Analyzers;
+using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
+using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification.AnalyzerVerifier;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Analysis;
 
@@ -21,7 +21,7 @@ public class EntityConstructorAnalyzerTests
                               """;
 
         var expected = ExpectedDiagnostic("DRM002", 7, 15, "TestEntity");
-        await VerifyCs.VerifyAnalyzerAsync([source, EntityBaseClass], expected);
+        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source, EntityBaseClass], expected);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class EntityConstructorAnalyzerTests
                               }
                               """;
 
-        await VerifyCs.VerifyAnalyzerAsync([source, EntityBaseClass]);
+        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source, EntityBaseClass]);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class EntityConstructorAnalyzerTests
                               }
                               """;
 
-        await VerifyCs.VerifyAnalyzerAsync([source, EntityBaseClass]);
+        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source, EntityBaseClass]);
     }
 
     [Fact]
@@ -66,6 +66,6 @@ public class EntityConstructorAnalyzerTests
                               public partial class TestEntity : Entity { }
                               """;
 
-        await VerifyCs.VerifyAnalyzerAsync([source, EntityBaseClass]);
+        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source, EntityBaseClass]);
     }
 }
