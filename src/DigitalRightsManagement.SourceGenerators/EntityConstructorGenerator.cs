@@ -1,8 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Concurrent;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Text;
+using static DigitalRightsManagement.SourceGenerators.EntityTypeChecker;
 
 namespace DigitalRightsManagement.SourceGenerators;
 
@@ -13,11 +15,8 @@ public sealed class EntityConstructorGenerator : IIncrementalGenerator
     {
         var classDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
-                predicate: static (node, _) =>
-                {
-                    return node is ClassDeclarationSyntax { BaseList: not null } classDecl &&
-                           classDecl.BaseList.Types.Any(t => t.Type is SimpleNameSyntax { Identifier.Text: "Entity" });
-                },
+                predicate: static (node, _) => node is ClassDeclarationSyntax { BaseList: not null } classDecl &&
+                                               classDecl.BaseList.Types.Any(t => IsEntityBase(t.Type)),
                 transform: static (context, cancellationToken) =>
                 {
                     var classDeclaration = (ClassDeclarationSyntax)context.Node;
@@ -27,18 +26,8 @@ public sealed class EntityConstructorGenerator : IIncrementalGenerator
                         return null;
                     }
 
-                    var baseType = symbol.BaseType;
-                    while (baseType is not null)
-                    {
-                        if (baseType.Name == "Entity" &&
-                            baseType.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD")
-                        {
-                            return classDeclaration;
-                        }
-                        baseType = baseType.BaseType;
-                    }
-
-                    return null;
+                    var cache = new ConcurrentDictionary<INamedTypeSymbol, bool>(SymbolEqualityComparer.Default);
+                    return IsEntity(symbol, cache) ? classDeclaration : null;
                 })
             .Where(static m => m is not null);
 

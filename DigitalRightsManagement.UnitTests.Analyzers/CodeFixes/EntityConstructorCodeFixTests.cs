@@ -14,49 +14,50 @@ public sealed class EntityConstructorCodeFixTests
     [Fact]
     public async Task Removes_Manual_Constructor_In_Non_Sealed_Class()
     {
-        // Arrange
         const string source = """
-            using DigitalRightsManagement.Common.DDD;
+                              using DigitalRightsManagement.Common.DDD;
+                              using System;
 
-            namespace TestNamespace
-            {
-                public partial class TestEntity : Entity
-                {
-                    protected TestEntity() { }
-                }
-            }
-            """;
-
-        const string fixedSource = """
-            using DigitalRightsManagement.Common.DDD;
-
-            namespace TestNamespace
-            {
-                public partial class TestEntity : Entity
-                {
-                }
-            }
-            """;
+                              namespace TestNamespace
+                              {
+                                  public partial class TestEntity : Entity<Guid>
+                                  {
+                                      protected TestEntity() { }
+                                  }
+                              }
+                              """;
 
         var test = new CodeFixTest<EntityConstructorAnalyzer, EntityConstructorCodeFix>
         {
             TestCode = source,
             FixedState =
             {
-                Sources = { fixedSource, EntityBaseClass }
+                Sources =
+                {
+                    """
+                    using DigitalRightsManagement.Common.DDD;
+                    using System;
+
+                    namespace TestNamespace
+                    {
+                        public partial class TestEntity : Entity<Guid>
+                        {
+                        }
+                    }
+                    """,
+                    EntityBaseClass
+                }
             },
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
             ExpectedDiagnostics =
             {
-                new DiagnosticResult(EntityConstructorAnalyzer.DiagnosticId, DiagnosticSeverity.Error)
-                    .WithSpan(7, 19, 7, 29)
+                DiagnosticResult.CompilerError("DRM002")
+                    .WithSpan(8, 19, 8, 29)
                     .WithArguments("TestEntity")
             }
         };
 
         test.TestState.Sources.Add(EntityBaseClass);
-
-        // Act & Assert
         await test.RunAsync();
     }
 
@@ -66,10 +67,11 @@ public sealed class EntityConstructorCodeFixTests
         // Arrange
         const string source = """
             using DigitalRightsManagement.Common.DDD;
-
+            using System;
+            
             namespace TestNamespace
             {
-                public sealed partial class TestEntity : Entity
+                public sealed partial class TestEntity : Entity<Guid>
                 {
                     private TestEntity() { }
                 }
@@ -78,10 +80,11 @@ public sealed class EntityConstructorCodeFixTests
 
         const string fixedSource = """
             using DigitalRightsManagement.Common.DDD;
-
+            using System;
+            
             namespace TestNamespace
             {
-                public sealed partial class TestEntity : Entity
+                public sealed partial class TestEntity : Entity<Guid>
                 {
                 }
             }
@@ -98,7 +101,7 @@ public sealed class EntityConstructorCodeFixTests
             ExpectedDiagnostics =
             {
                 new DiagnosticResult(EntityConstructorAnalyzer.DiagnosticId, DiagnosticSeverity.Error)
-                    .WithSpan(7, 17, 7, 27)
+                    .WithSpan(8, 17, 8, 27)
                     .WithArguments("TestEntity")
             }
         };
@@ -115,10 +118,11 @@ public sealed class EntityConstructorCodeFixTests
         // Arrange
         const string source = """
             using DigitalRightsManagement.Common.DDD;
-
+            using System;
+            
             namespace TestNamespace
             {
-                public partial class TestEntity : Entity
+                public partial class TestEntity : Entity<Guid>
                 {
                     protected TestEntity()
                     {
@@ -134,10 +138,11 @@ public sealed class EntityConstructorCodeFixTests
 
         const string fixedSource = """
             using DigitalRightsManagement.Common.DDD;
-
+            using System;
+            
             namespace TestNamespace
             {
-                public partial class TestEntity : Entity
+                public partial class TestEntity : Entity<Guid>
                 {
                 }
             }
@@ -154,7 +159,7 @@ public sealed class EntityConstructorCodeFixTests
             ExpectedDiagnostics =
             {
                 new DiagnosticResult(EntityConstructorAnalyzer.DiagnosticId, DiagnosticSeverity.Error)
-                    .WithSpan(7, 19, 7, 29)
+                    .WithSpan(8, 19, 8, 29)
                     .WithArguments("TestEntity")
             }
         };
@@ -171,10 +176,11 @@ public sealed class EntityConstructorCodeFixTests
         // Arrange
         const string source = """
             using DigitalRightsManagement.Common.DDD;
-
+            using System;
+            
             namespace TestNamespace
             {
-                public partial class TestEntity : Entity
+                public partial class TestEntity : Entity<Guid>
                 {
                     protected TestEntity() { }
                     public TestEntity(string name) { }
@@ -184,10 +190,11 @@ public sealed class EntityConstructorCodeFixTests
 
         const string fixedSource = """
             using DigitalRightsManagement.Common.DDD;
-
+            using System;
+            
             namespace TestNamespace
             {
-                public partial class TestEntity : Entity
+                public partial class TestEntity : Entity<Guid>
                 {
                     public TestEntity(string name) { }
                 }
@@ -205,7 +212,7 @@ public sealed class EntityConstructorCodeFixTests
             ExpectedDiagnostics =
             {
                 new DiagnosticResult(EntityConstructorAnalyzer.DiagnosticId, DiagnosticSeverity.Error)
-                    .WithSpan(7, 19, 7, 29)
+                    .WithSpan(8, 19, 8, 29)
                     .WithArguments("TestEntity")
             }
         };

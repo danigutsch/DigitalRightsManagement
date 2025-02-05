@@ -1,12 +1,37 @@
-﻿using DigitalRightsManagement.SourceGenerators;
+﻿using System.Globalization;
+using DigitalRightsManagement.SourceGenerators;
 using DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification;
 using Shouldly;
+using Xunit.Abstractions;
 using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Generators;
 
-public sealed class EntityConstructorGeneratorTests
+public sealed class EntityConstructorGeneratorTests(ITestOutputHelper output)
 {
+    [Fact]
+    public void Debug_Generated_Content()
+    {
+        var sources = new[]
+        {
+            """
+            using System;
+            using DigitalRightsManagement.Common.DDD;
+
+            namespace TestNamespace;
+
+            public sealed partial class TestEntity : Entity<Guid> { }
+            """,
+            EntityBaseClass
+        };
+
+        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
+
+        var (_, content) = result.GeneratedFiles.Single();
+        output.WriteLine("Generated content:");
+        output.WriteLine(content);
+    }
+
     [Fact]
     public void Generates_Protected_Constructor_For_Non_Sealed_Entity()
     {
@@ -15,10 +40,11 @@ public sealed class EntityConstructorGeneratorTests
         {
             """
             using DigitalRightsManagement.Common.DDD;
+            using System;
 
             namespace TestNamespace
             {
-                public partial class TestEntity : Entity { }
+                public partial class TestEntity : Entity<Guid> { }
             }
             """,
             EntityBaseClass
@@ -42,10 +68,11 @@ public sealed class EntityConstructorGeneratorTests
         {
             """
             using DigitalRightsManagement.Common.DDD;
+            using System;
 
             namespace TestNamespace;
 
-            public sealed partial class TestEntity : Entity { }
+            public sealed partial class TestEntity : Entity<Guid> { }
             """,
             EntityBaseClass
         };
@@ -90,10 +117,11 @@ public sealed class EntityConstructorGeneratorTests
         {
             """
             using DigitalRightsManagement.Common.DDD;
+            using System;
 
             namespace Outer.Inner
             {
-                public partial class TestEntity : Entity { }
+                public partial class TestEntity : Entity<Guid> { }
             }
             """,
             EntityBaseClass
@@ -118,10 +146,11 @@ public sealed class EntityConstructorGeneratorTests
         {
             """
             using DigitalRightsManagement.Common.DDD;
+            using System;
 
             namespace TestNamespace;
 
-            public partial class TestEntity : Entity { }
+            public partial class TestEntity : Entity<Guid> { }
             """,
             EntityBaseClass
         };

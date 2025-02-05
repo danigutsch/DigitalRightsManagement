@@ -3,16 +3,14 @@
 public static class AnalyzerConstants
 {
     public const string EntityBaseClass = """
-                                          namespace DigitalRightsManagement.Common.DDD
+                                          namespace DigitalRightsManagement.Common.DDD;
+                                          
+                                          public abstract class Entity<TId> where TId : struct
                                           {
-                                              using System;
-
-                                              public abstract class Entity
-                                              {
-                                                  public Guid Id { get; init; }
-                                                  protected Entity(Guid id) => Id = id;
-                                                  protected Entity() { }
-                                              }
+                                              public TId Id { get; init; }
+                                              protected Entity(TId id) => Id = id;
+                                              protected Entity() { }
                                           }
+                                          
                                           """;
 }
