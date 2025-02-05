@@ -14,15 +14,16 @@ public sealed class EntityPartialAnalyzerTests
         // Arrange
         const string source = """
                               using DigitalRightsManagement.Common.DDD;
-
+                              using System;
+                              
                               namespace TestNamespace
                               {
-                                  public class TestEntity : Entity { }
+                                  public class TestEntity : Entity<Guid> { }
                               }
                               """;
 
         var expected = new DiagnosticResult(EntityPartialAnalyzer.DiagnosticId, DiagnosticSeverity.Error)
-            .WithSpan(5, 18, 5, 28)
+            .WithSpan(6, 18, 6, 28)
             .WithArguments("TestEntity");
 
         // Act & Assert
@@ -35,10 +36,11 @@ public sealed class EntityPartialAnalyzerTests
         // Arrange
         const string source = """
                               using DigitalRightsManagement.Common.DDD;
+                              using System;
 
                               namespace TestNamespace
                               {
-                                  public partial class TestEntity : Entity { }
+                                  public partial class TestEntity : Entity<Guid> { }
                               }
                               """;
 
@@ -67,21 +69,22 @@ public sealed class EntityPartialAnalyzerTests
         // Arrange
         const string source = """
                               using DigitalRightsManagement.Common.DDD;
+                              using System;
 
                               namespace TestNamespace
                               {
-                                  public class FirstEntity : Entity { }
-                                  public class SecondEntity : Entity { }
+                                  public class FirstEntity : Entity<Guid> { }
+                                  public class SecondEntity : Entity<Guid> { }
                               }
                               """;
 
         var expected = new[]
         {
             new DiagnosticResult(EntityPartialAnalyzer.DiagnosticId, DiagnosticSeverity.Error)
-                .WithSpan(5, 18, 5, 29)
+                .WithSpan(6, 18, 6, 29)
                 .WithArguments("FirstEntity"),
             new DiagnosticResult(EntityPartialAnalyzer.DiagnosticId, DiagnosticSeverity.Error)
-                .WithSpan(6, 18, 6, 30)
+                .WithSpan(7, 18, 7, 30)
                 .WithArguments("SecondEntity")
         };
 
@@ -95,10 +98,11 @@ public sealed class EntityPartialAnalyzerTests
         // Arrange
         const string source = """
                               using DigitalRightsManagement.Common.DDD;
+                              using System;
 
                               namespace TestNamespace
                               {
-                                  public abstract class BaseEntity : Entity { }
+                                  public abstract class BaseEntity : Entity<Guid> { }
                                   public class DerivedClass : BaseEntity { }
                               }
                               """;
@@ -106,10 +110,10 @@ public sealed class EntityPartialAnalyzerTests
         var expected = new[]
         {
             new DiagnosticResult(EntityPartialAnalyzer.DiagnosticId, DiagnosticSeverity.Error)
-                .WithSpan(5, 27, 5, 37)
+                .WithSpan(6, 27, 6, 37)
                 .WithArguments("BaseEntity"),
             new DiagnosticResult(EntityPartialAnalyzer.DiagnosticId, DiagnosticSeverity.Error)
-                .WithSpan(6, 18, 6, 30)
+                .WithSpan(7, 18, 7, 30)
                 .WithArguments("DerivedClass")
         };
 

@@ -14,10 +14,11 @@ public sealed class EntityInstantiationAnalyzerTests
         // Arrange
         const string source = """
                               using DigitalRightsManagement.Common.DDD;
+                              using System;
 
                               namespace TestNamespace
                               {
-                                  public class TestEntity : Entity
+                                  public class TestEntity : Entity<Guid>
                                   {
                                       public TestEntity() { }
                                   }
@@ -33,7 +34,7 @@ public sealed class EntityInstantiationAnalyzerTests
                               """;
 
         var expected = new DiagnosticResult(EntityInstantiationAnalyzer.DiagnosticId, DiagnosticSeverity.Error)
-            .WithSpan(14, 26, 14, 42)
+            .WithSpan(15, 26, 15, 42)
             .WithArguments("TestEntity");
 
         // Act & Assert
@@ -50,7 +51,7 @@ public sealed class EntityInstantiationAnalyzerTests
 
                               namespace TestNamespace
                               {
-                                  public class TestEntity : Entity
+                                  public class TestEntity : Entity<Guid>
                                   {
                                       public TestEntity(Guid id) : base(id) { }
                                   }

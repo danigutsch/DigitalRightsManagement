@@ -14,7 +14,7 @@ public class EntityConstructorAnalyzerTests
                               using DigitalRightsManagement.Common.DDD;
 
                               namespace TestNamespace;
-                              public partial class TestEntity : Entity
+                              public partial class TestEntity : Entity<Guid>
                               {
                                   protected TestEntity() { }
                               }
@@ -32,7 +32,7 @@ public class EntityConstructorAnalyzerTests
                               using DigitalRightsManagement.Common.DDD;
 
                               namespace TestNamespace;
-                              public partial class TestEntity : Entity
+                              public partial class TestEntity : Entity<Guid>
                               {
                                   public TestEntity(Guid id) : base(id) { }
                               }
@@ -63,7 +63,7 @@ public class EntityConstructorAnalyzerTests
                               using DigitalRightsManagement.Common.DDD;
 
                               namespace TestNamespace;
-                              public partial class TestEntity : Entity { }
+                              public partial class TestEntity : Entity<Guid> { }
                               """;
 
         await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source, EntityBaseClass]);
