@@ -1,8 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- This is required so that the analyzer and source generator projects can target this project. -->
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Ardalis.Result" />
 		<PackageReference Include="MediatR.Contracts" />
+		<PackageReference Include="Microsoft.Bcl.HashCode" />
+		<PackageReference Include="PolySharp">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
