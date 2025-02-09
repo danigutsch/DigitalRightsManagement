@@ -11,7 +11,8 @@ public static class EntityTypeChecker
         {
             for (var baseType = symbol.BaseType; baseType is not null; baseType = baseType.BaseType)
             {
-                if (baseType.Name == "Entity" &&
+                // Check if it's Entity<T>
+                if (baseType is { Name: "Entity", TypeArguments.Length: 1 } &&
                     baseType.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD")
                 {
                     return true;
@@ -20,7 +21,18 @@ public static class EntityTypeChecker
             return false;
         });
 
-    public static bool IsEntityBase(TypeSyntax type) =>
-        type is SimpleNameSyntax { Identifier.Text: "Entity" } or
-        GenericNameSyntax { Identifier.Text: "Entity" };
+    public static bool IsEntityBase(TypeSyntax typeSyntax, SemanticModel semanticModel)
+    {
+        // Get the symbol for the type
+        var typeSymbol = semanticModel.GetTypeInfo(typeSyntax).Type as INamedTypeSymbol;
+        if (typeSymbol is null)
+        {
+            return false;
+        }
+
+        // Check if it's Entity<T>
+        return typeSymbol.Name == "Entity" &&
+               typeSymbol.TypeArguments.Length == 1 &&
+               typeSymbol.ContainingNamespace.ToDisplayString() == "DigitalRightsManagement.Common.DDD";
+    }
 }

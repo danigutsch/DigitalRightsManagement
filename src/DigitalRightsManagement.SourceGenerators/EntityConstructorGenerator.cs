@@ -1,8 +1,8 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using System.Collections.Concurrent;
 using System.Text;
 using static DigitalRightsManagement.SourceGenerators.EntityTypeChecker;
 
@@ -15,11 +15,21 @@ public sealed class EntityConstructorGenerator : IIncrementalGenerator
     {
         var classDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
-                predicate: static (node, _) => node is ClassDeclarationSyntax { BaseList: not null } classDecl &&
-                                               classDecl.BaseList.Types.Any(t => IsEntityBase(t.Type)),
+                predicate: static (node, _) => node is ClassDeclarationSyntax { BaseList: not null },
                 transform: static (context, cancellationToken) =>
                 {
                     var classDeclaration = (ClassDeclarationSyntax)context.Node;
+
+                    if (classDeclaration.BaseList?.Types.Count == 0)
+                    {
+                        return null;
+                    }
+
+                    if (classDeclaration.BaseList?.Types.Any(baseType => IsEntityBase(baseType.Type, context.SemanticModel)) is true)
+                    {
+                        return classDeclaration;
+                    }
+
                     var symbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration, cancellationToken);
                     if (symbol is null)
                     {
