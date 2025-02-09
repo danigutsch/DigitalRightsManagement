@@ -3,7 +3,6 @@ using DigitalRightsManagement.CodeFixes;
 using DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
-using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.CodeFixes;
 
@@ -44,8 +43,7 @@ public sealed class EntityConstructorCodeFixTests
                         {
                         }
                     }
-                    """,
-                    EntityBaseClass
+                    """
                 }
             },
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
@@ -57,7 +55,6 @@ public sealed class EntityConstructorCodeFixTests
             }
         };
 
-        test.TestState.Sources.Add(EntityBaseClass);
         await test.RunAsync();
     }
 
@@ -95,7 +92,7 @@ public sealed class EntityConstructorCodeFixTests
             TestCode = source,
             FixedState =
             {
-                Sources = { fixedSource, EntityBaseClass }
+                Sources = { fixedSource }
             },
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
             ExpectedDiagnostics =
@@ -105,8 +102,6 @@ public sealed class EntityConstructorCodeFixTests
                     .WithArguments("TestEntity")
             }
         };
-
-        test.TestState.Sources.Add(EntityBaseClass);
 
         // Act & Assert
         await test.RunAsync();
@@ -153,7 +148,7 @@ public sealed class EntityConstructorCodeFixTests
             TestCode = source,
             FixedState =
             {
-                Sources = { fixedSource, EntityBaseClass }
+                Sources = { fixedSource }
             },
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
             ExpectedDiagnostics =
@@ -163,8 +158,6 @@ public sealed class EntityConstructorCodeFixTests
                     .WithArguments("TestEntity")
             }
         };
-
-        test.TestState.Sources.Add(EntityBaseClass);
 
         // Act & Assert
         await test.RunAsync();
@@ -206,7 +199,7 @@ public sealed class EntityConstructorCodeFixTests
             TestCode = source,
             FixedState =
             {
-                Sources = { fixedSource, EntityBaseClass }
+                Sources = { fixedSource }
             },
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
             ExpectedDiagnostics =
@@ -216,8 +209,6 @@ public sealed class EntityConstructorCodeFixTests
                     .WithArguments("TestEntity")
             }
         };
-
-        test.TestState.Sources.Add(EntityBaseClass);
 
         // Act & Assert
         await test.RunAsync();

@@ -1,7 +1,6 @@
 ﻿using DigitalRightsManagement.Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
-using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
 using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification.AnalyzerVerifier;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Analysis;
@@ -38,7 +37,7 @@ public sealed class EntityInstantiationAnalyzerTests
             .WithArguments("TestEntity");
 
         // Act & Assert
-        await VerifyAnalyzerAsync<EntityInstantiationAnalyzer>([source, EntityBaseClass], expected);
+        await VerifyAnalyzerAsync<EntityInstantiationAnalyzer>([source], expected);
     }
 
     [Fact]
@@ -67,6 +66,6 @@ public sealed class EntityInstantiationAnalyzerTests
                               """;
 
         // Act & Assert
-        await VerifyAnalyzerAsync<EntityInstantiationAnalyzer>([source, EntityBaseClass]);
+        await VerifyAnalyzerAsync<EntityInstantiationAnalyzer>([source]);
     }
 }
