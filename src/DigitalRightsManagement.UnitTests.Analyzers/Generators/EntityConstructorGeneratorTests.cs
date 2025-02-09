@@ -1,36 +1,11 @@
 ﻿using DigitalRightsManagement.SourceGenerators;
 using DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification;
 using Shouldly;
-using Xunit.Abstractions;
-using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Generators;
 
-public sealed class EntityConstructorGeneratorTests(ITestOutputHelper output)
+public sealed class EntityConstructorGeneratorTests
 {
-    [Fact]
-    public void Debug_Generated_Content()
-    {
-        var sources = new[]
-        {
-            """
-            using System;
-            using DigitalRightsManagement.Common.DDD;
-
-            namespace TestNamespace;
-
-            public sealed partial class TestEntity : Entity<Guid> { }
-            """,
-            EntityBaseClass
-        };
-
-        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
-
-        var (_, content) = result.GeneratedFiles.Single();
-        output.WriteLine("Generated content:");
-        output.WriteLine(content);
-    }
-
     [Fact]
     public void Generates_Protected_Constructor_For_Non_Sealed_Entity()
     {
@@ -45,8 +20,7 @@ public sealed class EntityConstructorGeneratorTests(ITestOutputHelper output)
             {
                 public partial class TestEntity : Entity<Guid> { }
             }
-            """,
-            EntityBaseClass
+            """
         };
 
         // Act
@@ -72,8 +46,7 @@ public sealed class EntityConstructorGeneratorTests(ITestOutputHelper output)
             namespace TestNamespace;
 
             public sealed partial class TestEntity : Entity<Guid> { }
-            """,
-            EntityBaseClass
+            """
         };
 
         // Act
@@ -96,8 +69,7 @@ public sealed class EntityConstructorGeneratorTests(ITestOutputHelper output)
             namespace TestNamespace;
 
             public partial class TestClass { }
-            """,
-            EntityBaseClass
+            """
         };
 
         // Act
@@ -122,8 +94,7 @@ public sealed class EntityConstructorGeneratorTests(ITestOutputHelper output)
             {
                 public partial class TestEntity : Entity<Guid> { }
             }
-            """,
-            EntityBaseClass
+            """
         };
 
         // Act
@@ -150,8 +121,7 @@ public sealed class EntityConstructorGeneratorTests(ITestOutputHelper output)
             namespace TestNamespace;
 
             public partial class TestEntity : Entity<Guid> { }
-            """,
-            EntityBaseClass
+            """
         };
 
         // Act

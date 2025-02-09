@@ -1,5 +1,4 @@
 ﻿using DigitalRightsManagement.Analyzers;
-using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
 using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification.AnalyzerVerifier;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Analysis;
@@ -21,7 +20,7 @@ public class EntityConstructorAnalyzerTests
                               """;
 
         var expected = ExpectedDiagnostic("DRM002", 7, 15, "TestEntity");
-        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source, EntityBaseClass], expected);
+        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source], expected);
     }
 
     [Fact]
@@ -38,7 +37,7 @@ public class EntityConstructorAnalyzerTests
                               }
                               """;
 
-        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source, EntityBaseClass]);
+        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source]);
     }
 
     [Fact]
@@ -52,7 +51,7 @@ public class EntityConstructorAnalyzerTests
                               }
                               """;
 
-        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source, EntityBaseClass]);
+        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source]);
     }
 
     [Fact]
@@ -66,6 +65,6 @@ public class EntityConstructorAnalyzerTests
                               public partial class TestEntity : Entity<Guid> { }
                               """;
 
-        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source, EntityBaseClass]);
+        await VerifyAnalyzerAsync<EntityConstructorAnalyzer>([source]);
     }
 }

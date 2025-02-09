@@ -1,7 +1,6 @@
 ﻿using DigitalRightsManagement.Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
-using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework.AnalyzerConstants;
 using static DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification.AnalyzerVerifier;
 
 namespace DigitalRightsManagement.UnitTests.Analyzers.Analysis;
@@ -27,7 +26,7 @@ public sealed class EntityPartialAnalyzerTests
             .WithArguments("TestEntity");
 
         // Act & Assert
-        await VerifyAnalyzerAsync<EntityPartialAnalyzer>([source, EntityBaseClass], expected);
+        await VerifyAnalyzerAsync<EntityPartialAnalyzer>([source], expected);
     }
 
     [Fact]
@@ -45,7 +44,7 @@ public sealed class EntityPartialAnalyzerTests
                               """;
 
         // Act & Assert
-        await VerifyAnalyzerAsync<EntityPartialAnalyzer>([source, EntityBaseClass]);
+        await VerifyAnalyzerAsync<EntityPartialAnalyzer>([source]);
     }
 
     [Fact]
@@ -89,7 +88,7 @@ public sealed class EntityPartialAnalyzerTests
         };
 
         // Act & Assert
-        await VerifyAnalyzerAsync<EntityPartialAnalyzer>([source, EntityBaseClass], expected);
+        await VerifyAnalyzerAsync<EntityPartialAnalyzer>([source], expected);
     }
 
     [Fact]
@@ -118,6 +117,6 @@ public sealed class EntityPartialAnalyzerTests
         };
 
         // Act & Assert
-        await VerifyAnalyzerAsync<EntityPartialAnalyzer>([source, EntityBaseClass], expected);
+        await VerifyAnalyzerAsync<EntityPartialAnalyzer>([source], expected);
     }
 }

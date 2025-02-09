@@ -1,4 +1,4 @@
-﻿using DigitalRightsManagement.Common.DDD;
+﻿using DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.TestFramework;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -52,23 +52,20 @@ internal static class AnalyzerVerifier
     /// <param name="expected">The expected diagnostics.</param>
     /// <typeparam name="TAnalyzer">The type of the diagnostic analyzer.</typeparam>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public static async Task VerifyAnalyzerAsync<TAnalyzer>(string[] sources, params DiagnosticResult[] expected)
+    public static Task VerifyAnalyzerAsync<TAnalyzer>(string[] sources, params DiagnosticResult[] expected)
         where TAnalyzer : DiagnosticAnalyzer, new()
     {
-        var test = new CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>
-        {
-            TestState = { AdditionalReferences = { typeof(IAggregateRoot).Assembly } },
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
-            CompilerDiagnostics = CompilerDiagnostics.Errors,
-            TestBehaviors = TestBehaviors.SkipGeneratedCodeCheck
-        };
+        var test = new CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>();
+        TestConfiguration.ConfigureTest<TAnalyzer, DefaultVerifier>(test);
 
+        // Convert string sources to the required type
         foreach (var source in sources)
         {
-            test.TestState.Sources.Add(source);
+            test.TestState.Sources.Add(source);  // This overload handles the conversion
         }
 
         test.ExpectedDiagnostics.AddRange(expected);
-        await test.RunAsync(CancellationToken.None);
+
+        return test.RunAsync();
     }
 }
