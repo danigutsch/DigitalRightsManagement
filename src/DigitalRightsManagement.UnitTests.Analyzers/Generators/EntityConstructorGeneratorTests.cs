@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using DigitalRightsManagement.SourceGenerators;
+﻿using DigitalRightsManagement.SourceGenerators;
 using DigitalRightsManagement.UnitTests.Analyzers.Infrastructure.Verification;
 using Shouldly;
 using Xunit.Abstractions;
