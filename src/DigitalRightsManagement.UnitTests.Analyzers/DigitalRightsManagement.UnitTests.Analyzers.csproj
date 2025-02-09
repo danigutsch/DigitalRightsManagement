@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
@@ -27,10 +24,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\src\DigitalRightsManagement.Analyzers\DigitalRightsManagement.Analyzers.csproj" />
-	  <ProjectReference Include="..\src\DigitalRightsManagement.CodeFixes\DigitalRightsManagement.CodeFixes.csproj" />
-	  <ProjectReference Include="..\src\DigitalRightsManagement.Domain\DigitalRightsManagement.Domain.csproj" />
-	  <ProjectReference Include="..\src\DigitalRightsManagement.SourceGenerators\DigitalRightsManagement.SourceGenerators.csproj" />
+	  <ProjectReference Include="..\DigitalRightsManagement.Analyzers\DigitalRightsManagement.Analyzers.csproj" />
+	  <ProjectReference Include="..\DigitalRightsManagement.CodeFixes\DigitalRightsManagement.CodeFixes.csproj" />
+	  <ProjectReference Include="..\DigitalRightsManagement.Common\DigitalRightsManagement.Common.csproj" />
+	  <ProjectReference Include="..\DigitalRightsManagement.SourceGenerators\DigitalRightsManagement.SourceGenerators.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

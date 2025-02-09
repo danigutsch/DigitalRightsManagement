@@ -41,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.Sou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.Analyzers", "src\DigitalRightsManagement.Analyzers\DigitalRightsManagement.Analyzers.csproj", "{457DB73A-17D8-4C3C-B786-9649DA057442}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.UnitTests.Analyzers", "DigitalRightsManagement.UnitTests.Analyzers\DigitalRightsManagement.UnitTests.Analyzers.csproj", "{18975906-F6AD-4C23-8178-00CF40155AB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.UnitTests.Analyzers", "src\DigitalRightsManagement.UnitTests.Analyzers\DigitalRightsManagement.UnitTests.Analyzers.csproj", "{18975906-F6AD-4C23-8178-00CF40155AB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalRightsManagement.CodeFixes", "src\DigitalRightsManagement.CodeFixes\DigitalRightsManagement.CodeFixes.csproj", "{68D3E043-86DC-4E2A-9C0F-9BF4256EC9B0}"
 EndProject
