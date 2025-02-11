@@ -53,7 +53,9 @@ public sealed class EntityConstructorGenerator : IIncrementalGenerator
             ? $"<{string.Join(", ", classDeclaration.TypeParameterList!.Parameters)}>"
             : string.Empty;
 
-        var constructorAccessModifier = isSealed ? "private" : "protected";
+        var constructorAccessModifier = isSealed
+            ? "private"
+            : "protected";
 
         var source = GenerateConstructorSource(namespaceName, className, genericTypes, constructorAccessModifier);
         context.AddSource($"{className}.g.cs", SourceText.From(source, Encoding.UTF8));
