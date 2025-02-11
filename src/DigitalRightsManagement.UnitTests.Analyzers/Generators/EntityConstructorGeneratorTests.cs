@@ -24,11 +24,11 @@ public sealed class EntityConstructorGeneratorTests
         };
 
         // Act
-        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
+        var (diagnostics, generatedFiles) = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
 
         // Assert
-        result.Diagnostics.ShouldBeEmpty();
-        var (filename, content) = result.GeneratedFiles.ShouldHaveSingleItem();
+        diagnostics.ShouldBeEmpty();
+        var (filename, content) = generatedFiles.ShouldHaveSingleItem();
         filename.ShouldBe("TestEntity.g.cs");
         content.ShouldContain("protected TestEntity() { }");
     }
@@ -50,11 +50,11 @@ public sealed class EntityConstructorGeneratorTests
         };
 
         // Act
-        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
+        var (diagnostics, generatedFiles) = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
 
         // Assert
-        result.Diagnostics.ShouldBeEmpty();
-        var (filename, content) = result.GeneratedFiles.ShouldHaveSingleItem();
+        diagnostics.ShouldBeEmpty();
+        var (filename, content) = generatedFiles.ShouldHaveSingleItem();
         filename.ShouldBe("TestEntity.g.cs");
         content.ShouldContain("private TestEntity() { }");
     }
@@ -73,11 +73,11 @@ public sealed class EntityConstructorGeneratorTests
         };
 
         // Act
-        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
+        var (diagnostics, generatedFiles) = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
 
         // Assert
-        result.Diagnostics.ShouldBeEmpty();
-        result.GeneratedFiles.ShouldBeEmpty();
+        diagnostics.ShouldBeEmpty();
+        generatedFiles.ShouldBeEmpty();
     }
 
     [Fact]
@@ -98,11 +98,11 @@ public sealed class EntityConstructorGeneratorTests
         };
 
         // Act
-        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
+        var (diagnostics, generatedFiles) = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
 
         // Assert
-        result.Diagnostics.ShouldBeEmpty();
-        var (filename, content) = result.GeneratedFiles.ShouldHaveSingleItem();
+        diagnostics.ShouldBeEmpty();
+        var (filename, content) = generatedFiles.ShouldHaveSingleItem();
         filename.ShouldBe("TestEntity.g.cs");
         content.ShouldContain("namespace Outer.Inner");
         content.ShouldContain("protected TestEntity() { }");
@@ -125,11 +125,11 @@ public sealed class EntityConstructorGeneratorTests
         };
 
         // Act
-        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
+        var (diagnostics, generatedFiles) = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
 
         // Assert
-        result.Diagnostics.ShouldBeEmpty();
-        var (filename, content) = result.GeneratedFiles.ShouldHaveSingleItem();
+        diagnostics.ShouldBeEmpty();
+        var (filename, content) = generatedFiles.ShouldHaveSingleItem();
         filename.ShouldBe("TestEntity.g.cs");
         content.ShouldContain("namespace TestNamespace");
         content.ShouldContain("protected TestEntity() { }");
@@ -154,15 +154,15 @@ public sealed class EntityConstructorGeneratorTests
         };
 
         // Act
-        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
+        var (diagnostics, generatedFiles) = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
 
         // Assert
-        result.Diagnostics.ShouldBeEmpty();
-        result.GeneratedFiles.Count.ShouldBe(2);
-        result.GeneratedFiles.Select(gf => gf.Filename).ShouldContain("BaseEntity.g.cs");
-        result.GeneratedFiles.Select(gf => gf.Filename).ShouldContain("TestEntity.g.cs");
-         result.GeneratedFiles.Select(gf => gf.Content).ShouldContain(content => content.Contains("protected BaseEntity() { }"));
-         result.GeneratedFiles.Select(gf => gf.Content).ShouldContain(content => content.Contains("protected TestEntity() { }"));
+        diagnostics.ShouldBeEmpty();
+        generatedFiles.Count.ShouldBe(2);
+        generatedFiles.Select(gf => gf.Filename).ShouldContain("BaseEntity.g.cs");
+        generatedFiles.Select(gf => gf.Filename).ShouldContain("TestEntity.g.cs");
+         generatedFiles.Select(gf => gf.Content).ShouldContain(content => content.Contains("protected BaseEntity() { }"));
+         generatedFiles.Select(gf => gf.Content).ShouldContain(content => content.Contains("protected TestEntity() { }"));
     }
 
     [Fact]
@@ -185,17 +185,17 @@ public sealed class EntityConstructorGeneratorTests
         };
 
         // Act
-        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
+        var (diagnostics, generatedFiles) = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
 
         // Assert
-        result.Diagnostics.ShouldBeEmpty();
-        result.GeneratedFiles.Count.ShouldBe(3);
-        result.GeneratedFiles.Select(gf => gf.Filename).ShouldContain("BaseEntity.g.cs");
-        result.GeneratedFiles.Select(gf => gf.Filename).ShouldContain("IntermediateEntity.g.cs");
-        result.GeneratedFiles.Select(gf => gf.Filename).ShouldContain("TestEntity.g.cs");
-        result.GeneratedFiles.Select(gf => gf.Content).ShouldContain(content => content.Contains("protected BaseEntity() { }"));
-        result.GeneratedFiles.Select(gf => gf.Content).ShouldContain(content => content.Contains("protected IntermediateEntity() { }"));
-        result.GeneratedFiles.Select(gf => gf.Content).ShouldContain(content => content.Contains("protected TestEntity() { }"));
+        diagnostics.ShouldBeEmpty();
+        generatedFiles.Count.ShouldBe(3);
+        generatedFiles.Select(gf => gf.Filename).ShouldContain("BaseEntity.g.cs");
+        generatedFiles.Select(gf => gf.Filename).ShouldContain("IntermediateEntity.g.cs");
+        generatedFiles.Select(gf => gf.Filename).ShouldContain("TestEntity.g.cs");
+        generatedFiles.Select(gf => gf.Content).ShouldContain(content => content.Contains("protected BaseEntity() { }"));
+        generatedFiles.Select(gf => gf.Content).ShouldContain(content => content.Contains("protected IntermediateEntity() { }"));
+        generatedFiles.Select(gf => gf.Content).ShouldContain(content => content.Contains("protected TestEntity() { }"));
     }
 
     [Fact]
@@ -216,11 +216,11 @@ public sealed class EntityConstructorGeneratorTests
         };
 
         // Act
-        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
+        var (diagnostics, generatedFiles) = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
 
         // Assert
-        result.Diagnostics.ShouldBeEmpty();
-        result.GeneratedFiles.ShouldBeEmpty();
+        diagnostics.ShouldBeEmpty();
+        generatedFiles.ShouldBeEmpty();
     }
 
     [Fact]
@@ -241,11 +241,11 @@ public sealed class EntityConstructorGeneratorTests
         };
 
         // Act
-        var result = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
+        var (diagnostics, generatedFiles) = SourceGeneratorVerifier.Verify<EntityConstructorGenerator>(sources);
 
         // Assert
-        result.Diagnostics.ShouldBeEmpty();
-        var (filename, content) = result.GeneratedFiles.ShouldHaveSingleItem();
+        diagnostics.ShouldBeEmpty();
+        var (filename, content) = generatedFiles.ShouldHaveSingleItem();
         filename.ShouldBe("TestEntity.g.cs");
         content.ShouldContain("partial class TestEntity<T>");
         content.ShouldContain("protected TestEntity() { }");
